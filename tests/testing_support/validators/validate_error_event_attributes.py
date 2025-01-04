@@ -17,7 +17,9 @@ from testing_support.fixtures import check_event_attributes
 from newrelic.common.object_wrapper import function_wrapper, transient_function_wrapper
 
 
-def validate_error_event_attributes(required_params=None, forgone_params=None, exact_attrs=None):
+def validate_error_event_attributes(
+    required_params=None, forgone_params=None, exact_attrs=None
+):
     """Check the error event for attributes, expect only one error to be
     present in the transaction.
     """
@@ -28,7 +30,9 @@ def validate_error_event_attributes(required_params=None, forgone_params=None, e
 
     @function_wrapper
     def _validate_wrapper(wrapped, instance, args, kwargs):
-        @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+        @transient_function_wrapper(
+            "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+        )
         def _validate_error_event_attributes(wrapped, instance, args, kwargs):
             try:
                 result = wrapped(*args, **kwargs)
@@ -39,7 +43,9 @@ def validate_error_event_attributes(required_params=None, forgone_params=None, e
             for sample in event_data:
                 error_data_samples.append(sample)
 
-            check_event_attributes(event_data, required_params, forgone_params, exact_attrs)
+            check_event_attributes(
+                event_data, required_params, forgone_params, exact_attrs
+            )
 
             return result
 

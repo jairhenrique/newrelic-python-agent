@@ -33,9 +33,7 @@ def get_metadata_string(log_message, is_txn):
     assert host
     entity_guid = application_settings().entity_guid
     if is_txn:
-        metadata_string = (
-            f"NR-LINKING|{entity_guid}|{host}|abcdefgh12345678|abcdefgh|Python%20Agent%20Test%20%28internal_logging%29|"
-        )
+        metadata_string = f"NR-LINKING|{entity_guid}|{host}|abcdefgh12345678|abcdefgh|Python%20Agent%20Test%20%28internal_logging%29|"
     else:
         metadata_string = f"NR-LINKING|{entity_guid}|{host}|||Python%20Agent%20Test%20%28internal_logging%29|"
     formatted_string = f"{log_message} {metadata_string}"
@@ -54,7 +52,9 @@ _settings_matrix = [
 ]
 
 
-@pytest.mark.parametrize("feature_setting,subfeature_setting,expected", _settings_matrix)
+@pytest.mark.parametrize(
+    "feature_setting,subfeature_setting,expected", _settings_matrix
+)
 @reset_core_stats_engine()
 def test_log_forwarding_settings(logger, feature_setting, subfeature_setting, expected):
     @override_application_settings(
@@ -72,9 +72,13 @@ def test_log_forwarding_settings(logger, feature_setting, subfeature_setting, ex
     test()
 
 
-@pytest.mark.parametrize("feature_setting,subfeature_setting,expected", _settings_matrix)
+@pytest.mark.parametrize(
+    "feature_setting,subfeature_setting,expected", _settings_matrix
+)
 @reset_core_stats_engine()
-def test_local_decorating_settings(logger, feature_setting, subfeature_setting, expected):
+def test_local_decorating_settings(
+    logger, feature_setting, subfeature_setting, expected
+):
     @override_application_settings(
         {
             "application_logging.enabled": feature_setting,
@@ -94,7 +98,9 @@ def test_local_decorating_settings(logger, feature_setting, subfeature_setting, 
     test()
 
 
-@pytest.mark.parametrize("feature_setting,subfeature_setting,expected", _settings_matrix)
+@pytest.mark.parametrize(
+    "feature_setting,subfeature_setting,expected", _settings_matrix
+)
 @reset_core_stats_engine()
 def test_log_metrics_settings(logger, feature_setting, subfeature_setting, expected):
     metric_count = 1 if expected else None

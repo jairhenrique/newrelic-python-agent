@@ -31,7 +31,9 @@ SKLEARN_VERSION = get_package_version_tuple("sklearn")
         "LabelSpreading",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(semi_supervised_model_name, run_semi_supervised_model):
+def test_model_methods_wrapped_in_function_trace(
+    semi_supervised_model_name, run_semi_supervised_model
+):
     expected_scoped_metrics = {
         "LabelPropagation": [
             ("Function/MLModel/Sklearn/Named/LabelPropagation.fit", 1),
@@ -65,12 +67,17 @@ def test_model_methods_wrapped_in_function_trace(semi_supervised_model_name, run
         "SelfTrainingClassifier",
     ],
 )
-def test_above_v1_0_model_methods_wrapped_in_function_trace(semi_supervised_model_name, run_semi_supervised_model):
+def test_above_v1_0_model_methods_wrapped_in_function_trace(
+    semi_supervised_model_name, run_semi_supervised_model
+):
     expected_scoped_metrics = {
         "SelfTrainingClassifier": [
             ("Function/MLModel/Sklearn/Named/SelfTrainingClassifier.fit", 1),
             ("Function/MLModel/Sklearn/Named/SelfTrainingClassifier.predict", 1),
-            ("Function/MLModel/Sklearn/Named/SelfTrainingClassifier.predict_log_proba", 1),
+            (
+                "Function/MLModel/Sklearn/Named/SelfTrainingClassifier.predict_log_proba",
+                1,
+            ),
             ("Function/MLModel/Sklearn/Named/SelfTrainingClassifier.score", 1),
             ("Function/MLModel/Sklearn/Named/SelfTrainingClassifier.predict_proba", 1),
         ],
@@ -97,7 +104,9 @@ def run_semi_supervised_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         if semi_supervised_model_name == "SelfTrainingClassifier":
             kwargs = {"base_estimator": AdaBoostClassifier()}

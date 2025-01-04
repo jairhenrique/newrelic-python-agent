@@ -81,7 +81,9 @@ _database_only_forgone = {
 
 
 def _exercise_db():
-    client = redis.StrictRedis(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=DATABASE_NUMBER)
+    client = redis.StrictRedis(
+        host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=DATABASE_NUMBER
+    )
 
     client.set("key", "value")
     client.get("key")
@@ -93,28 +95,38 @@ def _exercise_db():
 
 
 @override_application_settings(_enable_instance_settings)
-@validate_tt_collector_json(datastore_params=_enabled_required, datastore_forgone_params=_enabled_forgone)
+@validate_tt_collector_json(
+    datastore_params=_enabled_required, datastore_forgone_params=_enabled_forgone
+)
 @background_task()
 def test_trace_node_datastore_params_enable_instance():
     _exercise_db()
 
 
 @override_application_settings(_disable_instance_settings)
-@validate_tt_collector_json(datastore_params=_disabled_required, datastore_forgone_params=_disabled_forgone)
+@validate_tt_collector_json(
+    datastore_params=_disabled_required, datastore_forgone_params=_disabled_forgone
+)
 @background_task()
 def test_trace_node_datastore_params_disable_instance():
     _exercise_db()
 
 
 @override_application_settings(_instance_only_settings)
-@validate_tt_collector_json(datastore_params=_instance_only_required, datastore_forgone_params=_instance_only_forgone)
+@validate_tt_collector_json(
+    datastore_params=_instance_only_required,
+    datastore_forgone_params=_instance_only_forgone,
+)
 @background_task()
 def test_trace_node_datastore_params_instance_only():
     _exercise_db()
 
 
 @override_application_settings(_database_only_settings)
-@validate_tt_collector_json(datastore_params=_database_only_required, datastore_forgone_params=_database_only_forgone)
+@validate_tt_collector_json(
+    datastore_params=_database_only_required,
+    datastore_forgone_params=_database_only_forgone,
+)
 @background_task()
 def test_trace_node_datastore_params_database_only():
     _exercise_db()

@@ -73,7 +73,11 @@ async def _exercise_db(connection, cursor_kwargs=None):
     try:
         cursor = connection.cursor(**cursor_kwargs)
 
-        await maybe_await(cursor.execute("SELECT setting from pg_settings where name=%s", ("server_version",)))
+        await maybe_await(
+            cursor.execute(
+                "SELECT setting from pg_settings where name=%s", ("server_version",)
+            )
+        )
     finally:
         await maybe_await(connection.close())
 
@@ -188,12 +192,16 @@ def test_explain_plan_on_custom_classes(loop, connection_cls, cursor_cls):
 
     # Check that the correct classes were used AFTER the explain plan validator has run
     if hasattr(connection_cls, "event"):
-        assert not connection_cls.event.is_set(), "Custom connection class should not be used."
+        assert (
+            not connection_cls.event.is_set()
+        ), "Custom connection class should not be used."
     if hasattr(cursor_cls, "event"):
         if cursor_cls is not CustomAsyncCursor:
             assert cursor_cls.event.is_set(), "Custom cursor class was not used."
         else:
-            assert not cursor_cls.event.is_set(), "Custom async cursor class should not be used."
+            assert (
+                not cursor_cls.event.is_set()
+            ), "Custom async cursor class should not be used."
 
 
 # This test will verify that arguments are preserved for an explain

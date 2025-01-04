@@ -114,7 +114,9 @@ async def normal_asgi_application(scope, receive, send):
     except ValueError:
         notice_error(attributes={"ohnoes": "param-value"})
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 

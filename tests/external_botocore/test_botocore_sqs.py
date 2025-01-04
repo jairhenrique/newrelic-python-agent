@@ -133,7 +133,10 @@ _sqs_rollup_metrics_malformed = [
 def test_sqs():
     session = botocore.session.get_session()
     client = session.create_client(
-        "sqs", region_name=AWS_REGION, aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+        "sqs",
+        region_name=AWS_REGION,
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
     )
 
     # Create queue
@@ -181,7 +184,10 @@ def test_sqs():
 def test_sqs_malformed():
     session = botocore.session.get_session()
     client = session.create_client(
-        "sqs", region_name=AWS_REGION, aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+        "sqs",
+        region_name=AWS_REGION,
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
     )
 
     # Malformed send message, uses arg instead of kwarg

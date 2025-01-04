@@ -68,11 +68,9 @@ _s3_rollup_metrics = [
 @background_task()
 def test_aiobotocore_s3(loop):
     async def _test():
-
         data = b"hello_world"
 
         async with MotoService("s3", port=PORT):
-
             session = aiobotocore.session.get_session()
 
             async with session.create_client(  # nosec
@@ -82,7 +80,6 @@ def test_aiobotocore_s3(loop):
                 aws_access_key_id=AWS_ACCESS_KEY_ID,
                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             ) as client:
-
                 # Create bucket
                 await client.create_bucket(
                     Bucket=TEST_BUCKET,
@@ -110,7 +107,9 @@ def test_aiobotocore_s3(loop):
 
                 # List s3 objects using paginator
                 paginator = client.get_paginator("list_objects")
-                async for result in paginator.paginate(Bucket=TEST_BUCKET, Prefix=FOLDER):
+                async for result in paginator.paginate(
+                    Bucket=TEST_BUCKET, Prefix=FOLDER
+                ):
                     for content in result.get("Contents", []):
                         assert content
 

@@ -25,7 +25,9 @@ from newrelic.api.background_task import background_task
 
 DB_SETTINGS = redis_settings()[0]
 
-SKIP_IF_AIOREDIS_V1 = pytest.mark.skipif(AIOREDIS_VERSION < (2, 0), reason="Single arg commands not supported.")
+SKIP_IF_AIOREDIS_V1 = pytest.mark.skipif(
+    AIOREDIS_VERSION < (2, 0), reason="Single arg commands not supported."
+)
 
 _enable_instance_settings = {
     "datastore_tracer.instance_reporting.enabled": True,

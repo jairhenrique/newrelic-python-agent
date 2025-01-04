@@ -365,7 +365,9 @@ def otlp_content_encoding(request):
     prev = _settings.debug.otlp_content_encoding
     _settings.debug.otlp_content_encoding = request.param
     reload(newrelic.core.otlp_utils)
-    assert newrelic.core.otlp_utils.otlp_content_setting == request.param, "Content encoding mismatch."
+    assert (
+        newrelic.core.otlp_utils.otlp_content_setting == request.param
+    ), "Content encoding mismatch."
 
     yield
 

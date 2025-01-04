@@ -83,17 +83,27 @@ if len(ES_MULTIPLE_SETTINGS) > 1:
 
 def _exercise_es(es):
     if ES_VERSION >= (8,):
-        es.index(index="contacts", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1)
+        es.index(
+            index="contacts",
+            body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+            id=1,
+        )
     else:
         es.index(
-            index="contacts", doc_type="person", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1
+            index="contacts",
+            doc_type="person",
+            body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+            id=1,
         )
 
 
 # Test
 
 
-@pytest.mark.skipif(len(ES_MULTIPLE_SETTINGS) < 2, reason="Test environment not configured with multiple databases.")
+@pytest.mark.skipif(
+    len(ES_MULTIPLE_SETTINGS) < 2,
+    reason="Test environment not configured with multiple databases.",
+)
 @override_application_settings(_enable_instance_settings)
 @validate_transaction_metrics(
     "test_multiple_dbs:test_multiple_dbs_enabled",
@@ -109,7 +119,10 @@ def test_multiple_dbs_enabled():
         _exercise_es(client)
 
 
-@pytest.mark.skipif(len(ES_MULTIPLE_SETTINGS) < 2, reason="Test environment not configured with multiple databases.")
+@pytest.mark.skipif(
+    len(ES_MULTIPLE_SETTINGS) < 2,
+    reason="Test environment not configured with multiple databases.",
+)
 @override_application_settings(_disable_instance_settings)
 @validate_transaction_metrics(
     "test_multiple_dbs:test_multiple_dbs_disabled",

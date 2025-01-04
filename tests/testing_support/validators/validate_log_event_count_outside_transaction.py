@@ -25,9 +25,13 @@ def validate_log_event_count_outside_transaction(count=1):
         record_called = []
         recorded_logs = []
 
-        @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_log_event")
+        @transient_function_wrapper(
+            "newrelic.core.stats_engine", "StatsEngine.record_log_event"
+        )
         @catch_background_exceptions
-        def _validate_log_event_count_outside_transaction(wrapped, instance, args, kwargs):
+        def _validate_log_event_count_outside_transaction(
+            wrapped, instance, args, kwargs
+        ):
             record_called.append(True)
             try:
                 result = wrapped(*args, **kwargs)

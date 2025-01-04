@@ -46,7 +46,6 @@ simple_app_v2_init_exc = AsgiTest(simple_app_v2_init_exc)
 # Test naming scheme logic and ASGIApplicationWrapper for a single callable
 @pytest.mark.parametrize("naming_scheme", (None, "component", "framework"))
 def test_single_callable_naming_scheme(naming_scheme):
-
     if naming_scheme in ("component", "framework"):
         expected_name = "testing_support.sample_asgi_applications:simple_app_v3_raw"
         expected_group = "Function"
@@ -91,7 +90,9 @@ def test_double_callable_raw():
 
 
 # Test asgi_application decorator with parameters passed in on a single callable
-@pytest.mark.parametrize("name, group", ((None, "group"), ("name", "group"), ("", "group")))
+@pytest.mark.parametrize(
+    "name, group", ((None, "group"), ("name", "group"), ("", "group"))
+)
 def test_asgi_application_decorator_single_callable(name, group):
     if name:
         expected_name = name
@@ -127,10 +128,16 @@ def test_asgi_application_decorator_no_params_double_callable():
 
 # Test for presence of framework and dispatcher info based on whether framework is specified
 @validate_transaction_metrics(
-    name="test", custom_metrics=[("Python/Framework/framework/v1", 1), ("Python/Dispatcher/dispatcher/v1.0.0", 1)]
+    name="test",
+    custom_metrics=[
+        ("Python/Framework/framework/v1", 1),
+        ("Python/Dispatcher/dispatcher/v1.0.0", 1),
+    ],
 )
 def test_dispatcher_and_framework_metrics():
-    asgi_decorator = asgi_application(name="test", framework=("framework", "v1"), dispatcher=("dispatcher", "v1.0.0"))
+    asgi_decorator = asgi_application(
+        name="test", framework=("framework", "v1"), dispatcher=("dispatcher", "v1.0.0")
+    )
     decorated_application = asgi_decorator(simple_app_v2_raw)
     application = AsgiTest(decorated_application)
     application.make_request("GET", "/")
@@ -138,7 +145,11 @@ def test_dispatcher_and_framework_metrics():
 
 # Test for presence of framework and dispatcher info under existing transaction
 @validate_transaction_metrics(
-    name="test", custom_metrics=[("Python/Framework/framework/v1", 1), ("Python/Dispatcher/dispatcher/v1.0.0", 1)]
+    name="test",
+    custom_metrics=[
+        ("Python/Framework/framework/v1", 1),
+        ("Python/Dispatcher/dispatcher/v1.0.0", 1),
+    ],
 )
 def test_double_wrapped_dispatcher_and_framework_metrics():
     inner_asgi_decorator = asgi_application(
@@ -192,7 +203,9 @@ def test_non_http_scope_v2(event_loop):
         event_loop.run_until_complete(_test())
 
 
-@pytest.mark.parametrize("app", (simple_app_v3_wrapped, simple_app_v2_wrapped, simple_app_v2_init_exc))
+@pytest.mark.parametrize(
+    "app", (simple_app_v3_wrapped, simple_app_v2_wrapped, simple_app_v2_init_exc)
+)
 @validate_transaction_errors(errors=["builtins:ValueError"])
 def test_exception_capture(app):
     with pytest.raises(ValueError):

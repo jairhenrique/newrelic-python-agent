@@ -75,7 +75,9 @@ def test_serialization_errors(skip_if_not_serializing, topic, producer, key, val
         (b"{}", b"%"),
     ),
 )
-def test_deserialization_errors(skip_if_not_serializing, monkeypatch, topic, producer, consumer, key, value):
+def test_deserialization_errors(
+    skip_if_not_serializing, monkeypatch, topic, producer, consumer, key, value
+):
     error_cls = json.decoder.JSONDecodeError
 
     # Remove serializers to cause intentional issues
@@ -87,7 +89,12 @@ def test_deserialization_errors(skip_if_not_serializing, monkeypatch, topic, pro
 
     @reset_core_stats_engine()
     @validate_error_event_attributes_outside_transaction(
-        num_errors=1, exact_attrs={"intrinsic": {"error.class": callable_name(error_cls)}, "agent": {}, "user": {}}
+        num_errors=1,
+        exact_attrs={
+            "intrinsic": {"error.class": callable_name(error_cls)},
+            "agent": {},
+            "user": {},
+        },
     )
     def test():
         with pytest.raises(error_cls):

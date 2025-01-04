@@ -21,7 +21,9 @@ def validate_tt_parameters(required_params=None, forgone_params=None):
     required_params = required_params or {}
     forgone_params = forgone_params or {}
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     def _validate_tt_parameters(wrapped, instance, args, kwargs):
         try:
             result = wrapped(*args, **kwargs)
@@ -38,10 +40,14 @@ def validate_tt_parameters(required_params=None, forgone_params=None):
 
         for name in required_params:
             assert name in tt_intrinsics, f"name={name!r}, intrinsics={tt_intrinsics!r}"
-            assert tt_intrinsics[name] == required_params[name], f"name={name!r}, value={required_params[name]!r}, intrinsics={tt_intrinsics!r}"
+            assert (
+                tt_intrinsics[name] == required_params[name]
+            ), f"name={name!r}, value={required_params[name]!r}, intrinsics={tt_intrinsics!r}"
 
         for name in forgone_params:
-            assert name not in tt_intrinsics, f"name={name!r}, intrinsics={tt_intrinsics!r}"
+            assert (
+                name not in tt_intrinsics
+            ), f"name={name!r}, intrinsics={tt_intrinsics!r}"
 
         return result
 

@@ -152,7 +152,10 @@ def test_openai_chat_completion_sync_with_llm_metadata(set_trace_info):
     add_custom_attribute("non_llm_attr", "python-agent")
     with WithLlmCustomAttributes({"context": "attr"}):
         openai.ChatCompletion.create(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
 
 
@@ -176,7 +179,10 @@ def test_openai_chat_completion_sync_no_content(set_trace_info):
     add_custom_attribute("llm.foo", "bar")
 
     openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -200,7 +206,10 @@ def test_openai_chat_completion_sync_with_token_count(set_trace_info):
     add_custom_attribute("llm.foo", "bar")
 
     openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -219,7 +228,10 @@ def test_openai_chat_completion_sync_no_llm_metadata(set_trace_info):
     set_trace_info()
 
     openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -239,7 +251,10 @@ def test_openai_chat_completion_sync_stream_monitoring_disabled(set_trace_info):
     set_trace_info()
 
     openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -247,7 +262,10 @@ def test_openai_chat_completion_sync_stream_monitoring_disabled(set_trace_info):
 @validate_custom_event_count(count=0)
 def test_openai_chat_completion_sync_outside_txn():
     openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -257,7 +275,10 @@ def test_openai_chat_completion_sync_outside_txn():
 @background_task()
 def test_openai_chat_completion_sync_ai_monitoring_disabled():
     openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -276,7 +297,10 @@ def test_openai_chat_completion_async_no_llm_metadata(loop, set_trace_info):
 
     loop.run_until_complete(
         openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -297,7 +321,10 @@ def test_openai_chat_completion_async_stream_monitoring_disabled(loop, set_trace
 
     loop.run_until_complete(
         openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -325,7 +352,10 @@ def test_openai_chat_completion_async_with_llm_metadata(loop, set_trace_info):
     with WithLlmCustomAttributes({"context": "attr"}):
         loop.run_until_complete(
             openai.ChatCompletion.acreate(
-                model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+                model="gpt-3.5-turbo",
+                messages=_test_openai_chat_completion_messages,
+                temperature=0.7,
+                max_tokens=100,
             )
         )
 
@@ -352,7 +382,10 @@ def test_openai_chat_completion_async_no_content(loop, set_trace_info):
 
     loop.run_until_complete(
         openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -378,7 +411,10 @@ def test_openai_chat_completion_async_with_token_count(loop, set_trace_info):
 
     loop.run_until_complete(
         openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -388,7 +424,10 @@ def test_openai_chat_completion_async_with_token_count(loop, set_trace_info):
 def test_openai_chat_completion_async_outside_transaction(loop):
     loop.run_until_complete(
         openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -400,7 +439,10 @@ def test_openai_chat_completion_async_outside_transaction(loop):
 def test_openai_chat_completion_async_ai_monitoring_disabled(loop):
     loop.run_until_complete(
         openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -415,7 +457,10 @@ def test_openai_chat_completion_sync_no_usage_data(set_trace_info):
     set_trace_info()
 
     openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -430,7 +475,10 @@ def test_openai_chat_completion_async_no_usage_data(loop, set_trace_info):
 
     loop.run_until_complete(
         openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 

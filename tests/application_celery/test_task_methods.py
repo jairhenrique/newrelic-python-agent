@@ -28,10 +28,15 @@ from testing_support.validators.validate_transaction_metrics import (
 import celery
 
 
-FORGONE_TASK_METRICS = [("Function/_target_application.add", None), ("Function/_target_application.tsum", None)]
+FORGONE_TASK_METRICS = [
+    ("Function/_target_application.add", None),
+    ("Function/_target_application.tsum", None),
+]
 
 
-@pytest.fixture(scope="module", autouse=True, params=[False, True], ids=["unpatched", "patched"])
+@pytest.fixture(
+    scope="module", autouse=True, params=[False, True], ids=["unpatched", "patched"]
+)
 def with_worker_optimizations(request, celery_worker_available):
     if request.param:
         celery.app.trace.setup_worker_optimizations(celery_worker_available.app)

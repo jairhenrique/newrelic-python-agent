@@ -14,7 +14,6 @@
 
 import pytest
 import webtest
-from tastypie import VERSION
 from testing_support.fixtures import override_ignore_status_codes
 from testing_support.validators.validate_code_level_metrics import (
     validate_code_level_metrics,
@@ -46,14 +45,16 @@ _test_application_index_scoped_metrics.append(("Function/views:index", 1))
 
 @validate_code_level_metrics("views", "index")
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("views:index", scoped_metrics=_test_application_index_scoped_metrics)
+@validate_transaction_metrics(
+    "views:index", scoped_metrics=_test_application_index_scoped_metrics
+)
 def test_application_index():
     response = test_application.get("/index/")
     assert response.status_code == 200
     response.mustcontain("INDEX RESPONSE")
 
 
-class TastyPieFullDebugMode():
+class TastyPieFullDebugMode:
     def __init__(self, tastypie_full_debug):
         from django.conf import settings
 
@@ -86,7 +87,9 @@ def test_not_found(api_version, tastypie_full_debug):
     _test_application_not_found_scoped_metrics = list(_test_api_base_scoped_metrics)
 
     if tastypie_full_debug:
-        _test_application_not_found_scoped_metrics.append(("Function/django.http.response:HttpResponse.close", 1))
+        _test_application_not_found_scoped_metrics.append(
+            ("Function/django.http.response:HttpResponse.close", 1)
+        )
     else:
         _test_application_not_found_scoped_metrics.append(
             (("Function/django.http.response:" "HttpResponseNotFound.close"), 1)
@@ -99,29 +102,39 @@ def test_not_found(api_version, tastypie_full_debug):
 
     @validate_transaction_errors(errors=_errors)
     @validate_transaction_metrics(
-        "api:SimpleResource.dispatch_detail", scoped_metrics=_test_application_not_found_scoped_metrics
+        "api:SimpleResource.dispatch_detail",
+        scoped_metrics=_test_application_not_found_scoped_metrics,
     )
     def _test_not_found():
         with TastyPieFullDebugMode(tastypie_full_debug) as debug_status:
-            test_application.get(f"/api/{api_version}/simple/NotFound/", status=debug_status)
+            test_application.get(
+                f"/api/{api_version}/simple/NotFound/", status=debug_status
+            )
 
     _test_not_found()
 
 
-_test_application_object_does_not_exist_scoped_metrics = list(_test_api_base_scoped_metrics)
+_test_application_object_does_not_exist_scoped_metrics = list(
+    _test_api_base_scoped_metrics
+)
 
-_test_application_object_does_not_exist_scoped_metrics.append(("Function/tastypie.http:HttpNotFound.close", 1))
+_test_application_object_does_not_exist_scoped_metrics.append(
+    ("Function/tastypie.http:HttpNotFound.close", 1)
+)
 
 
 @pytest.mark.parametrize("api_version", ["v1", "v2"])
 @pytest.mark.parametrize("tastypie_full_debug", [True, False])
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "api:SimpleResource.dispatch_detail", scoped_metrics=_test_application_object_does_not_exist_scoped_metrics
+    "api:SimpleResource.dispatch_detail",
+    scoped_metrics=_test_application_object_does_not_exist_scoped_metrics,
 )
 def test_object_does_not_exist(api_version, tastypie_full_debug):
     with TastyPieFullDebugMode(tastypie_full_debug):
-        test_application.get(f"/api/{api_version}/simple/ObjectDoesNotExist/", status=404)
+        test_application.get(
+            f"/api/{api_version}/simple/ObjectDoesNotExist/", status=404
+        )
 
 
 _test_application_raises_zerodivision_exceptions = ["builtins:ZeroDivisionError"]
@@ -137,14 +150,19 @@ def test_raises_zerodivision(api_version, tastypie_full_debug):
             (("Function/django.core.handlers.exception:handle_uncaught_exception"), 1)
         )
     else:
-        _test_application_raises_zerodivision.append(("Function/tastypie.http:HttpApplicationError.close", 1))
+        _test_application_raises_zerodivision.append(
+            ("Function/tastypie.http:HttpApplicationError.close", 1)
+        )
 
     @validate_transaction_metrics(
-        "api:SimpleResource.dispatch_detail", scoped_metrics=_test_application_raises_zerodivision
+        "api:SimpleResource.dispatch_detail",
+        scoped_metrics=_test_application_raises_zerodivision,
     )
     def _test_raises_zerodivision():
         with TastyPieFullDebugMode(tastypie_full_debug):
-            test_application.get(f"/api/{api_version}/simple/ZeroDivisionError/", status=500)
+            test_application.get(
+                f"/api/{api_version}/simple/ZeroDivisionError/", status=500
+            )
 
     _test_raises_zerodivision()
 
@@ -154,24 +172,30 @@ def test_raises_zerodivision(api_version, tastypie_full_debug):
 @override_ignore_status_codes(set())  # don't ignore any status codes
 @validate_transaction_errors(errors=["tastypie.exceptions:NotFound"])
 @validate_transaction_metrics(
-    "api:SimpleResource.dispatch_detail", scoped_metrics=_test_application_not_found_scoped_metrics
+    "api:SimpleResource.dispatch_detail",
+    scoped_metrics=_test_application_not_found_scoped_metrics,
 )
 def test_record_404_errors(api_version, tastypie_full_debug):
     _test_application_not_found_scoped_metrics = list(_test_api_base_scoped_metrics)
 
     if tastypie_full_debug:
-        _test_application_not_found_scoped_metrics.append(("Function/django.http.response:HttpResponse.close", 1))
+        _test_application_not_found_scoped_metrics.append(
+            ("Function/django.http.response:HttpResponse.close", 1)
+        )
     else:
         _test_application_not_found_scoped_metrics.append(
             (("Function/django.http.response:" "HttpResponseNotFound.close"), 1)
         )
 
     @validate_transaction_metrics(
-        "api:SimpleResource.dispatch_detail", scoped_metrics=_test_application_not_found_scoped_metrics
+        "api:SimpleResource.dispatch_detail",
+        scoped_metrics=_test_application_not_found_scoped_metrics,
     )
     def _test_not_found():
         with TastyPieFullDebugMode(tastypie_full_debug) as debug_status:
-            test_application.get(f"/api/{api_version}/simple/NotFound/", status=debug_status)
+            test_application.get(
+                f"/api/{api_version}/simple/NotFound/", status=debug_status
+            )
 
     _test_not_found()
 
@@ -179,11 +203,15 @@ def test_record_404_errors(api_version, tastypie_full_debug):
 @pytest.mark.parametrize("api_version", ["v1", "v2"])
 @pytest.mark.parametrize("tastypie_full_debug", [True, False])
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("test_application:test_ended_txn_name", background_task=True)
+@validate_transaction_metrics(
+    "test_application:test_ended_txn_name", background_task=True
+)
 @background_task()
 def test_ended_txn_name(api_version, tastypie_full_debug):
     # if the transaction has ended, do not change the transaction name
     end_of_transaction()
 
     with TastyPieFullDebugMode(tastypie_full_debug) as debug_status:
-        test_application.get(f"/api/{api_version}/simple/NotFound/", status=debug_status)
+        test_application.get(
+            f"/api/{api_version}/simple/NotFound/", status=debug_status
+        )

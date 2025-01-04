@@ -52,7 +52,10 @@ def test_celery_task_distributed_tracing_enabled():
     group="Celery",
     rollup_metrics=[
         ("Supportability/DistributedTrace/AcceptPayload/Success", None),
-        ("Supportability/TraceContext/Accept/Success", None),  # No trace context should be accepted
+        (
+            "Supportability/TraceContext/Accept/Success",
+            None,
+        ),  # No trace context should be accepted
     ],
     background_task=True,
     index=-2,

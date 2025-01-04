@@ -15,20 +15,9 @@
 import logging
 
 import pytest
-from conftest import instrumented_logger as conf_logger  # noqa, pylint: disable=W0611
-from testing_support.fixtures import (
-    override_application_settings,
-    reset_core_stats_engine,
-)
 from testing_support.validators.validate_function_called import validate_function_called
 from testing_support.validators.validate_log_event_count import validate_log_event_count
-from testing_support.validators.validate_log_event_count_outside_transaction import (
-    validate_log_event_count_outside_transaction,
-)
 from testing_support.validators.validate_log_events import validate_log_events
-from testing_support.validators.validate_log_events_outside_transaction import (
-    validate_log_events_outside_transaction,
-)
 
 from newrelic.api.background_task import background_task
 from newrelic.api.log import NewRelicLogForwardingHandler
@@ -120,7 +109,9 @@ def test_handler_dict_message_no_formatter(formatting_logger):
     @background_task()
     def test():
         set_trace_ids()
-        formatting_logger.handlers[1].setFormatter(None)  # Turn formatter off to enable dict message support
+        formatting_logger.handlers[1].setFormatter(
+            None
+        )  # Turn formatter off to enable dict message support
         formatting_logger.warning({"message": "C", "attr": 3})
         assert len(formatting_logger.caplog.records) == 1
 
@@ -141,7 +132,9 @@ def test_handler_dict_message_with_formatter(formatting_logger):
                 "trace.id": "abcdefgh12345678",
             }
         ],
-        forgone_attrs=["message.attr"],  # Explicit formatters take precedence over dict message support
+        forgone_attrs=[
+            "message.attr"
+        ],  # Explicit formatters take precedence over dict message support
     )
     @validate_log_event_count(1)
     @validate_function_called("newrelic.api.log", "NewRelicLogForwardingHandler.emit")
@@ -184,7 +177,9 @@ def test_handler_formatter_returns_dict_message(formatting_logger):
     @background_task()
     def test():
         set_trace_ids()
-        formatting_logger.handlers[1].setFormatter(DictMessageFormatter())  # Set formatter to return a dict
+        formatting_logger.handlers[1].setFormatter(
+            DictMessageFormatter()
+        )  # Set formatter to return a dict
         formatting_logger.warning({"message": "C", "attr": 3})
         assert len(formatting_logger.caplog.records) == 1
 

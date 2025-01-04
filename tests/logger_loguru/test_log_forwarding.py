@@ -130,7 +130,9 @@ def test_patcher_application_captured(logger):
     test()
 
 
-_test_logger_catch_event = {"level": "ERROR"}  # Message varies wildly, can't be included in test
+_test_logger_catch_event = {
+    "level": "ERROR"
+}  # Message varies wildly, can't be included in test
 _test_logger_catch_event.update(_common_attributes_trace_linking)
 
 

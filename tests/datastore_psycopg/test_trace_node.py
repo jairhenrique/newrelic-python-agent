@@ -80,7 +80,11 @@ async def _exercise_db(async_=False):
 
     try:
         cursor = connection.cursor()
-        await maybe_await(cursor.execute("SELECT setting from pg_settings where name=%s", ("server_version",)))
+        await maybe_await(
+            cursor.execute(
+                "SELECT setting from pg_settings where name=%s", ("server_version",)
+            )
+        )
     finally:
         await maybe_await(connection.close())
 
@@ -89,7 +93,9 @@ async def _exercise_db(async_=False):
 
 
 @override_application_settings(_enable_instance_settings)
-@validate_tt_collector_json(datastore_params=_enabled_required, datastore_forgone_params=_enabled_forgone)
+@validate_tt_collector_json(
+    datastore_params=_enabled_required, datastore_forgone_params=_enabled_forgone
+)
 @validate_tt_parenting(_tt_parenting)
 @background_task()
 def test_trace_node_datastore_params_enable_instance(loop, is_async):
@@ -97,7 +103,9 @@ def test_trace_node_datastore_params_enable_instance(loop, is_async):
 
 
 @override_application_settings(_disable_instance_settings)
-@validate_tt_collector_json(datastore_params=_disabled_required, datastore_forgone_params=_disabled_forgone)
+@validate_tt_collector_json(
+    datastore_params=_disabled_required, datastore_forgone_params=_disabled_forgone
+)
 @validate_tt_parenting(_tt_parenting)
 @background_task()
 def test_trace_node_datastore_params_disable_instance(loop, is_async):

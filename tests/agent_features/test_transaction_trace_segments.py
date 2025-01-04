@@ -63,7 +63,9 @@ def test_external_user_params_override_url():
 @validate_tt_segment_params(exact_params={"db.instance": "a" * 255})
 @background_task(name="test_datastore_db_instance_truncation")
 def test_datastore_db_instance_truncation():
-    with DatastoreTrace("db_product", "db_target", "db_operation", database_name="a" * 256):
+    with DatastoreTrace(
+        "db_product", "db_target", "db_operation", database_name="a" * 256
+    ):
         pass
 
 
@@ -107,7 +109,7 @@ def test_database_db_statement_truncation():
 @validate_tt_segment_params(forgone_params=("db.instance", "db.statement"))
 @background_task(name="test_database_segment_attributes_disabled")
 def test_database_segment_attributes_disabled():
-    transaction = current_transaction()
+    current_transaction()
     with DatabaseTrace("select 1", database_name="foo"):
         pass
 
@@ -137,7 +139,6 @@ def test_each_segment_type(trace_type, args):
     )
     @background_task(name="test_each_segment_type")
     def _test():
-
         transaction = current_transaction()
         transaction._sampled = True
 

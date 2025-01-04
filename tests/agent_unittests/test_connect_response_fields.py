@@ -59,7 +59,9 @@ class CustomTestClient(DeveloperModeClient):
 
     def log_request(self, fp, method, url, params, payload, headers):
         self.headers.append(headers)
-        return super(CustomTestClient, self).log_request(fp, method, url, params, payload, headers)
+        return super(CustomTestClient, self).log_request(
+            fp, method, url, params, payload, headers
+        )
 
     def send_request(
         self,
@@ -90,12 +92,20 @@ class CustomTestClient(DeveloperModeClient):
 def test_no_blob_behavior(headers_map_present):
     if headers_map_present:
         connect_response_fields = {"request_headers_map": None}
-        client_cls = functools.partial(CustomTestClient, connect_response_fields=connect_response_fields)
+        client_cls = functools.partial(
+            CustomTestClient, connect_response_fields=connect_response_fields
+        )
     else:
-        client_cls = functools.partial(CustomTestClient, connect_response_fields=DEFAULT)
+        client_cls = functools.partial(
+            CustomTestClient, connect_response_fields=DEFAULT
+        )
 
     protocol = AgentProtocol.connect(
-        "app_name", LINKED_APPLICATIONS, ENVIRONMENT, global_settings(), client_cls=client_cls
+        "app_name",
+        LINKED_APPLICATIONS,
+        ENVIRONMENT,
+        global_settings(),
+        client_cls=client_cls,
     )
 
     protocol.send("shutdown")
@@ -110,10 +120,16 @@ def test_blob():
     request_headers_map = {"X-Foo": "Bar"}
     connect_response_fields = {"request_headers_map": request_headers_map}
 
-    client_cls = functools.partial(CustomTestClient, connect_response_fields=connect_response_fields)
+    client_cls = functools.partial(
+        CustomTestClient, connect_response_fields=connect_response_fields
+    )
 
     protocol = AgentProtocol.connect(
-        "app_name", LINKED_APPLICATIONS, ENVIRONMENT, global_settings(), client_cls=client_cls
+        "app_name",
+        LINKED_APPLICATIONS,
+        ENVIRONMENT,
+        global_settings(),
+        client_cls=client_cls,
     )
 
     protocol.send("shutdown")
@@ -136,10 +152,16 @@ def test_server_side_config_precedence():
         "agent_config": {"span_events.enabled": True},
         "span_events.enabled": False,
     }
-    client_cls = functools.partial(CustomTestClient, connect_response_fields=connect_response_fields)
+    client_cls = functools.partial(
+        CustomTestClient, connect_response_fields=connect_response_fields
+    )
 
     protocol = AgentProtocol.connect(
-        "app_name", LINKED_APPLICATIONS, ENVIRONMENT, global_settings(), client_cls=client_cls
+        "app_name",
+        LINKED_APPLICATIONS,
+        ENVIRONMENT,
+        global_settings(),
+        client_cls=client_cls,
     )
 
     assert protocol.configuration.span_events.enabled is False
@@ -155,15 +177,26 @@ def test_server_side_config_precedence():
     "connect_response_fields",
     (
         {},
-        {"span_event_harvest_config": {"report_period_ms": 60000, "harvest_limit": 123}},
+        {
+            "span_event_harvest_config": {
+                "report_period_ms": 60000,
+                "harvest_limit": 123,
+            }
+        },
         {"span_event_harvest_config": {}},
     ),
 )
 def test_span_event_harvest_config(connect_response_fields):
-    client_cls = functools.partial(CustomTestClient, connect_response_fields=connect_response_fields)
+    client_cls = functools.partial(
+        CustomTestClient, connect_response_fields=connect_response_fields
+    )
 
     protocol = AgentProtocol.connect(
-        "app_name", LINKED_APPLICATIONS, ENVIRONMENT, global_settings(), client_cls=client_cls
+        "app_name",
+        LINKED_APPLICATIONS,
+        ENVIRONMENT,
+        global_settings(),
+        client_cls=client_cls,
     )
 
     if connect_response_fields and connect_response_fields["span_event_harvest_config"]:
@@ -172,7 +205,10 @@ def test_span_event_harvest_config(connect_response_fields):
         from newrelic.core.config import SPAN_EVENT_RESERVOIR_SIZE
 
         expected = SPAN_EVENT_RESERVOIR_SIZE
-    assert protocol.configuration.event_harvest_config.harvest_limits.span_event_data == expected
+    assert (
+        protocol.configuration.event_harvest_config.harvest_limits.span_event_data
+        == expected
+    )
 
 
 @override_generic_settings(
@@ -181,15 +217,26 @@ def test_span_event_harvest_config(connect_response_fields):
         "developer_mode": True,
     },
 )
-@pytest.mark.parametrize("connect_response_fields", ({}, {"collect_ai": True}, {"collect_ai": False}))
+@pytest.mark.parametrize(
+    "connect_response_fields", ({}, {"collect_ai": True}, {"collect_ai": False})
+)
 def test_account_level_aim(connect_response_fields):
-    client_cls = functools.partial(CustomTestClient, connect_response_fields=connect_response_fields)
+    client_cls = functools.partial(
+        CustomTestClient, connect_response_fields=connect_response_fields
+    )
 
     protocol = AgentProtocol.connect(
-        "app_name", LINKED_APPLICATIONS, ENVIRONMENT, global_settings(), client_cls=client_cls
+        "app_name",
+        LINKED_APPLICATIONS,
+        ENVIRONMENT,
+        global_settings(),
+        client_cls=client_cls,
     )
 
     if connect_response_fields and connect_response_fields["collect_ai"]:
-        assert protocol.configuration.ai_monitoring.enabled == connect_response_fields["collect_ai"]
+        assert (
+            protocol.configuration.ai_monitoring.enabled
+            == connect_response_fields["collect_ai"]
+        )
     else:
         assert protocol.configuration.ai_monitoring.enabled is False

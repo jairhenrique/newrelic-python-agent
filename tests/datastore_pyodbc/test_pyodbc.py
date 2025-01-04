@@ -13,7 +13,6 @@
 # limitations under the License.
 import pytest
 from testing_support.db_settings import postgresql_settings
-from testing_support.util import instance_hostname
 from testing_support.validators.validate_database_trace_inputs import (
     validate_database_trace_inputs,
 )
@@ -57,7 +56,9 @@ def test_execute_via_cursor(pyodbc_driver):
     ) as connection:
         cursor = connection.cursor()
         cursor.execute(f"""drop table if exists {DB_SETTINGS['table_name']}""")
-        cursor.execute(f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)")
+        cursor.execute(
+            f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)"
+        )
         cursor.executemany(
             f"insert into {DB_SETTINGS['table_name']} values (?, ?, ?)",
             [(1, 1.0, "1.0"), (2, 2.2, "2.2"), (3, 3.3, "3.3")],
@@ -108,7 +109,7 @@ def test_rollback_on_exception(pyodbc_driver):
                 DB_SETTINGS["user"],
                 DB_SETTINGS["password"],
             )
-        ) as connection:
+        ):
             raise RuntimeError("error")
 
 

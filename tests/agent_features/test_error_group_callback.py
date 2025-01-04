@@ -64,22 +64,36 @@ def error_group_callback(exc, data):
 def test_clear_error_group_callback():
     settings = application().settings
     set_error_group_callback(lambda x, y: None)
-    assert settings.error_collector.error_group_callback is not None, "Failed to set callback."
+    assert (
+        settings.error_collector.error_group_callback is not None
+    ), "Failed to set callback."
     set_error_group_callback(None)
-    assert settings.error_collector.error_group_callback is None, "Failed to clear callback."
+    assert (
+        settings.error_collector.error_group_callback is None
+    ), "Failed to clear callback."
 
 
 @pytest.mark.parametrize(
-    "callback,accepted", [(error_group_callback, True), (lambda x, y: None, True), (None, False), ("string", False)]
+    "callback,accepted",
+    [
+        (error_group_callback, True),
+        (lambda x, y: None, True),
+        (None, False),
+        ("string", False),
+    ],
 )
 def test_set_error_group_callback(callback, accepted):
     try:
         set_error_group_callback(callback)
         settings = application().settings
         if accepted:
-            assert settings.error_collector.error_group_callback is not None, "Failed to set callback."
+            assert (
+                settings.error_collector.error_group_callback is not None
+            ), "Failed to set callback."
         else:
-            assert settings.error_collector.error_group_callback is None, "Accepted bad callback."
+            assert (
+                settings.error_collector.error_group_callback is None
+            ), "Accepted bad callback."
     finally:
         set_error_group_callback(None)
 
@@ -95,7 +109,15 @@ def test_set_error_group_callback(callback, accepted):
         (LookupError, None, False),
         (ZeroDivisionError, _truncated_value[:255], False),
     ],
-    ids=("standard", "high-security", "empty-string", "None-value", "list-type", "int-type", "truncated-value"),
+    ids=(
+        "standard",
+        "high-security",
+        "empty-string",
+        "None-value",
+        "list-type",
+        "int-type",
+        "truncated-value",
+    ),
 )
 @reset_core_stats_engine()
 def test_error_group_name_callback(exc_class, group_name, high_security):
@@ -108,12 +130,13 @@ def test_error_group_name_callback(exc_class, group_name, high_security):
         exact = None
         forgone = {"user": [], "intrinsic": [], "agent": ["error.group.name"]}
 
-    @validate_error_trace_attributes(callable_name(exc_class), forgone_params=forgone, exact_attrs=exact)
+    @validate_error_trace_attributes(
+        callable_name(exc_class), forgone_params=forgone, exact_attrs=exact
+    )
     @validate_error_event_attributes(forgone_params=forgone, exact_attrs=exact)
     @override_application_settings({"high_security": high_security})
     @background_task()
     def _test():
-
         try:
             raise exc_class()
         except Exception:
@@ -139,10 +162,20 @@ def test_error_group_name_callback(exc_class, group_name, high_security):
         (LookupError, None, False),
         (ZeroDivisionError, _truncated_value[:255], False),
     ],
-    ids=("standard", "high-security", "empty-string", "None-value", "list-type", "int-type", "truncated-value"),
+    ids=(
+        "standard",
+        "high-security",
+        "empty-string",
+        "None-value",
+        "list-type",
+        "int-type",
+        "truncated-value",
+    ),
 )
 @reset_core_stats_engine()
-def test_error_group_name_callback_outside_transaction(exc_class, group_name, high_security):
+def test_error_group_name_callback_outside_transaction(
+    exc_class, group_name, high_security
+):
     _callback_called.clear()
 
     if group_name is not None:
@@ -155,7 +188,9 @@ def test_error_group_name_callback_outside_transaction(exc_class, group_name, hi
     @validate_error_trace_attributes_outside_transaction(
         callable_name(exc_class), forgone_params=forgone, exact_attrs=exact
     )
-    @validate_error_event_attributes_outside_transaction(forgone_params=forgone, exact_attrs=exact)
+    @validate_error_event_attributes_outside_transaction(
+        forgone_params=forgone, exact_attrs=exact
+    )
     @override_application_settings({"high_security": high_security})
     def _test():
         try:
@@ -217,13 +252,19 @@ def test_error_group_name_callback_attributes(transaction_decorator):
                 assert data["request.uri"] is None
             elif txn.background_task:  # Background task
                 assert data["transactionName"] == "TestBackgroundTask"
-                assert data["custom_params"] == {"notice_error_attribute": 1, "txn_attribute": 2}
+                assert data["custom_params"] == {
+                    "notice_error_attribute": 1,
+                    "txn_attribute": 2,
+                }
                 assert data["response.status"] is None
                 assert data["request.method"] is None
                 assert data["request.uri"] is None
             else:  # Web transaction
                 assert data["transactionName"] == "TestWebTransaction"
-                assert data["custom_params"] == {"notice_error_attribute": 1, "txn_attribute": 2}
+                assert data["custom_params"] == {
+                    "notice_error_attribute": 1,
+                    "txn_attribute": 2,
+                }
                 assert data["response.status"] == 200
                 assert data["request.method"] == "GET"
                 assert data["request.uri"] == "/"
@@ -243,7 +284,9 @@ def test_error_group_name_callback_attributes(transaction_decorator):
                     txn.process_response(200, [])
             raise Exception("text")
         except Exception:
-            app = application() if transaction_decorator is None else None  # Only set outside transaction
+            app = (
+                application() if transaction_decorator is None else None
+            )  # Only set outside transaction
             notice_error(application=app, attributes={"notice_error_attribute": 1})
 
         assert not callback_errors, f"Callback inputs failed to validate.\nerror: {traceback.format_exception(*callback_errors[0])}\ndata: {str(_data[0])}"

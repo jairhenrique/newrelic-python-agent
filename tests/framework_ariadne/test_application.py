@@ -21,7 +21,15 @@ ariadne_version_tuple = tuple(map(int, ARIADNE_VERSION.split(".")))
 
 
 @pytest.fixture(
-    scope="session", params=["sync-sync", "async-sync", "async-async", "wsgi-sync", "asgi-sync", "asgi-async"]
+    scope="session",
+    params=[
+        "sync-sync",
+        "async-sync",
+        "async-async",
+        "wsgi-sync",
+        "asgi-sync",
+        "asgi-async",
+    ],
 )
 def target_application(request):
     from ._target_application import target_application
@@ -34,4 +42,11 @@ def target_application(request):
     extra_spans = 4 if param[0] == "wsgi" else 0
 
     assert ARIADNE_VERSION is not None
-    return "Ariadne", ARIADNE_VERSION, target_application, is_background, schema_type, extra_spans
+    return (
+        "Ariadne",
+        ARIADNE_VERSION,
+        target_application,
+        is_background,
+        schema_type,
+        extra_spans,
+    )

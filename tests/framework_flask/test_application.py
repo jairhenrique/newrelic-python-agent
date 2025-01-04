@@ -44,7 +44,9 @@ except ImportError:
     is_gt_flask060 = False
     is_dev_version = False
 
-requires_endpoint_decorator = pytest.mark.skipif(not is_gt_flask060, reason="The endpoint decorator is not supported.")
+requires_endpoint_decorator = pytest.mark.skipif(
+    not is_gt_flask060, reason="The endpoint decorator is not supported."
+)
 
 
 def target_application():
@@ -109,7 +111,10 @@ if is_dev_version or (is_gt_flask060 and flask_version >= (0, 9)):
 
 
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("_test_application:index_page", scoped_metrics=_test_application_index_scoped_metrics)
+@validate_transaction_metrics(
+    "_test_application:index_page",
+    scoped_metrics=_test_application_index_scoped_metrics,
+)
 @validate_tt_parenting(_test_application_index_tt_parenting)
 @validate_code_level_metrics("_test_application", "index_page")
 def test_application_index():
@@ -131,7 +136,8 @@ _test_application_async_scoped_metrics = [
 @skip_if_not_async_handler_support
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_application_async:async_page", scoped_metrics=_test_application_async_scoped_metrics
+    "_test_application_async:async_page",
+    scoped_metrics=_test_application_async_scoped_metrics,
 )
 @validate_tt_parenting(_test_application_index_tt_parenting)
 @validate_code_level_metrics("_test_application_async", "async_page")
@@ -153,7 +159,8 @@ _test_application_endpoint_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_application:endpoint_page", scoped_metrics=_test_application_endpoint_scoped_metrics
+    "_test_application:endpoint_page",
+    scoped_metrics=_test_application_endpoint_scoped_metrics,
 )
 @validate_code_level_metrics("_test_application", "endpoint_page")
 def test_application_endpoint():
@@ -176,7 +183,10 @@ _test_application_error_scoped_metrics = [
 
 
 @validate_transaction_errors(errors=["builtins:RuntimeError"])
-@validate_transaction_metrics("_test_application:error_page", scoped_metrics=_test_application_error_scoped_metrics)
+@validate_transaction_metrics(
+    "_test_application:error_page",
+    scoped_metrics=_test_application_error_scoped_metrics,
+)
 @validate_code_level_metrics("_test_application", "error_page")
 def test_application_error():
     application = target_application()
@@ -197,7 +207,8 @@ _test_application_abort_404_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_application:abort_404_page", scoped_metrics=_test_application_abort_404_scoped_metrics
+    "_test_application:abort_404_page",
+    scoped_metrics=_test_application_abort_404_scoped_metrics,
 )
 @validate_code_level_metrics("_test_application", "abort_404_page")
 def test_application_abort_404():
@@ -219,7 +230,8 @@ _test_application_exception_404_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_application:exception_404_page", scoped_metrics=_test_application_exception_404_scoped_metrics
+    "_test_application:exception_404_page",
+    scoped_metrics=_test_application_exception_404_scoped_metrics,
 )
 @validate_code_level_metrics("_test_application", "exception_404_page")
 def test_application_exception_404():
@@ -240,7 +252,8 @@ _test_application_not_found_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "flask.app:Flask.handle_http_exception", scoped_metrics=_test_application_not_found_scoped_metrics
+    "flask.app:Flask.handle_http_exception",
+    scoped_metrics=_test_application_not_found_scoped_metrics,
 )
 def test_application_not_found():
     application = target_application()
@@ -261,7 +274,8 @@ _test_application_render_template_string_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_application:template_string", scoped_metrics=_test_application_render_template_string_scoped_metrics
+    "_test_application:template_string",
+    scoped_metrics=_test_application_render_template_string_scoped_metrics,
 )
 @validate_code_level_metrics("_test_application", "template_string")
 def test_application_render_template_string():
@@ -283,7 +297,8 @@ _test_application_render_template_not_found_scoped_metrics = [
 
 @validate_transaction_errors(errors=["jinja2.exceptions:TemplateNotFound"])
 @validate_transaction_metrics(
-    "_test_application:template_not_found", scoped_metrics=_test_application_render_template_not_found_scoped_metrics
+    "_test_application:template_not_found",
+    scoped_metrics=_test_application_render_template_not_found_scoped_metrics,
 )
 def test_application_render_template_not_found():
     application = target_application()

@@ -46,7 +46,8 @@ from newrelic.api.transaction import add_custom_attribute
 
 OPENAI_VERSION = get_openai_version()
 SKIP_IF_NO_OPENAI_WITH_STREAMING_RESPONSE = pytest.mark.skipif(
-    OPENAI_VERSION < (1, 8), reason="OpenAI does not support .with_streaming_response. until v1.8"
+    OPENAI_VERSION < (1, 8),
+    reason="OpenAI does not support .with_streaming_response. until v1.8",
 )
 
 
@@ -156,7 +157,9 @@ chat_completion_recorded_events = [
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_sync_with_llm_metadata(set_trace_info, sync_openai_client):
+def test_openai_chat_completion_sync_with_llm_metadata(
+    set_trace_info, sync_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
@@ -211,8 +214,9 @@ def test_openai_chat_completion_sync_with_llm_metadata_with_streaming_response_l
     if stream_set:
         create_dict["stream"] = stream_val
 
-    with sync_openai_client.chat.completions.with_streaming_response.create(**create_dict) as generator:
-
+    with sync_openai_client.chat.completions.with_streaming_response.create(
+        **create_dict
+    ) as generator:
         for _ in generator.iter_lines():
             pass
 
@@ -253,8 +257,9 @@ def test_openai_chat_completion_sync_with_llm_metadata_with_streaming_response_b
     if stream_set:
         create_dict["stream"] = stream_val
 
-    with sync_openai_client.chat.completions.with_streaming_response.create(**create_dict) as generator:
-
+    with sync_openai_client.chat.completions.with_streaming_response.create(
+        **create_dict
+    ) as generator:
         for _ in generator.iter_bytes():
             pass
 
@@ -295,8 +300,9 @@ def test_openai_chat_completion_sync_with_llm_metadata_with_streaming_response_t
     if stream_set:
         create_dict["stream"] = stream_val
 
-    with sync_openai_client.chat.completions.with_streaming_response.create(**create_dict) as generator:
-
+    with sync_openai_client.chat.completions.with_streaming_response.create(
+        **create_dict
+    ) as generator:
         for _ in generator.iter_text():
             pass
 
@@ -346,7 +352,9 @@ def test_openai_chat_completion_sync_no_content(set_trace_info, sync_openai_clie
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_sync_in_txn_with_llm_metadata_with_token_count(set_trace_info, sync_openai_client):
+def test_openai_chat_completion_sync_in_txn_with_llm_metadata_with_token_count(
+    set_trace_info, sync_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
@@ -373,7 +381,9 @@ def test_openai_chat_completion_sync_in_txn_with_llm_metadata_with_token_count(s
     background_task=True,
 )
 @background_task()
-def test_openai_chat_completion_sync_no_llm_metadata(set_trace_info, sync_openai_client):
+def test_openai_chat_completion_sync_no_llm_metadata(
+    set_trace_info, sync_openai_client
+):
     set_trace_info()
 
     generator = sync_openai_client.chat.completions.create(
@@ -401,7 +411,9 @@ def test_openai_chat_completion_sync_no_llm_metadata(set_trace_info, sync_openai
     background_task=True,
 )
 @background_task()
-def test_openai_chat_completion_sync_ai_monitoring_streaming_disabled(sync_openai_client):
+def test_openai_chat_completion_sync_ai_monitoring_streaming_disabled(
+    sync_openai_client,
+):
     generator = sync_openai_client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=_test_openai_chat_completion_messages,
@@ -456,7 +468,9 @@ def test_openai_chat_completion_sync_ai_monitoring_disabled(sync_openai_client):
     background_task=True,
 )
 @background_task()
-def test_openai_chat_completion_async_no_llm_metadata(loop, set_trace_info, async_openai_client):
+def test_openai_chat_completion_async_no_llm_metadata(
+    loop, set_trace_info, async_openai_client
+):
     set_trace_info()
 
     async def consumer():
@@ -487,7 +501,9 @@ def test_openai_chat_completion_async_no_llm_metadata(loop, set_trace_info, asyn
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_async_with_llm_metadata(loop, set_trace_info, async_openai_client):
+def test_openai_chat_completion_async_with_llm_metadata(
+    loop, set_trace_info, async_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
@@ -548,8 +564,9 @@ def test_openai_chat_completion_async_with_llm_metadata_with_streaming_response_
         create_dict["stream"] = stream_val
 
     async def consumer():
-        async with async_openai_client.chat.completions.with_streaming_response.create(**create_dict) as generator:
-
+        async with async_openai_client.chat.completions.with_streaming_response.create(
+            **create_dict
+        ) as generator:
             async for _ in generator.iter_lines():
                 pass
 
@@ -596,8 +613,9 @@ def test_openai_chat_completion_async_with_llm_metadata_with_streaming_response_
         create_dict["stream"] = stream_val
 
     async def consumer():
-        async with async_openai_client.chat.completions.with_streaming_response.create(**create_dict) as generator:
-
+        async with async_openai_client.chat.completions.with_streaming_response.create(
+            **create_dict
+        ) as generator:
             async for _ in generator.iter_bytes():
                 pass
 
@@ -644,8 +662,9 @@ def test_openai_chat_completion_async_with_llm_metadata_with_streaming_response_
         create_dict["stream"] = stream_val
 
     async def consumer():
-        async with async_openai_client.chat.completions.with_streaming_response.create(**create_dict) as generator:
-
+        async with async_openai_client.chat.completions.with_streaming_response.create(
+            **create_dict
+        ) as generator:
             async for _ in generator.iter_text():
                 pass
 
@@ -667,7 +686,9 @@ def test_openai_chat_completion_async_with_llm_metadata_with_streaming_response_
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_async_no_content(loop, set_trace_info, async_openai_client):
+def test_openai_chat_completion_async_no_content(
+    loop, set_trace_info, async_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
@@ -700,7 +721,9 @@ def test_openai_chat_completion_async_no_content(loop, set_trace_info, async_ope
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_async_with_token_count(set_trace_info, loop, async_openai_client):
+def test_openai_chat_completion_async_with_token_count(
+    set_trace_info, loop, async_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
@@ -732,7 +755,9 @@ def test_openai_chat_completion_async_with_token_count(set_trace_info, loop, asy
     background_task=True,
 )
 @background_task()
-def test_openai_chat_completion_async_ai_monitoring_streaming_disabled(loop, async_openai_client):
+def test_openai_chat_completion_async_ai_monitoring_streaming_disabled(
+    loop, async_openai_client
+):
     async def consumer():
         generator = await async_openai_client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -768,7 +793,9 @@ def test_openai_chat_completion_async_outside_transaction(loop, async_openai_cli
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
 @background_task()
-def test_openai_chat_completion_async_disabled_ai_monitoring_settings(loop, async_openai_client):
+def test_openai_chat_completion_async_disabled_ai_monitoring_settings(
+    loop, async_openai_client
+):
     async def consumer():
         generator = await async_openai_client.chat.completions.create(
             model="gpt-3.5-turbo",

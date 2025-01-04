@@ -73,7 +73,9 @@ async def fetch(url, headers=None, raise_for_status=False, connector=None):
 @pytest.mark.parametrize("cat_enabled", (True, False))
 @pytest.mark.parametrize("distributed_tracing", (True, False))
 @pytest.mark.parametrize("span_events", (True, False))
-def test_outbound_cross_process_headers(event_loop, cat_enabled, distributed_tracing, span_events, mock_header_server):
+def test_outbound_cross_process_headers(
+    event_loop, cat_enabled, distributed_tracing, span_events, mock_header_server
+):
     @background_task(name="test_outbound_cross_process_headers")
     async def _test():
         headers = await fetch(f"http://127.0.0.1:{mock_header_server.port}")
@@ -120,9 +122,13 @@ _customer_headers_tests = [
 
 
 @pytest.mark.parametrize("customer_headers", _customer_headers_tests)
-def test_outbound_cross_process_headers_custom_headers(event_loop, customer_headers, mock_header_server):
+def test_outbound_cross_process_headers_custom_headers(
+    event_loop, customer_headers, mock_header_server
+):
     headers = event_loop.run_until_complete(
-        background_task()(fetch)(f"http://127.0.0.1:{mock_header_server.port}", customer_headers.copy())
+        background_task()(fetch)(
+            f"http://127.0.0.1:{mock_header_server.port}", customer_headers.copy()
+        )
     )
 
     # always honor customer headers
@@ -131,7 +137,9 @@ def test_outbound_cross_process_headers_custom_headers(event_loop, customer_head
 
 
 def test_outbound_cross_process_headers_no_txn(event_loop, mock_header_server):
-    headers = event_loop.run_until_complete(fetch(f"http://127.0.0.1:{mock_header_server.port}"))
+    headers = event_loop.run_until_complete(
+        fetch(f"http://127.0.0.1:{mock_header_server.port}")
+    )
 
     assert not headers.get(ExternalTrace.cat_id_key)
     assert not headers.get(ExternalTrace.cat_transaction_key)
@@ -158,8 +166,19 @@ def test_outbound_cross_process_headers_exception(event_loop, mock_header_server
 
 class PoorResolvingConnector(aiohttp.TCPConnector):
     async def _resolve_host(self, host, port, *args, **kwargs):
-        res = [{"hostname": host, "host": host, "port": 1234, "family": self._family, "proto": 0, "flags": 0}]
-        hosts = await super(PoorResolvingConnector, self)._resolve_host(host, port, *args, **kwargs)
+        res = [
+            {
+                "hostname": host,
+                "host": host,
+                "port": 1234,
+                "family": self._family,
+                "proto": 0,
+                "flags": 0,
+            }
+        ]
+        hosts = await super(PoorResolvingConnector, self)._resolve_host(
+            host, port, *args, **kwargs
+        )
         for hinfo in hosts:
             res.append(hinfo)
         return res
@@ -168,9 +187,16 @@ class PoorResolvingConnector(aiohttp.TCPConnector):
 @pytest.mark.parametrize("cat_enabled", [True, False])
 @pytest.mark.parametrize("response_code", [200, 404])
 @pytest.mark.parametrize("raise_for_status", [True, False])
-@pytest.mark.parametrize("connector_class", [None, PoorResolvingConnector])  # None will use default
+@pytest.mark.parametrize(
+    "connector_class", [None, PoorResolvingConnector]
+)  # None will use default
 def test_process_incoming_headers(
-    event_loop, cat_enabled, response_code, raise_for_status, connector_class, mock_external_http_server
+    event_loop,
+    cat_enabled,
+    response_code,
+    raise_for_status,
+    connector_class,
+    mock_external_http_server,
 ):
     # It was discovered via packnsend that the `throw` method of the `_request`
     # coroutine is used in the case of poorly resolved hosts. An older version
@@ -217,7 +243,10 @@ def test_process_incoming_headers(
         await fetch(address, raise_for_status=raise_for_status, connector=connector)
 
     @override_application_settings(
-        {"cross_application_tracer.enabled": cat_enabled, "distributed_tracing.enabled": False}
+        {
+            "cross_application_tracer.enabled": cat_enabled,
+            "distributed_tracing.enabled": False,
+        }
     )
     @validate_transaction_metrics(
         "test_process_incoming_headers",
@@ -226,8 +255,14 @@ def test_process_incoming_headers(
         background_task=True,
     )
     @validate_external_node_params(
-        params=(_test_cross_process_response_external_node_params if cat_enabled else []),
-        forgone_params=([] if cat_enabled else _test_cross_process_response_external_node_forgone_params),
+        params=(
+            _test_cross_process_response_external_node_params if cat_enabled else []
+        ),
+        forgone_params=(
+            []
+            if cat_enabled
+            else _test_cross_process_response_external_node_forgone_params
+        ),
     )
     def test():
         event_loop.run_until_complete(_test())

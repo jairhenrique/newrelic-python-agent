@@ -51,7 +51,10 @@ def metrics(server):
 
 def test_http_http_request(server, metrics):
     @validate_transaction_metrics(
-        "test_http:test_http_http_request", scoped_metrics=metrics[0], rollup_metrics=metrics[1], background_task=True
+        "test_http:test_http_http_request",
+        scoped_metrics=metrics[0],
+        rollup_metrics=metrics[1],
+        background_task=True,
     )
     @background_task(name="test_http:test_http_http_request")
     def _test():
@@ -66,7 +69,10 @@ def test_http_http_request(server, metrics):
 
 def test_http_https_request(server, metrics):
     @validate_transaction_metrics(
-        "test_http:test_http_https_request", scoped_metrics=metrics[0], rollup_metrics=metrics[1], background_task=True
+        "test_http:test_http_https_request",
+        scoped_metrics=metrics[0],
+        rollup_metrics=metrics[1],
+        background_task=True,
     )
     @background_task(name="test_http:test_http_https_request")
     def _test():
@@ -112,7 +118,9 @@ def test_http_cross_process_request(distributed_tracing, span_events, server):
 
 @cat_enabled
 def test_http_cross_process_response(server):
-    _test_http_cross_process_response_scoped_metrics = [(f"ExternalTransaction/localhost:{server.port}/1#2/test", 1)]
+    _test_http_cross_process_response_scoped_metrics = [
+        (f"ExternalTransaction/localhost:{server.port}/1#2/test", 1)
+    ]
 
     _test_http_cross_process_response_rollup_metrics = [
         ("External/all", 1),
@@ -135,7 +143,9 @@ def test_http_cross_process_response(server):
         background_task=True,
     )
     @insert_incoming_headers
-    @validate_external_node_params(params=_test_http_cross_process_response_external_node_params)
+    @validate_external_node_params(
+        params=_test_http_cross_process_response_external_node_params
+    )
     @background_task(name="test_http:test_http_cross_process_response")
     def _test():
         connection = http.client.HTTPConnection("localhost", server.port)

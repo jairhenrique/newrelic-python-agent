@@ -147,9 +147,7 @@ def test_explain_plans(sql, validator):
         try:
             cursor = connection.cursor()
             cursor.execute(f"drop table if exists {DB_SETTINGS['table_name']}")
-            cursor.execute(
-                f"create table {DB_SETTINGS['table_name']} (b text, c text)"
-            )
+            cursor.execute(f"create table {DB_SETTINGS['table_name']} (b text, c text)")
 
             cursor.execute(sql)
 

@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import pytest
-from sklearn import __init__  # noqa: Needed for get_package_version
 from sklearn.ensemble import AdaBoostClassifier
 from testing_support.validators.validate_transaction_metrics import (
     validate_transaction_metrics,
@@ -32,7 +31,9 @@ SKLEARN_VERSION = get_package_version_tuple("sklearn")
         "MultiOutputEstimator",
     ],
 )
-def test_below_v1_0_model_methods_wrapped_in_function_trace(multioutput_model_name, run_multioutput_model):
+def test_below_v1_0_model_methods_wrapped_in_function_trace(
+    multioutput_model_name, run_multioutput_model
+):
     expected_scoped_metrics = {
         "MultiOutputEstimator": [
             ("Function/MLModel/Sklearn/Named/MultiOutputEstimator.fit", 1),
@@ -61,7 +62,9 @@ def test_below_v1_0_model_methods_wrapped_in_function_trace(multioutput_model_na
         "RegressorChain",
     ],
 )
-def test_above_v1_0_model_methods_wrapped_in_function_trace(multioutput_model_name, run_multioutput_model):
+def test_above_v1_0_model_methods_wrapped_in_function_trace(
+    multioutput_model_name, run_multioutput_model
+):
     expected_scoped_metrics = {
         "MultiOutputClassifier": [
             ("Function/MLModel/Sklearn/Named/MultiOutputClassifier.fit", 1),

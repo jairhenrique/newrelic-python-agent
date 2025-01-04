@@ -29,7 +29,9 @@ class Query(ObjectType):
 
 
 routes = [
-    Route("/async", GraphQLApp(executor_class=AsyncioExecutor, schema=Schema(query=Query))),
+    Route(
+        "/async", GraphQLApp(executor_class=AsyncioExecutor, schema=Schema(query=Query))
+    ),
     Route("/sync", GraphQLApp(schema=Schema(query=Query))),
 ]
 

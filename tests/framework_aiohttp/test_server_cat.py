@@ -93,9 +93,15 @@ def record_aiohttp1_raw_headers(raw_headers):
 @pytest.mark.parametrize("method", ["GET"])
 @pytest.mark.parametrize("uri,metric_name", test_uris)
 def test_cat_headers(
-    method, uri, metric_name, inbound_payload, expected_intrinsics, forgone_intrinsics, cat_id, aiohttp_app
+    method,
+    uri,
+    metric_name,
+    inbound_payload,
+    expected_intrinsics,
+    forgone_intrinsics,
+    cat_id,
+    aiohttp_app,
 ):
-
     _raw_headers = {}
 
     async def fetch():
@@ -105,13 +111,17 @@ def test_cat_headers(
         if _raw_headers:
             raw_headers = _raw_headers
         else:
-            raw_headers = {k.decode("utf-8"): v.decode("utf-8") for k, v in resp.raw_headers}
+            raw_headers = {
+                k.decode("utf-8"): v.decode("utf-8") for k, v in resp.raw_headers
+            }
 
         if expected_intrinsics:
             # test valid CAT response header
             assert "X-NewRelic-App-Data" in raw_headers
 
-            app_data = json.loads(deobfuscate(raw_headers["X-NewRelic-App-Data"], ENCODING_KEY))
+            app_data = json.loads(
+                deobfuscate(raw_headers["X-NewRelic-App-Data"], ENCODING_KEY)
+            )
             assert app_data[0] == cat_id
             assert app_data[1] == f"WebTransaction/Function/{metric_name}"
         else:

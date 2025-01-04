@@ -19,12 +19,16 @@ from newrelic.common.object_wrapper import (
 )
 
 
-def validate_synthetics_event(required_attrs=None, forgone_attrs=None, should_exist=True):
+def validate_synthetics_event(
+    required_attrs=None, forgone_attrs=None, should_exist=True
+):
     required_attrs = required_attrs or []
     forgone_attrs = forgone_attrs or []
     failed = []
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     def _validate_synthetics_event(wrapped, instance, args, kwargs):
         result = wrapped(*args, **kwargs)
 
@@ -50,10 +54,14 @@ def validate_synthetics_event(required_attrs=None, forgone_attrs=None, should_ex
 
                 for name, value in required_attrs:
                     assert name in flat_event, f"name={name!r}, event={flat_event!r}"
-                    assert flat_event[name] == value, f"name={name!r}, value={value!r}, event={flat_event!r}"
+                    assert (
+                        flat_event[name] == value
+                    ), f"name={name!r}, value={value!r}, event={flat_event!r}"
 
                 for name in forgone_attrs:
-                    assert name not in flat_event, f"name={name!r}, event={flat_event!r}"
+                    assert (
+                        name not in flat_event
+                    ), f"name={name!r}, event={flat_event!r}"
         except Exception as e:
             failed.append(e)
 

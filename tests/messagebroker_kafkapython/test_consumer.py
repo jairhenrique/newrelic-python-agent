@@ -62,7 +62,9 @@ def test_multiple_transactions(get_consumer_record, topic):
     _test()
 
 
-def test_custom_metrics_on_existing_transaction(get_consumer_record, topic, expected_broker_metrics):
+def test_custom_metrics_on_existing_transaction(
+    get_consumer_record, topic, expected_broker_metrics
+):
     from kafka.version import __version__ as version
 
     @validate_transaction_metrics(
@@ -83,8 +85,9 @@ def test_custom_metrics_on_existing_transaction(get_consumer_record, topic, expe
     _test()
 
 
-def test_custom_metrics_inactive_transaction(get_consumer_record, topic, expected_missing_broker_metrics):
-
+def test_custom_metrics_inactive_transaction(
+    get_consumer_record, topic, expected_missing_broker_metrics
+):
     @validate_transaction_metrics(
         "test_consumer:test_custom_metrics_inactive_transaction.<locals>._test",
         custom_metrics=[
@@ -104,7 +107,9 @@ def test_custom_metrics_inactive_transaction(get_consumer_record, topic, expecte
 
 
 def test_agent_attributes(get_consumer_record):
-    @validate_attributes("agent", ["kafka.consume.client_id", "kafka.consume.byteCount"])
+    @validate_attributes(
+        "agent", ["kafka.consume.client_id", "kafka.consume.byteCount"]
+    )
     def _test():
         get_consumer_record()
 
@@ -116,7 +121,12 @@ def test_consumer_errors(get_consumer_record, consumer_next_raises):
 
     @reset_core_stats_engine()
     @validate_error_event_attributes_outside_transaction(
-        num_errors=1, exact_attrs={"intrinsic": {"error.class": callable_name(exc_class)}, "agent": {}, "user": {}}
+        num_errors=1,
+        exact_attrs={
+            "intrinsic": {"error.class": callable_name(exc_class)},
+            "agent": {},
+            "user": {},
+        },
     )
     def _test():
         with pytest.raises(exc_class):
@@ -134,7 +144,9 @@ def test_consumer_handled_errors_not_recorded(get_consumer_record):
     _test()
 
 
-def test_distributed_tracing_headers(topic, producer, consumer, serialize, expected_broker_metrics):
+def test_distributed_tracing_headers(
+    topic, producer, consumer, serialize, expected_broker_metrics
+):
     # Produce the messages inside a transaction, making sure to close it.
     @background_task()
     def _produce():
@@ -189,9 +201,14 @@ def consumer_next_raises(consumer):
 
 @pytest.fixture(scope="function")
 def expected_broker_metrics(broker, topic):
-    return [(f"MessageBroker/Kafka/Nodes/{server}/Consume/{topic}", 1) for server in broker]
+    return [
+        (f"MessageBroker/Kafka/Nodes/{server}/Consume/{topic}", 1) for server in broker
+    ]
 
 
 @pytest.fixture(scope="function")
 def expected_missing_broker_metrics(broker, topic):
-    return [(f"MessageBroker/Kafka/Nodes/{server}/Consume/{topic}", None) for server in broker]
+    return [
+        (f"MessageBroker/Kafka/Nodes/{server}/Consume/{topic}", None)
+        for server in broker
+    ]

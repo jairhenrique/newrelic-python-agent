@@ -31,11 +31,17 @@ from newrelic.api.background_task import background_task
 from newrelic.common import system_info
 from newrelic.common.package_version_utils import get_package_version_tuple
 
-INSTANCE_METRIC_HOST = system_info.gethostname() if MONGODB_HOST == "127.0.0.1" else MONGODB_HOST
-INSTANCE_METRIC_NAME = f"Datastore/instance/MongoDB/{INSTANCE_METRIC_HOST}/{MONGODB_PORT}"
+INSTANCE_METRIC_HOST = (
+    system_info.gethostname() if MONGODB_HOST == "127.0.0.1" else MONGODB_HOST
+)
+INSTANCE_METRIC_NAME = (
+    f"Datastore/instance/MongoDB/{INSTANCE_METRIC_HOST}/{MONGODB_PORT}"
+)
 
 if get_package_version_tuple("pymongo") >= (4, 9, 0):
-    PYMONGO_INIT_METRIC_NAME = "Function/pymongo.synchronous.mongo_client:MongoClient.__init__"
+    PYMONGO_INIT_METRIC_NAME = (
+        "Function/pymongo.synchronous.mongo_client:MongoClient.__init__"
+    )
 else:
     # Older motor versions required older pymongo versions with a different metric
     PYMONGO_INIT_METRIC_NAME = "Function/pymongo.mongo_client:MongoClient.__init__"
@@ -97,7 +103,9 @@ async def exercise_motor(db):
         "peer.hostname": INSTANCE_METRIC_HOST,
         "peer.address": f"{INSTANCE_METRIC_HOST}:{MONGODB_PORT}",
     },
-    exact_intrinsics={"name": f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/insert_one"},
+    exact_intrinsics={
+        "name": f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/insert_one"
+    },
 )
 @validate_transaction_metrics(
     "test_motor_instance_info",
@@ -219,7 +227,6 @@ def test_motor_database_duration(loop, client):
 @validate_database_duration()
 @background_task()
 def test_motor_and_sqlite_database_duration(loop, client):
-
     # Make mongodb queries
     db = client()["test"]
     loop.run_until_complete(exercise_motor(db))

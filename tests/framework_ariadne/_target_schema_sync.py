@@ -36,13 +36,14 @@ elif ariadne_version_tuple >= (0, 16):
     from ariadne.asgi.graphql import GraphQL as GraphQLASGI
 
 
-schema_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "schema.graphql")
+schema_file = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "schema.graphql"
+)
 type_defs = load_schema_from_path(schema_file)
 
 storage = []
 
 mutation = MutationType()
-
 
 
 @mutation.field("storage_add")

@@ -52,7 +52,10 @@ def target_wsgi_application(environ, start_response):
     if path == "/user_attribute":
         add_custom_attribute("test_key", "test_value")
 
-    response_headers = [("Content-Type", "text/plain; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/plain; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     return [output]
@@ -119,7 +122,9 @@ _forgone_request_legacy_false = ["request.parameters.foo"]
 
 
 @override_application_settings(_settings_legacy_false)
-@validate_attributes("agent", _required_request_legacy_false, _forgone_request_legacy_false)
+@validate_attributes(
+    "agent", _required_request_legacy_false, _forgone_request_legacy_false
+)
 def test_capture_request_params_legacy_false():
     target_application = webtest.TestApp(target_wsgi_application)
     response = target_application.get("/?foo=bar")
@@ -132,7 +137,9 @@ _forgone_request_legacy_true = []
 
 
 @override_application_settings(_settings_legacy_true)
-@validate_attributes("agent", _required_request_legacy_true, _forgone_request_legacy_true)
+@validate_attributes(
+    "agent", _required_request_legacy_true, _forgone_request_legacy_true
+)
 def test_capture_request_params_legacy_true():
     target_application = webtest.TestApp(target_wsgi_application)
     response = target_application.get("/?foo=bar")
@@ -154,7 +161,9 @@ _required_display_host_default = []
 _forgone_display_host_default = ["host.displayName"]
 
 
-@validate_attributes("agent", _required_display_host_default, _forgone_display_host_default)
+@validate_attributes(
+    "agent", _required_display_host_default, _forgone_display_host_default
+)
 def test_display_host_default():
     target_application = webtest.TestApp(target_wsgi_application)
     response = target_application.get("/")
@@ -172,7 +181,9 @@ _forgone_display_host_custom = []
 
 
 @override_application_settings(_settings_display_host_custom)
-@validate_attributes_complete("agent", _required_display_host_custom, _forgone_display_host_custom)
+@validate_attributes_complete(
+    "agent", _required_display_host_custom, _forgone_display_host_custom
+)
 def test_display_host_custom():
     target_application = webtest.TestApp(target_wsgi_application)
     response = target_application.get("/")
@@ -267,14 +278,18 @@ _required_custom_params_long_key = []
 _forgone_custom_params_long_key = [(TOO_LONG, "value")]
 
 
-@validate_custom_parameters(_required_custom_params_long_key, _forgone_custom_params_long_key)
+@validate_custom_parameters(
+    _required_custom_params_long_key, _forgone_custom_params_long_key
+)
 @background_task()
 def test_custom_param_key_too_long():
     result = add_custom_attribute(TOO_LONG, "value")
     assert not result
 
 
-@validate_custom_parameters(_required_custom_params_long_key, _forgone_custom_params_long_key)
+@validate_custom_parameters(
+    _required_custom_params_long_key, _forgone_custom_params_long_key
+)
 @background_task()
 def test_custom_params_key_too_long():
     result = add_custom_attributes([(TOO_LONG, "value")])
@@ -285,14 +300,18 @@ _required_custom_params_long_value = [("key", TRUNCATED)]
 _forgone_custom_params_long_value = []
 
 
-@validate_custom_parameters(_required_custom_params_long_value, _forgone_custom_params_long_value)
+@validate_custom_parameters(
+    _required_custom_params_long_value, _forgone_custom_params_long_value
+)
 @background_task()
 def test_custom_param_value_too_long():
     result = add_custom_attribute("key", TOO_LONG)
     assert result
 
 
-@validate_custom_parameters(_required_custom_params_long_value, _forgone_custom_params_long_value)
+@validate_custom_parameters(
+    _required_custom_params_long_value, _forgone_custom_params_long_value
+)
 @background_task()
 def test_custom_params_value_too_long():
     result = add_custom_attributes([("key", TOO_LONG)])
@@ -303,7 +322,9 @@ _required_custom_params_too_many = [("key-127", "value")]
 _forgone_custom_params_too_many = [("key-128", "value")]
 
 
-@validate_custom_parameters(_required_custom_params_too_many, _forgone_custom_params_too_many)
+@validate_custom_parameters(
+    _required_custom_params_too_many, _forgone_custom_params_too_many
+)
 @background_task()
 def test_custom_param_too_many():
     for i in range(129):
@@ -314,7 +335,9 @@ def test_custom_param_too_many():
             assert not result  # Last one fails
 
 
-@validate_custom_parameters(_required_custom_params_too_many, _forgone_custom_params_too_many)
+@validate_custom_parameters(
+    _required_custom_params_too_many, _forgone_custom_params_too_many
+)
 @background_task()
 def test_custom_params_too_many():
     item_list = [(f"key-{i:02}", "value") for i in range(129)]
@@ -326,14 +349,18 @@ _required_custom_params_name_not_string = []
 _forgone_custom_params_name_not_string = [(1, "value")]
 
 
-@validate_custom_parameters(_required_custom_params_name_not_string, _forgone_custom_params_name_not_string)
+@validate_custom_parameters(
+    _required_custom_params_name_not_string, _forgone_custom_params_name_not_string
+)
 @background_task()
 def test_custom_param_name_not_string():
     result = add_custom_attribute(1, "value")
     assert not result
 
 
-@validate_custom_parameters(_required_custom_params_name_not_string, _forgone_custom_params_name_not_string)
+@validate_custom_parameters(
+    _required_custom_params_name_not_string, _forgone_custom_params_name_not_string
+)
 @background_task()
 def test_custom_params_name_not_string():
     result = add_custom_attributes([(1, "value")])
@@ -346,14 +373,18 @@ _required_custom_params_int_too_big = []
 _forgone_custom_params_int_too_big = [("key", TOO_BIG)]
 
 
-@validate_custom_parameters(_required_custom_params_int_too_big, _forgone_custom_params_int_too_big)
+@validate_custom_parameters(
+    _required_custom_params_int_too_big, _forgone_custom_params_int_too_big
+)
 @background_task()
 def test_custom_param_int_too_big():
     result = add_custom_attribute("key", TOO_BIG)
     assert not result
 
 
-@validate_custom_parameters(_required_custom_params_int_too_big, _forgone_custom_params_int_too_big)
+@validate_custom_parameters(
+    _required_custom_params_int_too_big, _forgone_custom_params_int_too_big
+)
 @background_task()
 def test_custom_params_int_too_big():
     result = add_custom_attributes([("key", TOO_BIG)])
@@ -383,7 +414,9 @@ _required_request_key_too_long = []
 _forgone_request_key_too_long = [TOO_LONG_REQUEST_PARAM]
 
 
-@validate_attributes("agent", _required_request_key_too_long, _forgone_request_key_too_long)
+@validate_attributes(
+    "agent", _required_request_key_too_long, _forgone_request_key_too_long
+)
 def test_capture_request_params_key_too_long():
     target_application = webtest.TestApp(target_wsgi_application)
     response = target_application.get(f"/?{TOO_LONG_KEY}=bar")
@@ -394,7 +427,9 @@ _required_request_value_too_long = ["request.parameters.foo"]
 _forgone_request_value_too_long = []
 
 
-@validate_attributes("agent", _required_request_value_too_long, _forgone_request_value_too_long)
+@validate_attributes(
+    "agent", _required_request_value_too_long, _forgone_request_value_too_long
+)
 def test_capture_request_params_value_too_long():
     target_application = webtest.TestApp(target_wsgi_application)
     response = target_application.get(f"/?foo={TOO_LONG}")
@@ -479,7 +514,7 @@ def test_sanitize_tuple():
     assert sanitize(t) == "('one', 'two', 'three')"
 
 
-class Foo():
+class Foo:
     pass
 
 
@@ -488,7 +523,7 @@ def test_sanitize_object():
     assert sanitize(f) == str(f)
 
 
-class TypeErrorString():
+class TypeErrorString:
     def __str__(self):
         return 42
 
@@ -498,7 +533,7 @@ def test_str_raises_type_error():
         sanitize(TypeErrorString())
 
 
-class AttributeErrorString():
+class AttributeErrorString:
     def __str__(self):
         raise AttributeError()
 

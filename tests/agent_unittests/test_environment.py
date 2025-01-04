@@ -111,7 +111,9 @@ class NoIteratorDict:
         ),
     ),
 )
-def test_uvicorn_dispatcher(monkeypatch, loaded_modules, dispatcher, dispatcher_version, worker_version):
+def test_uvicorn_dispatcher(
+    monkeypatch, loaded_modules, dispatcher, dispatcher_version, worker_version
+):
     # Let's pretend we load some modules
     for name, module in loaded_modules.items():
         monkeypatch.setitem(sys.modules, name, module)

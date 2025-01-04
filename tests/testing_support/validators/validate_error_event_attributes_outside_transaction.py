@@ -23,9 +23,12 @@ def validate_error_event_attributes_outside_transaction(
     required_params = required_params or {}
     forgone_params = forgone_params or {}
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.notice_error")
-    def _validate_error_event_attributes_outside_transaction(wrapped, instance, args, kwargs):
-
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.notice_error"
+    )
+    def _validate_error_event_attributes_outside_transaction(
+        wrapped, instance, args, kwargs
+    ):
         try:
             result = wrapped(*args, **kwargs)
         except:
@@ -38,7 +41,9 @@ def validate_error_event_attributes_outside_transaction(
             assert num_errors == len(event_data), exc_message
 
         for event in event_data:
-            check_event_attributes([event], required_params, forgone_params, exact_attrs=exact_attrs)
+            check_event_attributes(
+                [event], required_params, forgone_params, exact_attrs=exact_attrs
+            )
 
         return result
 

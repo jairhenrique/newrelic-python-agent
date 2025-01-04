@@ -59,11 +59,13 @@ _intrinsic_attributes = {
 }
 
 
-@validate_error_event_sample_data(required_attrs=_intrinsic_attributes, required_user_attrs=False)
+@validate_error_event_sample_data(
+    required_attrs=_intrinsic_attributes, required_user_attrs=False
+)
 @validate_transaction_error_event_count(num_errors=1)
 def test_transaction_error_event_no_extra_attributes():
     test_environ = {"err_message": ERR_MESSAGE, "record_attributes": "FALSE"}
-    response = fully_featured_application.get("/", extra_environ=test_environ)
+    fully_featured_application.get("/", extra_environ=test_environ)
 
 
 _intrinsic_attributes = {
@@ -78,7 +80,9 @@ _intrinsic_attributes = {
 }
 
 
-@validate_error_event_sample_data(required_attrs=_intrinsic_attributes, required_user_attrs=True)
+@validate_error_event_sample_data(
+    required_attrs=_intrinsic_attributes, required_user_attrs=True
+)
 def test_transaction_error_event_lotsa_attributes():
     test_environ = {
         "err_message": ERR_MESSAGE,
@@ -87,7 +91,7 @@ def test_transaction_error_event_lotsa_attributes():
         "mod_wsgi.queue_start": (f"t={time.time()!r}"),
         "SERVER_PORT": "8888",
     }
-    response = fully_featured_application.get("/", extra_environ=test_environ)
+    fully_featured_application.get("/", extra_environ=test_environ)
 
 
 _intrinsic_attributes = {
@@ -101,10 +105,17 @@ _intrinsic_attributes = {
 }
 
 
-@validate_error_event_sample_data(required_attrs=_intrinsic_attributes, required_user_attrs=True)
+@validate_error_event_sample_data(
+    required_attrs=_intrinsic_attributes, required_user_attrs=True
+)
 def test_transaction_error_background_task():
-    test_environ = {"err_message": ERR_MESSAGE, "external": "2", "db": "2", "newrelic.set_background_task": True}
-    response = fully_featured_application.get("/", extra_environ=test_environ)
+    test_environ = {
+        "err_message": ERR_MESSAGE,
+        "external": "2",
+        "db": "2",
+        "newrelic.set_background_task": True,
+    }
+    fully_featured_application.get("/", extra_environ=test_environ)
 
 
 _intrinsic_attributes = {
@@ -117,15 +128,19 @@ _intrinsic_attributes = {
 
 
 @cat_enabled
-@validate_error_event_sample_data(required_attrs=_intrinsic_attributes, required_user_attrs=True)
+@validate_error_event_sample_data(
+    required_attrs=_intrinsic_attributes, required_user_attrs=True
+)
 def test_transaction_error_cross_agent():
     test_environ = {
         "err_message": ERR_MESSAGE,
     }
     settings = application_settings()
     transaction_data = [7, 1, 77, "/path-hash"]
-    headers = make_cross_agent_headers(transaction_data, settings.encoding_key, settings.cross_process_id)
-    response = fully_featured_application.get("/", headers=headers, extra_environ=test_environ)
+    headers = make_cross_agent_headers(
+        transaction_data, settings.encoding_key, settings.cross_process_id
+    )
+    fully_featured_application.get("/", headers=headers, extra_environ=test_environ)
 
 
 _intrinsic_attributes = {
@@ -142,7 +157,9 @@ _intrinsic_attributes = {
 }
 
 
-@validate_error_event_sample_data(required_attrs=_intrinsic_attributes, required_user_attrs=True)
+@validate_error_event_sample_data(
+    required_attrs=_intrinsic_attributes, required_user_attrs=True
+)
 def test_transaction_error_with_synthetics():
     test_environ = {
         "err_message": ERR_MESSAGE,
@@ -158,7 +175,7 @@ def test_transaction_error_with_synthetics():
         SYNTHETICS_INITIATOR,
         SYNTHETICS_ATTRIBUTES,
     )
-    response = fully_featured_application.get("/", headers=headers, extra_environ=test_environ)
+    fully_featured_application.get("/", headers=headers, extra_environ=test_environ)
 
 
 _intrinsic_attributes = {
@@ -169,14 +186,16 @@ _intrinsic_attributes = {
 }
 
 
-@validate_error_event_sample_data(required_attrs=_intrinsic_attributes, required_user_attrs=True, num_errors=2)
+@validate_error_event_sample_data(
+    required_attrs=_intrinsic_attributes, required_user_attrs=True, num_errors=2
+)
 @validate_transaction_error_event_count(num_errors=2)
 def test_multiple_errors_in_transaction():
     test_environ = {
         "err_message": ERR_MESSAGE,
         "n_errors": "2",
     }
-    response = fully_featured_application.get("/", extra_environ=test_environ)
+    fully_featured_application.get("/", extra_environ=test_environ)
 
 
 @override_application_settings({"error_collector.enabled": False})
@@ -188,7 +207,7 @@ def test_error_collector_disabled():
     test_environ = {
         "err_message": ERR_MESSAGE,
     }
-    response = fully_featured_application.get("/", extra_environ=test_environ)
+    fully_featured_application.get("/", extra_environ=test_environ)
 
 
 @override_application_settings({"collect_error_events": False})
@@ -200,7 +219,7 @@ def test_collect_error_events_false():
     test_environ = {
         "err_message": ERR_MESSAGE,
     }
-    response = fully_featured_application.get("/", extra_environ=test_environ)
+    fully_featured_application.get("/", extra_environ=test_environ)
 
 
 @override_application_settings({"error_collector.capture_events": False})
@@ -212,7 +231,7 @@ def test_collect_error_capture_events_disabled():
     test_environ = {
         "err_message": ERR_MESSAGE,
     }
-    response = fully_featured_application.get("/", extra_environ=test_environ)
+    fully_featured_application.get("/", extra_environ=test_environ)
 
 
 # -------------- Test Error Events outside of transaction ----------------

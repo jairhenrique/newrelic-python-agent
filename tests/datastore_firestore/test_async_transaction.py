@@ -43,20 +43,29 @@ def exercise_async_transaction_commit(async_client, async_collection):
             with pytest.raises(
                 TypeError
             ):  # get is currently broken. It attempts to await an async_generator instead of consuming it.
-                [_ async for _ in async_transaction.get(async_collection.document("doc1"))]
+                [
+                    _
+                    async for _ in async_transaction.get(
+                        async_collection.document("doc1")
+                    )
+                ]
 
             # get a Query
             with pytest.raises(
                 TypeError
             ):  # get is currently broken. It attempts to await an async_generator instead of consuming it.
-                async_query = async_collection.select("x").where(field_path="x", op_string=">", value=2)
+                async_query = async_collection.select("x").where(
+                    field_path="x", op_string=">", value=2
+                )
                 assert len([_ async for _ in async_transaction.get(async_query)]) == 1
 
             # get_all on a list of DocumentReferences
             with pytest.raises(
                 TypeError
             ):  # get_all is currently broken. It attempts to await an async_generator instead of consuming it.
-                all_docs = async_transaction.get_all([async_collection.document(f"doc{x}") for x in range(1, 4)])
+                all_docs = async_transaction.get_all(
+                    [async_collection.document(f"doc{x}") for x in range(1, 4)]
+                )
                 assert len([_ async for _ in all_docs]) == 3
 
             # set and delete methods
@@ -88,7 +97,9 @@ def exercise_async_transaction_rollback(async_client, async_collection):
     return _exercise_async_transaction_rollback
 
 
-def test_firestore_async_transaction_commit(loop, exercise_async_transaction_commit, async_collection, instance_info):
+def test_firestore_async_transaction_commit(
+    loop, exercise_async_transaction_commit, async_collection, instance_info
+):
     _test_scoped_metrics = [
         ("Datastore/operation/Firestore/commit", 1),
         # ("Datastore/operation/Firestore/get_all", 2),
@@ -101,7 +112,10 @@ def test_firestore_async_transaction_commit(loop, exercise_async_transaction_com
         ("Datastore/operation/Firestore/list_documents", 1),
         ("Datastore/all", 2),  # Should be 5 if not for broken APIs
         ("Datastore/allOther", 2),
-        (f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}", 2),
+        (
+            f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}",
+            2,
+        ),
     ]
 
     @validate_database_duration()
@@ -130,7 +144,10 @@ def test_firestore_async_transaction_rollback(
         ("Datastore/operation/Firestore/list_documents", 1),
         ("Datastore/all", 2),
         ("Datastore/allOther", 2),
-        (f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}", 2),
+        (
+            f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}",
+            2,
+        ),
     ]
 
     @validate_database_duration()

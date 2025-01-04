@@ -46,8 +46,12 @@ from newrelic.common.package_version_utils import (
 )
 
 DAPHNE_VERSION = get_package_version_tuple("daphne")
-skip_asgi_3_unsupported = pytest.mark.skipif(DAPHNE_VERSION < (3, 0), reason="ASGI3 unsupported")
-skip_asgi_2_unsupported = pytest.mark.skipif(DAPHNE_VERSION >= (3, 0), reason="ASGI2 unsupported")
+skip_asgi_3_unsupported = pytest.mark.skipif(
+    DAPHNE_VERSION < (3, 0), reason="ASGI3 unsupported"
+)
+skip_asgi_2_unsupported = pytest.mark.skipif(
+    DAPHNE_VERSION >= (3, 0), reason="ASGI2 unsupported"
+)
 
 
 @pytest.fixture(
@@ -104,7 +108,9 @@ def server_and_port():
 
         server = daphne.server.Server(
             fake_app,
-            endpoints=[f"ssl:{port}:privateKey={CERT_PATH}:certKey={CERT_PATH}:interface=127.0.0.1"],
+            endpoints=[
+                f"ssl:{port}:privateKey={CERT_PATH}:certKey={CERT_PATH}:interface=127.0.0.1"
+            ],
             ready_callable=on_ready,
             signal_handlers=False,
             verbosity=9,
@@ -140,7 +146,9 @@ def test_daphne_200(port, app, http_version):
     @raise_background_exceptions()
     @wait_for_background_threads()
     def response():
-        return make_request(host="localhost", port=port, path="/", http_version=http_version, timeout=10)
+        return make_request(
+            host="localhost", port=port, path="/", http_version=http_version, timeout=10
+        )
 
     response().raise_for_status()
 
@@ -154,6 +162,12 @@ def test_daphne_500(port, app, http_version):
     @wait_for_background_threads()
     def _test():
         with pytest.raises(niquests.exceptions.HTTPError):
-            make_request(host="localhost", port=port, path="/exc", http_version=http_version, timeout=10)
+            make_request(
+                host="localhost",
+                port=port,
+                path="/exc",
+                http_version=http_version,
+                timeout=10,
+            )
 
     _test()

@@ -36,7 +36,10 @@ async def middleware_factory(app, handler):
 
 
 middleware_tests = [
-    (middleware_factory, "Function/test_middleware:" "middleware_factory.<locals>.middleware_handler"),
+    (
+        middleware_factory,
+        "Function/test_middleware:" "middleware_factory.<locals>.middleware_handler",
+    ),
 ]
 
 
@@ -78,7 +81,9 @@ def test_middleware(nr_enabled, aiohttp_app, middleware, metric):
         ]
 
         _test = validate_transaction_metrics(
-            "_target_application:index", scoped_metrics=scoped_metrics, rollup_metrics=rollup_metrics
+            "_target_application:index",
+            scoped_metrics=scoped_metrics,
+            rollup_metrics=rollup_metrics,
         )(_test)
         _test = validate_code_level_metrics("_target_application", "index")(_test)
 

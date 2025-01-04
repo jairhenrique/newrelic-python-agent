@@ -31,12 +31,20 @@ SKLEARN_VERSION_GT_1_6_0 = SKLEARN_VERSION >= (1, 6, 0)
         "QuadraticDiscriminantAnalysis",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(discriminant_analysis_model_name, run_discriminant_analysis_model):
+def test_model_methods_wrapped_in_function_trace(
+    discriminant_analysis_model_name, run_discriminant_analysis_model
+):
     expected_scoped_metrics = {
         "LinearDiscriminantAnalysis": [
             ("Function/MLModel/Sklearn/Named/LinearDiscriminantAnalysis.fit", 1),
-            ("Function/MLModel/Sklearn/Named/LinearDiscriminantAnalysis.predict_log_proba", 1),
-            ("Function/MLModel/Sklearn/Named/LinearDiscriminantAnalysis.predict_proba", 2),
+            (
+                "Function/MLModel/Sklearn/Named/LinearDiscriminantAnalysis.predict_log_proba",
+                1,
+            ),
+            (
+                "Function/MLModel/Sklearn/Named/LinearDiscriminantAnalysis.predict_proba",
+                2,
+            ),
             ("Function/MLModel/Sklearn/Named/LinearDiscriminantAnalysis.transform", 1),
         ],
         "QuadraticDiscriminantAnalysis": [
@@ -74,10 +82,14 @@ def run_discriminant_analysis_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         kwargs = {}
-        clf = getattr(sklearn.discriminant_analysis, discriminant_analysis_model_name)(**kwargs)
+        clf = getattr(sklearn.discriminant_analysis, discriminant_analysis_model_name)(
+            **kwargs
+        )
 
         model = clf.fit(x_train, y_train)
         if hasattr(model, "predict"):

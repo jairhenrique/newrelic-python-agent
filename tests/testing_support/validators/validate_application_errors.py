@@ -16,6 +16,7 @@
 from newrelic.common.object_wrapper import function_wrapper
 from testing_support.fixtures import core_application_stats_engine
 
+
 def validate_application_errors(errors=None, required_params=None, forgone_params=None):
     errors = errors or []
     required_params = required_params or []
@@ -23,13 +24,11 @@ def validate_application_errors(errors=None, required_params=None, forgone_param
 
     @function_wrapper
     def _validate_application_errors(wrapped, instace, args, kwargs):
-
         try:
             result = wrapped(*args, **kwargs)
         except:
             raise
         else:
-
             stats = core_application_stats_engine()
 
             app_errors = stats.error_data()
@@ -37,15 +36,23 @@ def validate_application_errors(errors=None, required_params=None, forgone_param
             expected = sorted(errors)
             captured = sorted([(e.type, e.message) for e in stats.error_data()])
 
-            assert expected == captured, f"expected={expected!r}, captured={captured!r}, errors={app_errors!r}"
+            assert (
+                expected == captured
+            ), f"expected={expected!r}, captured={captured!r}, errors={app_errors!r}"
 
             for e in app_errors:
                 for name, value in required_params:
-                    assert name in e.parameters["userAttributes"], f"name={name!r}, params={e.parameters!r}"
-                    assert e.parameters["userAttributes"][name] == value, f"name={name!r}, value={value!r}, params={e.parameters!r}"
+                    assert (
+                        name in e.parameters["userAttributes"]
+                    ), f"name={name!r}, params={e.parameters!r}"
+                    assert (
+                        e.parameters["userAttributes"][name] == value
+                    ), f"name={name!r}, value={value!r}, params={e.parameters!r}"
 
                 for name, value in forgone_params:
-                    assert name not in e.parameters["userAttributes"], f"name={name!r}, params={e.parameters!r}"
+                    assert (
+                        name not in e.parameters["userAttributes"]
+                    ), f"name={name!r}, params={e.parameters!r}"
 
         return result
 

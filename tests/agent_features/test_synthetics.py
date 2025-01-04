@@ -60,7 +60,18 @@ def _make_synthetics_headers(
     initiator=SYNTHETICS_INITIATOR,
     attributes=SYNTHETICS_ATTRIBUTES,
 ):
-    return make_synthetics_headers(encoding_key, account_id, resource_id, job_id, monitor_id, type_, initiator, attributes, synthetics_version=version, synthetics_info_version=info_version)
+    return make_synthetics_headers(
+        encoding_key,
+        account_id,
+        resource_id,
+        job_id,
+        monitor_id,
+        type_,
+        initiator,
+        attributes,
+        synthetics_version=version,
+        synthetics_info_version=info_version,
+    )
 
 
 def decode_header(header, encoding_key=ENCODING_KEY):
@@ -75,7 +86,10 @@ def target_wsgi_application(environ, start_response):
     output = "<html><head>header</head><body><p>RESPONSE</p></body></html>"
     output = output.encode("UTF-8")
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     return [output]
@@ -95,12 +109,14 @@ _test_valid_synthetics_event_forgone = []
 
 
 @validate_synthetics_event(
-    _test_valid_synthetics_event_required, _test_valid_synthetics_event_forgone, should_exist=True
+    _test_valid_synthetics_event_required,
+    _test_valid_synthetics_event_forgone,
+    should_exist=True,
 )
 @override_application_settings(_override_settings)
 def test_valid_synthetics_event():
     headers = _make_synthetics_headers()
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 _test_valid_synthetics_event_without_info_required = [
@@ -116,35 +132,39 @@ _test_valid_synthetics_event_without_info_forgone = [
 
 
 @validate_synthetics_event(
-    _test_valid_synthetics_event_without_info_required, _test_valid_synthetics_event_without_info_forgone, should_exist=True
+    _test_valid_synthetics_event_without_info_required,
+    _test_valid_synthetics_event_without_info_forgone,
+    should_exist=True,
 )
 @override_application_settings(_override_settings)
 def test_valid_synthetics_event_without_info():
     headers = _make_synthetics_headers(type_=None, initiator=None, attributes=None)
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 @validate_synthetics_event([], [], should_exist=False)
 @override_application_settings(_override_settings)
 def test_no_synthetics_event_unsupported_version():
     headers = _make_synthetics_headers(version="0")
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 @validate_synthetics_event(
-    _test_valid_synthetics_event_without_info_required, _test_valid_synthetics_event_without_info_forgone, should_exist=True
+    _test_valid_synthetics_event_without_info_required,
+    _test_valid_synthetics_event_without_info_forgone,
+    should_exist=True,
 )
 @override_application_settings(_override_settings)
 def test_synthetics_event_unsupported_info_version():
     headers = _make_synthetics_headers(info_version="0")
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 @validate_synthetics_event([], [], should_exist=False)
 @override_application_settings(_override_settings)
 def test_no_synthetics_event_untrusted_account():
     headers = _make_synthetics_headers(account_id="999")
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 @validate_synthetics_event([], [], should_exist=False)
@@ -152,20 +172,26 @@ def test_no_synthetics_event_untrusted_account():
 def test_no_synthetics_event_mismatched_encoding_key():
     encoding_key = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
     headers = _make_synthetics_headers(encoding_key=encoding_key)
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 @validate_synthetics_event(
-    _test_valid_synthetics_event_without_info_required, _test_valid_synthetics_event_without_info_forgone, should_exist=True
+    _test_valid_synthetics_event_without_info_required,
+    _test_valid_synthetics_event_without_info_forgone,
+    should_exist=True,
 )
 @override_application_settings(_override_settings)
 def test_synthetics_event_mismatched_info_encoding_key():
     encoding_key = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
     headers = {
-        "X-NewRelic-Synthetics": _make_synthetics_headers(type_=None)["X-NewRelic-Synthetics"],
-        "X-NewRelic-Synthetics-Info": _make_synthetics_headers(encoding_key=encoding_key)["X-NewRelic-Synthetics-Info"],
+        "X-NewRelic-Synthetics": _make_synthetics_headers(type_=None)[
+            "X-NewRelic-Synthetics"
+        ],
+        "X-NewRelic-Synthetics-Info": _make_synthetics_headers(
+            encoding_key=encoding_key
+        )["X-NewRelic-Synthetics-Info"],
     }
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 _test_valid_synthetics_tt_required = {
@@ -183,13 +209,15 @@ _test_valid_synthetics_tt_required = {
 @override_application_settings(_override_settings)
 def test_valid_synthetics_in_transaction_trace():
     headers = _make_synthetics_headers()
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
-@validate_synthetics_transaction_trace([], _test_valid_synthetics_tt_required, should_exist=False)
+@validate_synthetics_transaction_trace(
+    [], _test_valid_synthetics_tt_required, should_exist=False
+)
 @override_application_settings(_override_settings)
 def test_no_synthetics_in_transaction_trace():
-    response = target_application.get("/")
+    target_application.get("/")
 
 
 _disabled_settings = {
@@ -203,20 +231,24 @@ _disabled_settings = {
 @override_application_settings(_disabled_settings)
 def test_synthetics_disabled():
     headers = _make_synthetics_headers()
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 _external_synthetics_headers = _make_synthetics_headers()
 _external_synthetics_header = _external_synthetics_headers["X-NewRelic-Synthetics"]
-_external_synthetics_info_header = _external_synthetics_headers["X-NewRelic-Synthetics-Info"]
+_external_synthetics_info_header = _external_synthetics_headers[
+    "X-NewRelic-Synthetics-Info"
+]
 
 
 @cat_enabled
-@validate_synthetics_external_trace_header(_external_synthetics_header, _external_synthetics_info_header)
+@validate_synthetics_external_trace_header(
+    _external_synthetics_header, _external_synthetics_info_header
+)
 @override_application_settings(_override_settings)
 def test_valid_synthetics_external_trace_header():
     headers = _make_synthetics_headers()
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 @cat_enabled
@@ -224,11 +256,13 @@ def test_valid_synthetics_external_trace_header():
 @override_application_settings(_override_settings)
 def test_valid_synthetics_external_trace_header_without_info():
     headers = _make_synthetics_headers(type_=None)
-    response = target_application.get("/", headers=headers)
+    target_application.get("/", headers=headers)
 
 
 @cat_enabled
-@validate_synthetics_external_trace_header(_external_synthetics_header, _external_synthetics_info_header)
+@validate_synthetics_external_trace_header(
+    _external_synthetics_header, _external_synthetics_info_header
+)
 @override_application_settings(_override_settings)
 def test_valid_external_trace_header_with_byte_inbound_header():
     headers = _make_synthetics_headers()
@@ -247,11 +281,10 @@ def test_valid_external_trace_header_with_byte_inbound_header():
 @validate_synthetics_external_trace_header(None, None)
 @override_application_settings(_override_settings)
 def test_no_synthetics_external_trace_header():
-    response = target_application.get("/")
+    target_application.get("/")
 
 
 def _synthetics_limit_test(num_requests, num_events, num_transactions):
-
     # Force harvest to clear stats
 
     instance = agent_instance()
@@ -262,7 +295,7 @@ def _synthetics_limit_test(num_requests, num_events, num_transactions):
 
     headers = _make_synthetics_headers()
     for i in range(num_requests):
-        response = target_application.get("/", headers=headers)
+        target_application.get("/", headers=headers)
 
     # Check that we've saved the right number events and traces
 
@@ -271,9 +304,13 @@ def _synthetics_limit_test(num_requests, num_events, num_transactions):
     assert len(stats.synthetics_transactions) == num_transactions
 
 
-@pytest.mark.skipif(True, reason="Test is too flaky. Need to find a way to make harvests more predictable.")
+@pytest.mark.skipif(
+    True,
+    reason="Test is too flaky. Need to find a way to make harvests more predictable.",
+)
 @pytest.mark.parametrize(
-    "num_requests,num_events,num_transactions", [(0, 0, 0), (20, 20, 20), (21, 21, 20), (200, 200, 20), (201, 200, 20)]
+    "num_requests,num_events,num_transactions",
+    [(0, 0, 0), (20, 20, 20), (21, 21, 20), (200, 200, 20), (201, 200, 20)],
 )
 @override_application_settings(_override_settings)
 def test_synthetics_requests_default_limits(num_requests, num_events, num_transactions):
@@ -289,9 +326,13 @@ _custom_settings = {
 }
 
 
-@pytest.mark.skipif(True, reason="Test is too flaky. Need to find a way to make harvests more predictable.")
+@pytest.mark.skipif(
+    True,
+    reason="Test is too flaky. Need to find a way to make harvests more predictable.",
+)
 @pytest.mark.parametrize(
-    "num_requests,num_events,num_transactions", [(0, 0, 0), (3, 3, 3), (4, 4, 3), (5, 5, 3), (6, 5, 3)]
+    "num_requests,num_events,num_transactions",
+    [(0, 0, 0), (3, 3, 3), (4, 4, 3), (5, 5, 3), (6, 5, 3)],
 )
 @override_application_settings(_custom_settings)
 def test_synthetics_requests_custom_limits(num_requests, num_events, num_transactions):
@@ -307,8 +348,13 @@ _zero_settings = {
 }
 
 
-@pytest.mark.skipif(True, reason="Test is too flaky. Need to find a way to make harvests more predictable.")
-@pytest.mark.parametrize("num_requests,num_events,num_transactions", [(0, 0, 0), (1, 0, 0)])
+@pytest.mark.skipif(
+    True,
+    reason="Test is too flaky. Need to find a way to make harvests more predictable.",
+)
+@pytest.mark.parametrize(
+    "num_requests,num_events,num_transactions", [(0, 0, 0), (1, 0, 0)]
+)
 @override_application_settings(_zero_settings)
 def test_synthetics_requests_zero_limits(num_requests, num_events, num_transactions):
     _synthetics_limit_test(num_requests, num_events, num_transactions)

@@ -18,7 +18,9 @@ from testing_support.db_settings import redis_cluster_settings
 DB_CLUSTER_SETTINGS = redis_cluster_settings()[0]
 
 # Set socket_timeout to 5s for fast fail, otherwise the default is to wait forever.
-client = redis.RedisCluster(host=DB_CLUSTER_SETTINGS["host"], port=DB_CLUSTER_SETTINGS["port"], socket_timeout=5)
+client = redis.RedisCluster(
+    host=DB_CLUSTER_SETTINGS["host"], port=DB_CLUSTER_SETTINGS["port"], socket_timeout=5
+)
 
 IGNORED_METHODS = {
     "MODULE_CALLBACKS",
@@ -155,14 +157,22 @@ IGNORED_METHODS |= REDIS_MODULES
 
 def test_uninstrumented_methods():
     methods = {m for m in dir(client) if not m[0] == "_"}
-    is_wrapped = lambda m: hasattr(getattr(client, m), "__wrapped__")
+
+    def is_wrapped(m):
+        return hasattr(getattr(client, m), "__wrapped__")
+
     uninstrumented = {m for m in methods - IGNORED_METHODS if not is_wrapped(m)}
 
     for module in REDIS_MODULES:
         if hasattr(client, module):
             module_client = getattr(client, module)()
             module_methods = {m for m in dir(module_client) if not m[0] == "_"}
-            is_wrapped = lambda m: hasattr(getattr(module_client, m), "__wrapped__")
-            uninstrumented |= {m for m in module_methods - IGNORED_METHODS if not is_wrapped(m)}
+
+            def is_wrapped(m):
+                return hasattr(getattr(module_client, m), "__wrapped__")
+
+            uninstrumented |= {
+                m for m in module_methods - IGNORED_METHODS if not is_wrapped(m)
+            }
 
     assert not uninstrumented, f"Uninstrumented methods: {sorted(uninstrumented)}"

@@ -20,6 +20,7 @@ from newrelic.common.object_wrapper import (
 )
 from testing_support.fixtures import catch_background_exceptions
 
+
 def validate_transaction_metrics(
     name,
     group="Function",
@@ -55,12 +56,13 @@ def validate_transaction_metrics(
 
     @function_wrapper
     def _validate_wrapper(wrapped, instance, args, kwargs):
-
         record_transaction_called = []
         recorded_metrics = []
         recorded_dimensional_metrics = []
 
-        @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+        @transient_function_wrapper(
+            "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+        )
         @catch_background_exceptions
         def _validate_transaction_metrics(wrapped, instance, args, kwargs):
             record_transaction_called.append(True)
@@ -149,10 +151,19 @@ def validate_transaction_metrics(
         for custom_name, custom_count in custom_metrics:
             _validate(metrics, custom_name, "", custom_count)
 
-        for dimensional_name, dimensional_tags, dimensional_count in dimensional_metrics:
+        for (
+            dimensional_name,
+            dimensional_tags,
+            dimensional_count,
+        ) in dimensional_metrics:
             if isinstance(dimensional_tags, dict):
                 dimensional_tags = frozenset(dimensional_tags.items())
-            _validate(captured_dimensional_metrics, dimensional_name, dimensional_tags, dimensional_count)
+            _validate(
+                captured_dimensional_metrics,
+                dimensional_name,
+                dimensional_tags,
+                dimensional_count,
+            )
 
         custom_metric_names = {name for name, _ in custom_metrics}
         for name, _ in metrics:

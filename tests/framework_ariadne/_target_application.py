@@ -31,7 +31,6 @@ from framework_ariadne._target_schema_sync import ariadne_version_tuple
 from graphql import MiddlewareManager
 
 
-
 def check_response(query, success, response):
     if isinstance(query, str) and "error" not in query:
         assert success and "errors" not in response, response
@@ -48,7 +47,9 @@ def run_sync(schema):
             if middleware:
                 middleware = MiddlewareManager(*middleware)
 
-        success, response = graphql_sync(schema, {"query": query}, middleware=middleware)
+        success, response = graphql_sync(
+            schema, {"query": query}, middleware=middleware
+        )
         check_response(query, success, response)
 
         return response.get("data", {})
@@ -60,13 +61,15 @@ def run_async(schema):
     def _run_async(query, middleware=None):
         from ariadne import graphql
 
-        #Later versions of ariadne directly accept a list of middleware while older versions require the MiddlewareManager
+        # Later versions of ariadne directly accept a list of middleware while older versions require the MiddlewareManager
         if ariadne_version_tuple < (0, 18):
             if middleware:
                 middleware = MiddlewareManager(*middleware)
 
         loop = asyncio.get_event_loop()
-        success, response = loop.run_until_complete(graphql(schema, {"query": query}, middleware=middleware))
+        success, response = loop.run_until_complete(
+            graphql(schema, {"query": query}, middleware=middleware)
+        )
         check_response(query, success, response)
 
         return response.get("data", {})
@@ -84,7 +87,10 @@ def run_wsgi(app):
         app.app.middleware = middleware
 
         response = app.post(
-            "/", json.dumps({"query": query}), headers={"Content-Type": "application/json"}, expect_errors=expect_errors
+            "/",
+            json.dumps({"query": query}),
+            headers={"Content-Type": "application/json"},
+            expect_errors=expect_errors,
         )
 
         body = json.loads(response.body.decode("utf-8"))
@@ -103,12 +109,15 @@ def run_asgi(app):
         if ariadne_version_tuple < (0, 16):
             app.asgi_application.middleware = middleware
 
-        #In ariadne v0.16.0, the middleware attribute was removed from the GraphQL class in favor of the http_handler
+        # In ariadne v0.16.0, the middleware attribute was removed from the GraphQL class in favor of the http_handler
         elif ariadne_version_tuple >= (0, 16):
             app.asgi_application.http_handler.middleware = middleware
 
         response = app.make_request(
-            "POST", "/", body=json.dumps({"query": query}), headers={"Content-Type": "application/json"}
+            "POST",
+            "/",
+            body=json.dumps({"query": query}),
+            headers={"Content-Type": "application/json"},
         )
         body = json.loads(response.body.decode("utf-8"))
 

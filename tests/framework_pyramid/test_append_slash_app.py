@@ -14,20 +14,20 @@
 
 """These tests check two things:
 
-    1. Using a notfound_view will name the transaction after the not_found
-       view, not the default_exceptionresponse_view. There can only be one
-       notfound_view per Pyramid application, so to test both cases (default
-       and user-defined notfound_view), we use 2 separate apps.
+1. Using a notfound_view will name the transaction after the not_found
+   view, not the default_exceptionresponse_view. There can only be one
+   notfound_view per Pyramid application, so to test both cases (default
+   and user-defined notfound_view), we use 2 separate apps.
 
-    2. Verifying that we don't double wrap the notfound_view. Because
-       we instrument Configurator._derive_view(), and because
-       Configurator._derive_view() is called twice when adding a
-       notfound_view (once in add_notfound_view(), and again in add_view()),
-       our instrumentation checks to see if a view has already been
-       wrapped before wrapping.
+2. Verifying that we don't double wrap the notfound_view. Because
+   we instrument Configurator._derive_view(), and because
+   Configurator._derive_view() is called twice when adding a
+   notfound_view (once in add_notfound_view(), and again in add_view()),
+   our instrumentation checks to see if a view has already been
+   wrapped before wrapping.
 
-       If our check fails, then the metric '_test_append_slash_app:not_found'
-       will have a count of 2.
+   If our check fails, then the metric '_test_append_slash_app:not_found'
+   will have a count of 2.
 """
 
 import pytest
@@ -43,7 +43,9 @@ from newrelic.common.package_version_utils import get_package_version_tuple
 # Defining a `pytestmark` at the module level means py.test will apply
 # this `skipif` conditional to all tests in the module.
 
-pytestmark = pytest.mark.skipif(get_package_version_tuple("pyramid") < (1, 3), reason="requires pyramid >= (1, 3)")
+pytestmark = pytest.mark.skipif(
+    get_package_version_tuple("pyramid") < (1, 3), reason="requires pyramid >= (1, 3)"
+)
 
 
 def target_application():
@@ -71,7 +73,8 @@ _test_append_slash_app_index_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_append_slash_app:home_view", scoped_metrics=_test_append_slash_app_index_scoped_metrics
+    "_test_append_slash_app:home_view",
+    scoped_metrics=_test_append_slash_app_index_scoped_metrics,
 )
 def test_index():
     application = target_application()
@@ -91,7 +94,8 @@ _test_not_found_append_slash_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_append_slash_app:not_found", scoped_metrics=_test_not_found_append_slash_scoped_metrics
+    "_test_append_slash_app:not_found",
+    scoped_metrics=_test_not_found_append_slash_scoped_metrics,
 )
 def test_not_found_append_slash():
     application = target_application()

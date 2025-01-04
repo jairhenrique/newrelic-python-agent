@@ -55,5 +55,7 @@ def assert_dt():
     # Basic checks for DT delegated to task
     txn = current_transaction()
     assert txn, "No transaction active."
-    assert txn.name == "_target_application.assert_dt", f"Transaction name does not match: {txn.name}"
+    assert (
+        txn.name == "_target_application.assert_dt"
+    ), f"Transaction name does not match: {txn.name}"
     return 1

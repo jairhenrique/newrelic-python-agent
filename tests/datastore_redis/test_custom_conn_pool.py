@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-""" The purpose of these tests is to confirm that using a non-standard
+"""The purpose of these tests is to confirm that using a non-standard
 connection pool that does not have a `connection_kwargs` attribute
 will not result in an error.
 """
@@ -33,7 +33,7 @@ DB_SETTINGS = redis_settings()[0]
 REDIS_PY_VERSION = get_package_version_tuple("redis")
 
 
-class FakeConnectionPool():
+class FakeConnectionPool:
     """Connection Pool without connection_kwargs attribute."""
 
     def __init__(self, connection):
@@ -96,7 +96,9 @@ _instance_metric_name = f"Datastore/instance/Redis/{_host}/{_port}"
 
 instance_metric_count = 5 if REDIS_PY_VERSION >= (5, 0) else 3
 
-_enable_rollup_metrics = _base_rollup_metrics.append((_instance_metric_name, instance_metric_count))
+_enable_rollup_metrics = _base_rollup_metrics.append(
+    (_instance_metric_name, instance_metric_count)
+)
 
 _disable_rollup_metrics = _base_rollup_metrics.append((_instance_metric_name, None))
 
@@ -112,7 +114,9 @@ def exercise_redis(client):
 # Tests
 
 
-@pytest.mark.skipif(REDIS_PY_VERSION < (2, 7), reason="Client list command introduced in 2.7")
+@pytest.mark.skipif(
+    REDIS_PY_VERSION < (2, 7), reason="Client list command introduced in 2.7"
+)
 @override_application_settings(_enable_instance_settings)
 @validate_transaction_metrics(
     "test_custom_conn_pool:test_fake_conn_pool_enable_instance",
@@ -138,7 +142,9 @@ def test_fake_conn_pool_enable_instance():
     exercise_redis(client)
 
 
-@pytest.mark.skipif(REDIS_PY_VERSION < (2, 7), reason="Client list command introduced in 2.7")
+@pytest.mark.skipif(
+    REDIS_PY_VERSION < (2, 7), reason="Client list command introduced in 2.7"
+)
 @override_application_settings(_disable_instance_settings)
 @validate_transaction_metrics(
     "test_custom_conn_pool:test_fake_conn_pool_disable_instance",

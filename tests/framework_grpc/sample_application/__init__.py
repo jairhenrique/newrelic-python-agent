@@ -29,11 +29,13 @@ from newrelic.api.transaction import current_transaction
 # (in subsequent imports) instead of overriding/ignoring the imports.
 # This ensures that the imports happen once.
 Message = sample_application_pb2_grpc.sample__application__pb2.Message
-add_SampleApplicationServicer_to_server = sample_application_pb2_grpc.add_SampleApplicationServicer_to_server
+add_SampleApplicationServicer_to_server = (
+    sample_application_pb2_grpc.add_SampleApplicationServicer_to_server
+)
 SampleApplicationStub = sample_application_pb2_grpc.SampleApplicationStub
 
 
-class Status():
+class Status:
     code = grpc.StatusCode.ABORTED
     details = "abort_with_status"
     trailing_metadata = {}

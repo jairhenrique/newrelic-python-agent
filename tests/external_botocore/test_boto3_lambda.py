@@ -55,7 +55,12 @@ _lambda_rollup_metrics = [
 @dt_enabled
 @validate_span_events(exact_agents={"aws.operation": "CreateFunction"}, count=1)
 @validate_span_events(
-    exact_agents={"aws.operation": "Invoke", "cloud.platform": "aws_lambda", "cloud.resource_id": LAMBDA_ARN}, count=1
+    exact_agents={
+        "aws.operation": "Invoke",
+        "cloud.platform": "aws_lambda",
+        "cloud.resource_id": LAMBDA_ARN,
+    },
+    count=1,
 )
 @validate_span_events(exact_agents={"aws.operation": "Invoke"}, count=1)
 @validate_span_events(exact_agents={"http.url": EXPECTED_LAMBDA_URL}, count=1)
@@ -79,12 +84,19 @@ def test_lambda(iam_role_arn, lambda_zip):
 
     # Create lambda
     resp = client.create_function(
-        FunctionName="lambdaFunction", Runtime="python3.9", Role=role_arn, Code={"ZipFile": lambda_zip}
+        FunctionName="lambdaFunction",
+        Runtime="python3.9",
+        Role=role_arn,
+        Code={"ZipFile": lambda_zip},
     )
     assert resp["ResponseMetadata"]["HTTPStatusCode"] == 201
 
     # Invoke lambda
-    client.invoke(FunctionName=LAMBDA_ARN, InvocationType="RequestResponse", Payload=json.dumps({}))
+    client.invoke(
+        FunctionName=LAMBDA_ARN,
+        InvocationType="RequestResponse",
+        Payload=json.dumps({}),
+    )
     assert resp["ResponseMetadata"]["HTTPStatusCode"] == 201
 
 

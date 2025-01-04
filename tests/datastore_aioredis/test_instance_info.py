@@ -30,23 +30,23 @@ _instance_info_tests = [
 
 if AIOREDIS_VERSION >= (2, 0):
     clients = [aioredis.Redis, aioredis.StrictRedis]
+
     class DisabledConnection(aioredis.Connection):
         @staticmethod
         async def connect(*args, **kwargs):
             pass
-    
+
         async def can_read_destructive(self, *args, **kwargs):
             return False
 
-
-
-    class DisabledUnixConnection(aioredis.UnixDomainSocketConnection, DisabledConnection):
+    class DisabledUnixConnection(
+        aioredis.UnixDomainSocketConnection, DisabledConnection
+    ):
         pass
 
 else:
     clients = []
     DisabledConnection, DisabledUnixConnection = None, None
-
 
 
 @SKIPIF_AIOREDIS_V1
@@ -87,15 +87,31 @@ _instance_info_from_url_tests = [
     (("redis://@:1234/",), {}, ("localhost", "1234", "0")),
     (("redis://localhost:1234/garbage",), {}, ("localhost", "1234", "0")),
     (("redis://127.0.0.1",), {}, ("127.0.0.1", "6379", "0")),
-    (("rediss://localhost:6379/2/",), {}, ("localhost", "6379", "2")),          # rediss: Not a typo
-    (("redis://localhost:6379",), {"host": "someotherhost"}, ("localhost", "6379", "0")),
+    (
+        ("rediss://localhost:6379/2/",),
+        {},
+        ("localhost", "6379", "2"),
+    ),  # rediss: Not a typo
+    (
+        ("redis://localhost:6379",),
+        {"host": "someotherhost"},
+        ("localhost", "6379", "0"),
+    ),
     (("redis://localhost:6379/2",), {"db": 3}, ("localhost", "6379", "2")),
     (("redis://localhost:6379/2/?db=111",), {}, ("localhost", "6379", "111")),
     (("redis://localhost:6379?db=2",), {}, ("localhost", "6379", "2")),
     (("redis://localhost:6379/2?db=111",), {}, ("localhost", "6379", "111")),
     (("unix:///path/to/socket.sock",), {}, ("localhost", "/path/to/socket.sock", "0")),
-    (("unix:///path/to/socket.sock?db=2",), {}, ("localhost", "/path/to/socket.sock", "2")),
-    (("unix:///path/to/socket.sock",), {"db": 2}, ("localhost", "/path/to/socket.sock", "2")),
+    (
+        ("unix:///path/to/socket.sock?db=2",),
+        {},
+        ("localhost", "/path/to/socket.sock", "2"),
+    ),
+    (
+        ("unix:///path/to/socket.sock",),
+        {"db": 2},
+        ("localhost", "/path/to/socket.sock", "2"),
+    ),
 ]
 
 
@@ -113,7 +129,10 @@ def test_strict_redis_client_from_url(client_cls, args, kwargs, expected):
 @pytest.mark.parametrize("args,kwargs,expected", _instance_info_from_url_tests)
 def test_strict_redis_connection_from_url(client_cls, args, kwargs, expected, loop):
     r = client_cls.from_url(*args, **kwargs)
-    if r.connection_pool.connection_class in (aioredis.Connection, aioredis.connection.SSLConnection):
+    if r.connection_pool.connection_class in (
+        aioredis.Connection,
+        aioredis.connection.SSLConnection,
+    ):
         r.connection_pool.connection_class = DisabledConnection
     elif r.connection_pool.connection_class is aioredis.UnixDomainSocketConnection:
         r.connection_pool.connection_class = DisabledUnixConnection

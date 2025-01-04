@@ -94,7 +94,9 @@ if len(DB_MULTIPLE_SETTINGS) > 1:
             (_instance_metric_name_2, STATEMENT_COUNT),
         ]
     )
-    _disable_rollup_metrics.extend([(_instance_metric_name_1, None), (_instance_metric_name_2, None)])
+    _disable_rollup_metrics.extend(
+        [(_instance_metric_name_1, None), (_instance_metric_name_2, None)]
+    )
 
 
 # Query
@@ -112,7 +114,9 @@ async def _exercise_db():
         port=postgresql1["port"],
     )
     try:
-        await connection.execute("SELECT setting from pg_settings where name='server_version'")
+        await connection.execute(
+            "SELECT setting from pg_settings where name='server_version'"
+        )
     finally:
         await connection.close()
 
@@ -124,7 +128,9 @@ async def _exercise_db():
         port=postgresql2["port"],
     )
     try:
-        await connection.execute("SELECT setting from pg_settings where name='server_version'")
+        await connection.execute(
+            "SELECT setting from pg_settings where name='server_version'"
+        )
     finally:
         await connection.close()
 

@@ -21,7 +21,9 @@ def validate_tt_segment_params(forgone_params=(), present_params=(), exact_param
     exact_params = exact_params or {}
     recorded_traces = []
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     def _extract_trace(wrapped, instance, args, kwargs):
         result = wrapped(*args, **kwargs)
 

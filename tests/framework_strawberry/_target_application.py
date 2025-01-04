@@ -38,7 +38,12 @@ def run_sync(schema):
 
         response = schema.execute_sync(query)
 
-        if isinstance(query, str) and "error" not in query or isinstance(query, Source) and "error" not in query.body:
+        if (
+            isinstance(query, str)
+            and "error" not in query
+            or isinstance(query, Source)
+            and "error" not in query.body
+        ):
             assert not response.errors
         else:
             assert response.errors
@@ -58,7 +63,12 @@ def run_async(schema):
         loop = asyncio.get_event_loop()
         response = loop.run_until_complete(schema.execute(query))
 
-        if isinstance(query, str) and "error" not in query or isinstance(query, Source) and "error" not in query.body:
+        if (
+            isinstance(query, str)
+            and "error" not in query
+            or isinstance(query, Source)
+            and "error" not in query.body
+        ):
             assert not response.errors
         else:
             assert response.errors
@@ -74,7 +84,10 @@ def run_asgi(app):
             pytest.skip("Middleware not supported in Strawberry.")
 
         response = app.make_request(
-            "POST", "/", body=json.dumps({"query": query}), headers={"Content-Type": "application/json"}
+            "POST",
+            "/",
+            body=json.dumps({"query": query}),
+            headers={"Content-Type": "application/json"},
         )
         body = json.loads(response.body.decode("utf-8"))
 

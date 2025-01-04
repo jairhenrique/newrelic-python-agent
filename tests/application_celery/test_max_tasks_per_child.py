@@ -37,7 +37,9 @@ def test_max_tasks_per_child():
         raise OnExit()
 
     ctx = get_context()
-    worker = Worker(ctx.SimpleQueue(), ctx.SimpleQueue(), None, maxtasks=1, on_exit=on_exit)
+    worker = Worker(
+        ctx.SimpleQueue(), ctx.SimpleQueue(), None, maxtasks=1, on_exit=on_exit
+    )
 
     with pytest.raises(OnExit):
         worker._do_exit(None, 0)

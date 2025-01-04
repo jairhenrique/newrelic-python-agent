@@ -20,7 +20,9 @@ from testing_support.validators.validate_transaction_metrics import (
 from newrelic.api.background_task import background_task
 
 
-def test_model_methods_wrapped_in_function_trace(calibration_model_name, run_calibration_model):
+def test_model_methods_wrapped_in_function_trace(
+    calibration_model_name, run_calibration_model
+):
     expected_scoped_metrics = {
         "CalibratedClassifierCV": [
             ("Function/MLModel/Sklearn/Named/CalibratedClassifierCV.fit", 1),
@@ -55,7 +57,9 @@ def run_calibration_model(calibration_model_name):
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         clf = getattr(sklearn.calibration, calibration_model_name)()
 

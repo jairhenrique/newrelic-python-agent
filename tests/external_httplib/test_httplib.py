@@ -52,7 +52,10 @@ def test_httplib_http_request(server):
     ]
 
     @validate_transaction_metrics(
-        "test_httplib:test_httplib_http_request", scoped_metrics=scoped, rollup_metrics=rollup, background_task=True
+        "test_httplib:test_httplib_http_request",
+        scoped_metrics=scoped,
+        rollup_metrics=rollup,
+        background_task=True,
     )
     @background_task(name="test_httplib:test_httplib_http_request")
     def _test():
@@ -99,7 +102,6 @@ def test_httplib_https_request(server):
 
 
 def test_httplib_http_with_port_request(server):
-
     scoped = [
         (f"External/localhost:{server.port}/http/", 1),
     ]
@@ -184,7 +186,9 @@ def test_httplib_cross_process_response(server):
         rollup_metrics=rollup,
         background_task=True,
     )
-    @validate_external_node_params(params=_test_httplib_cross_process_response_external_node_params)
+    @validate_external_node_params(
+        params=_test_httplib_cross_process_response_external_node_params
+    )
     @background_task(name="test_httplib:test_httplib_cross_process_response")
     def _test():
         connection = httplib.HTTPConnection("localhost", server.port)
@@ -211,10 +215,15 @@ def test_httplib_multiple_requests_cross_process_response(server):
     ]
 
     @validate_transaction_metrics(
-        "test_httplib:test_transaction", scoped_metrics=scoped, rollup_metrics=rollup, background_task=True
+        "test_httplib:test_transaction",
+        scoped_metrics=scoped,
+        rollup_metrics=rollup,
+        background_task=True,
     )
     @insert_incoming_headers
-    @validate_external_node_params(params=_test_httplib_cross_process_response_external_node_params)
+    @validate_external_node_params(
+        params=_test_httplib_cross_process_response_external_node_params
+    )
     @background_task(name="test_httplib:test_transaction")
     def test_transaction():
         connection.request("GET", "/")
@@ -258,7 +267,10 @@ def test_httplib_multiple_requests_unique_distributed_tracing_id(server):
     test_transaction()
 
     connection.close()
-    dt_payloads = [DistributedTracePayload.from_http_safe(header["newrelic"]) for header in response_headers]
+    dt_payloads = [
+        DistributedTracePayload.from_http_safe(header["newrelic"])
+        for header in response_headers
+    ]
 
     ids = set()
     for payload in dt_payloads:
@@ -319,7 +331,10 @@ def test_span_events(server):
 
     @override_application_settings(_settings)
     @validate_span_events(
-        count=1, exact_intrinsics=exact_intrinsics, exact_agents=exact_agents, expected_intrinsics=expected_intrinsics
+        count=1,
+        exact_intrinsics=exact_intrinsics,
+        exact_agents=exact_agents,
+        expected_intrinsics=expected_intrinsics,
     )
     @validate_tt_segment_params(exact_params=exact_agents)
     @background_task(name="test_httplib:test_span_events")

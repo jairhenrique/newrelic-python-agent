@@ -95,35 +95,51 @@ def exercise_redis(client):
 
     # Check generators
     flag = False
-    assert not isinstance(current_trace(), DatastoreTrace)  # Assert no active DatastoreTrace
+    assert not isinstance(
+        current_trace(), DatastoreTrace
+    )  # Assert no active DatastoreTrace
     for k in client.scan_iter("scan-*"):
         assert k == b"scan-key"
-        assert isinstance(current_trace(), DatastoreTrace)  # Assert DatastoreTrace now active
+        assert isinstance(
+            current_trace(), DatastoreTrace
+        )  # Assert DatastoreTrace now active
         flag = True
     assert flag
 
     flag = False
-    assert not isinstance(current_trace(), DatastoreTrace)  # Assert no active DatastoreTrace
+    assert not isinstance(
+        current_trace(), DatastoreTrace
+    )  # Assert no active DatastoreTrace
     for k in client.sscan_iter("sscan-key"):
         assert k == b"value"
-        assert isinstance(current_trace(), DatastoreTrace)  # Assert DatastoreTrace now active
+        assert isinstance(
+            current_trace(), DatastoreTrace
+        )  # Assert DatastoreTrace now active
         flag = True
     assert flag
 
     flag = False
-    assert not isinstance(current_trace(), DatastoreTrace)  # Assert no active DatastoreTrace
+    assert not isinstance(
+        current_trace(), DatastoreTrace
+    )  # Assert no active DatastoreTrace
     for k, _ in client.zscan_iter("zscan-key"):
         assert k == b"value"
-        assert isinstance(current_trace(), DatastoreTrace)  # Assert DatastoreTrace now active
+        assert isinstance(
+            current_trace(), DatastoreTrace
+        )  # Assert DatastoreTrace now active
         flag = True
     assert flag
 
     flag = False
-    assert not isinstance(current_trace(), DatastoreTrace)  # Assert no active DatastoreTrace
+    assert not isinstance(
+        current_trace(), DatastoreTrace
+    )  # Assert no active DatastoreTrace
     for f, v in client.hscan_iter("hscan-key"):
         assert f == b"field"
         assert v == b"value"
-        assert isinstance(current_trace(), DatastoreTrace)  # Assert DatastoreTrace now active
+        assert isinstance(
+            current_trace(), DatastoreTrace
+        )  # Assert DatastoreTrace now active
         flag = True
     assert flag
 
@@ -142,35 +158,51 @@ async def exercise_redis_async(client):
 
     # Check generators
     flag = False
-    assert not isinstance(current_trace(), DatastoreTrace)  # Assert no active DatastoreTrace
+    assert not isinstance(
+        current_trace(), DatastoreTrace
+    )  # Assert no active DatastoreTrace
     async for k in client.scan_iter("scan-*"):
         assert k == b"scan-key"
-        assert isinstance(current_trace(), DatastoreTrace)  # Assert DatastoreTrace now active
+        assert isinstance(
+            current_trace(), DatastoreTrace
+        )  # Assert DatastoreTrace now active
         flag = True
     assert flag
 
     flag = False
-    assert not isinstance(current_trace(), DatastoreTrace)  # Assert no active DatastoreTrace
+    assert not isinstance(
+        current_trace(), DatastoreTrace
+    )  # Assert no active DatastoreTrace
     async for k in client.sscan_iter("sscan-key"):
         assert k == b"value"
-        assert isinstance(current_trace(), DatastoreTrace)  # Assert DatastoreTrace now active
+        assert isinstance(
+            current_trace(), DatastoreTrace
+        )  # Assert DatastoreTrace now active
         flag = True
     assert flag
 
     flag = False
-    assert not isinstance(current_trace(), DatastoreTrace)  # Assert no active DatastoreTrace
+    assert not isinstance(
+        current_trace(), DatastoreTrace
+    )  # Assert no active DatastoreTrace
     async for k, _ in client.zscan_iter("zscan-key"):
         assert k == b"value"
-        assert isinstance(current_trace(), DatastoreTrace)  # Assert DatastoreTrace now active
+        assert isinstance(
+            current_trace(), DatastoreTrace
+        )  # Assert DatastoreTrace now active
         flag = True
     assert flag
 
     flag = False
-    assert not isinstance(current_trace(), DatastoreTrace)  # Assert no active DatastoreTrace
+    assert not isinstance(
+        current_trace(), DatastoreTrace
+    )  # Assert no active DatastoreTrace
     async for f, v in client.hscan_iter("hscan-key"):
         assert f == b"field"
         assert v == b"value"
-        assert isinstance(current_trace(), DatastoreTrace)  # Assert DatastoreTrace now active
+        assert isinstance(
+            current_trace(), DatastoreTrace
+        )  # Assert DatastoreTrace now active
         flag = True
     assert flag
 
@@ -230,7 +262,9 @@ def test_redis_generator_disable_instance():
     exercise_redis(client)
 
 
-@pytest.mark.skipif(REDIS_PY_VERSION < (4, 2), reason="Redis.asyncio was not added until v4.2")
+@pytest.mark.skipif(
+    REDIS_PY_VERSION < (4, 2), reason="Redis.asyncio was not added until v4.2"
+)
 @override_application_settings(_enable_instance_settings)
 @validate_transaction_metrics(
     "test_generators:test_redis_async_generator_enable_instance",
@@ -240,11 +274,15 @@ def test_redis_generator_disable_instance():
 )
 @background_task()
 def test_redis_async_generator_enable_instance(loop):
-    client = redis.asyncio.Redis(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
+    client = redis.asyncio.Redis(
+        host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0
+    )
     loop.run_until_complete(exercise_redis_async(client))
 
 
-@pytest.mark.skipif(REDIS_PY_VERSION < (4, 2), reason="Redis.asyncio was not added until v4.2")
+@pytest.mark.skipif(
+    REDIS_PY_VERSION < (4, 2), reason="Redis.asyncio was not added until v4.2"
+)
 @override_application_settings(_disable_instance_settings)
 @validate_transaction_metrics(
     "test_generators:test_redis_async_generator_disable_instance",
@@ -254,5 +292,7 @@ def test_redis_async_generator_enable_instance(loop):
 )
 @background_task()
 def test_redis_async_generator_disable_instance(loop):
-    client = redis.asyncio.Redis(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
+    client = redis.asyncio.Redis(
+        host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0
+    )
     loop.run_until_complete(exercise_redis_async(client))

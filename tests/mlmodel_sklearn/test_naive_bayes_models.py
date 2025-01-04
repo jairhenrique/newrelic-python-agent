@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import pytest
-from sklearn import __init__  # noqa: needed for get_package_version
 from testing_support.validators.validate_transaction_metrics import (
     validate_transaction_metrics,
 )
@@ -31,7 +30,9 @@ SKLEARN_VERSION = get_package_version_tuple("sklearn")
         "CategoricalNB",
     ],
 )
-def test_above_v1_0_model_methods_wrapped_in_function_trace(naive_bayes_model_name, run_naive_bayes_model):
+def test_above_v1_0_model_methods_wrapped_in_function_trace(
+    naive_bayes_model_name, run_naive_bayes_model
+):
     expected_scoped_metrics = {
         "CategoricalNB": [
             ("Function/MLModel/Sklearn/Named/CategoricalNB.fit", 1),
@@ -63,7 +64,9 @@ def test_above_v1_0_model_methods_wrapped_in_function_trace(naive_bayes_model_na
         "BernoulliNB",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(naive_bayes_model_name, run_naive_bayes_model):
+def test_model_methods_wrapped_in_function_trace(
+    naive_bayes_model_name, run_naive_bayes_model
+):
     expected_scoped_metrics = {
         "GaussianNB": [
             ("Function/MLModel/Sklearn/Named/GaussianNB.fit", 1),
@@ -112,7 +115,9 @@ def run_naive_bayes_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         clf = getattr(sklearn.naive_bayes, naive_bayes_model_name)()
 

@@ -38,6 +38,7 @@ _disable_instance_settings = {
     "span_events.enabled": True,
 }
 
+
 async def _exercise_db(client):
     await client.set("key", "value")
     await client.get("key")

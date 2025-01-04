@@ -72,7 +72,7 @@ def test_serverless_payload(capsys, serverless_application):
     assert out
 
     # Verify that the payload is loadable JSON
-    payload = json.loads(out)
+    json.loads(out)
 
 
 def test_no_cat_headers(serverless_application):
@@ -104,7 +104,9 @@ def test_outbound_dt_payload_generation(serverless_application, trusted_account_
             "primary_application_id": "1",
         },
     )
-    @background_task(application=serverless_application, name="test_outbound_dt_payload_generation")
+    @background_task(
+        application=serverless_application, name="test_outbound_dt_payload_generation"
+    )
     def _test_outbound_dt_payload_generation():
         transaction = current_transaction()
         payload = ExternalTrace.generate_request_headers(transaction)
@@ -126,7 +128,9 @@ def test_inbound_dt_payload_acceptance(serverless_application, trusted_account_k
             "primary_application_id": "1",
         },
     )
-    @background_task(application=serverless_application, name="test_inbound_dt_payload_acceptance")
+    @background_task(
+        application=serverless_application, name="test_inbound_dt_payload_acceptance"
+    )
     def _test_inbound_dt_payload_acceptance():
         transaction = current_transaction()
 
@@ -167,7 +171,7 @@ def test_payload_metadata_arn(serverless_application, arn_set):
 
     settings.aws_lambda_metadata.update({"arn": arn, "function_version": "$LATEST"})
 
-    class Context():
+    class Context:
         invoked_function_arn = arn
 
     @validate_serverless_metadata(exact_metadata={"arn": arn})

@@ -151,7 +151,9 @@ EXPECTED_MEMORY_METRICS = (
 
 @pytest.mark.parametrize("enabled", (True, False))
 def test_memory_metrics_collection(memory_data_source, enabled):
-    @override_generic_settings(settings, {"memory_runtime_pid_metrics.enabled": enabled})
+    @override_generic_settings(
+        settings, {"memory_runtime_pid_metrics.enabled": enabled}
+    )
     def _test():
         metrics_table = set(m[0] for m in (memory_data_source() or ()))
         if enabled:

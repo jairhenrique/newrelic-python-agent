@@ -15,7 +15,6 @@
 import base64
 
 import pytest
-import webtest
 from bottle import __version__ as version
 from testing_support.fixtures import (
     override_application_settings,
@@ -43,8 +42,12 @@ assert version > (0, 1), "version information not found"
 
 version_metrics = [(f"Python/Framework/Bottle/{'.'.join(str(v) for v in version)}", 1)]
 
-requires_auth_basic = pytest.mark.skipif(version < (0, 9, 0), reason="Bottle only added auth_basic in 0.9.0.")
-requires_plugins = pytest.mark.skipif(version < (0, 9, 0), reason="Bottle only added auth_basic in 0.9.0.")
+requires_auth_basic = pytest.mark.skipif(
+    version < (0, 9, 0), reason="Bottle only added auth_basic in 0.9.0."
+)
+requires_plugins = pytest.mark.skipif(
+    version < (0, 9, 0), reason="Bottle only added auth_basic in 0.9.0."
+)
 
 _test_application_index_scoped_metrics = [
     ("Python/WSGI/Application", 1),
@@ -56,7 +59,9 @@ _test_application_index_scoped_metrics = [
 if version >= (0, 9, 0):
     _test_application_index_scoped_metrics.extend([("Function/bottle:Bottle.wsgi", 1)])
 else:
-    _test_application_index_scoped_metrics.extend([("Function/bottle:Bottle.__call__", 1)])
+    _test_application_index_scoped_metrics.extend(
+        [("Function/bottle:Bottle.__call__", 1)]
+    )
 
 _test_application_index_custom_metrics = version_metrics.copy()
 
@@ -83,7 +88,9 @@ _test_application_error_scoped_metrics = [
 if version >= (0, 9, 0):
     _test_application_error_scoped_metrics.extend([("Function/bottle:Bottle.wsgi", 1)])
 else:
-    _test_application_error_scoped_metrics.extend([("Function/bottle:Bottle.__call__", 1)])
+    _test_application_error_scoped_metrics.extend(
+        [("Function/bottle:Bottle.__call__", 1)]
+    )
 
 _test_application_error_custom_metrics = version_metrics.copy()
 _test_application_error_errors = ["builtins:RuntimeError"]
@@ -97,7 +104,7 @@ _test_application_error_errors = ["builtins:RuntimeError"]
     custom_metrics=_test_application_error_custom_metrics,
 )
 def test_application_error(target_application):
-    response = target_application.get("/error", status=500, expect_errors=True)
+    target_application.get("/error", status=500, expect_errors=True)
 
 
 _test_application_not_found_scoped_metrics = [
@@ -108,9 +115,13 @@ _test_application_not_found_scoped_metrics = [
 ]
 
 if version >= (0, 9, 0):
-    _test_application_not_found_scoped_metrics.extend([("Function/bottle:Bottle.wsgi", 1)])
+    _test_application_not_found_scoped_metrics.extend(
+        [("Function/bottle:Bottle.wsgi", 1)]
+    )
 else:
-    _test_application_not_found_scoped_metrics.extend([("Function/bottle:Bottle.__call__", 1)])
+    _test_application_not_found_scoped_metrics.extend(
+        [("Function/bottle:Bottle.__call__", 1)]
+    )
 
 _test_application_not_found_custom_metrics = version_metrics.copy()
 
@@ -135,9 +146,13 @@ _test_application_auth_basic_fail_scoped_metrics = [
 ]
 
 if version >= (0, 9, 0):
-    _test_application_auth_basic_fail_scoped_metrics.extend([("Function/bottle:Bottle.wsgi", 1)])
+    _test_application_auth_basic_fail_scoped_metrics.extend(
+        [("Function/bottle:Bottle.wsgi", 1)]
+    )
 else:
-    _test_application_auth_basic_fail_scoped_metrics.extend([("Function/bottle:Bottle.__call__", 1)])
+    _test_application_auth_basic_fail_scoped_metrics.extend(
+        [("Function/bottle:Bottle.__call__", 1)]
+    )
 
 _test_application_auth_basic_fail_custom_metrics = version_metrics.copy()
 
@@ -151,7 +166,7 @@ _test_application_auth_basic_fail_custom_metrics = version_metrics.copy()
     custom_metrics=_test_application_auth_basic_fail_custom_metrics,
 )
 def test_application_auth_basic_fail(target_application):
-    response = target_application.get("/auth", status=401)
+    target_application.get("/auth", status=401)
 
 
 _test_application_auth_basic_okay_scoped_metrics = [
@@ -162,9 +177,13 @@ _test_application_auth_basic_okay_scoped_metrics = [
 ]
 
 if version >= (0, 9, 0):
-    _test_application_auth_basic_okay_scoped_metrics.extend([("Function/bottle:Bottle.wsgi", 1)])
+    _test_application_auth_basic_okay_scoped_metrics.extend(
+        [("Function/bottle:Bottle.wsgi", 1)]
+    )
 else:
-    _test_application_auth_basic_okay_scoped_metrics.extend([("Function/bottle:Bottle.__call__", 1)])
+    _test_application_auth_basic_okay_scoped_metrics.extend(
+        [("Function/bottle:Bottle.__call__", 1)]
+    )
 
 _test_application_auth_basic_okay_custom_metrics = version_metrics.copy()
 
@@ -192,9 +211,13 @@ _test_application_plugin_error_scoped_metrics = [
 ]
 
 if version >= (0, 9, 0):
-    _test_application_plugin_error_scoped_metrics.extend([("Function/bottle:Bottle.wsgi", 1)])
+    _test_application_plugin_error_scoped_metrics.extend(
+        [("Function/bottle:Bottle.wsgi", 1)]
+    )
 else:
-    _test_application_plugin_error_scoped_metrics.extend([("Function/bottle:Bottle.__call__", 1)])
+    _test_application_plugin_error_scoped_metrics.extend(
+        [("Function/bottle:Bottle.__call__", 1)]
+    )
 
 _test_application_plugin_error_custom_metrics = version_metrics.copy()
 
@@ -209,7 +232,7 @@ _test_application_plugin_error_custom_metrics = version_metrics.copy()
 )
 @override_ignore_status_codes([403])
 def test_application_plugin_error_ignore(target_application):
-    response = target_application.get("/plugin_error", status=403, expect_errors=True)
+    target_application.get("/plugin_error", status=403, expect_errors=True)
 
 
 @requires_plugins
@@ -221,9 +244,7 @@ def test_application_plugin_error_ignore(target_application):
     custom_metrics=_test_application_plugin_error_custom_metrics,
 )
 def test_application_plugin_error_capture(target_application):
-    import newrelic.agent
-
-    response = target_application.get("/plugin_error", status=403, expect_errors=True)
+    target_application.get("/plugin_error", status=403, expect_errors=True)
 
 
 _test_html_insertion_settings = {

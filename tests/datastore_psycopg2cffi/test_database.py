@@ -72,7 +72,10 @@ _test_execute_via_cursor_rollup_metrics = [
     ("Datastore/operation/Postgres/call", 2),
     ("Datastore/operation/Postgres/commit", 3),
     ("Datastore/operation/Postgres/rollback", 1),
-    (f"Datastore/instance/Postgres/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}", 12),
+    (
+        f"Datastore/instance/Postgres/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}",
+        12,
+    ),
 ]
 
 
@@ -95,12 +98,16 @@ def test_execute_via_cursor():
         cursor = connection.cursor()
 
         psycopg2cffi.extensions.register_type(psycopg2cffi.extensions.UNICODE)
-        psycopg2cffi.extensions.register_type(psycopg2cffi.extensions.UNICODE, connection)
+        psycopg2cffi.extensions.register_type(
+            psycopg2cffi.extensions.UNICODE, connection
+        )
         psycopg2cffi.extensions.register_type(psycopg2cffi.extensions.UNICODE, cursor)
 
         cursor.execute(f"""drop table if exists {DB_SETTINGS['table_name']}""")
 
-        cursor.execute(f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)")
+        cursor.execute(
+            f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)"
+        )
 
         cursor.executemany(
             f"insert into {DB_SETTINGS['table_name']} values (%s, %s, %s)",
@@ -185,7 +192,10 @@ _test_async_mode_rollup_metrics = [
     (f"Datastore/statement/Postgres/{DB_SETTINGS['table_name']}/insert", 1),
     ("Datastore/operation/Postgres/drop", 1),
     ("Datastore/operation/Postgres/create", 1),
-    (f"Datastore/instance/Postgres/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}", 4),
+    (
+        f"Datastore/instance/Postgres/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}",
+        4,
+    ),
 ]
 
 
@@ -217,7 +227,7 @@ def test_async_mode():
         password=DB_SETTINGS["password"],
         host=DB_SETTINGS["host"],
         port=DB_SETTINGS["port"],
-        **kwargs
+        **kwargs,
     )
     wait(async_conn)
     async_cur = async_conn.cursor()
@@ -225,10 +235,14 @@ def test_async_mode():
     async_cur.execute(f"""drop table if exists {DB_SETTINGS['table_name']}""")
     wait(async_cur.connection)
 
-    async_cur.execute(f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)")
+    async_cur.execute(
+        f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)"
+    )
     wait(async_cur.connection)
 
-    async_cur.execute(f"insert into {DB_SETTINGS['table_name']} values (%s, %s, %s)", (1, 1.0, "1.0"))
+    async_cur.execute(
+        f"insert into {DB_SETTINGS['table_name']} values (%s, %s, %s)", (1, 1.0, "1.0")
+    )
     wait(async_cur.connection)
 
     async_cur.execute(f"""select * from {DB_SETTINGS['table_name']}""")

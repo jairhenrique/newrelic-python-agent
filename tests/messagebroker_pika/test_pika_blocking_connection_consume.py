@@ -62,12 +62,16 @@ _test_blocking_connection_basic_get_metrics = [
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 @validate_span_events(
     count=1,
-    exact_intrinsics={"name": f"MessageBroker/RabbitMQ/Exchange/Consume/Named/{EXCHANGE}"},
+    exact_intrinsics={
+        "name": f"MessageBroker/RabbitMQ/Exchange/Consume/Named/{EXCHANGE}"
+    },
     exact_agents={"server.address": DB_SETTINGS["host"]},
 )
 @background_task()
 def test_blocking_connection_basic_get(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
         method_frame, _, _ = channel.basic_get(QUEUE)
         assert method_frame
@@ -90,7 +94,9 @@ _test_blocking_connection_basic_get_empty_metrics = [
 @background_task()
 def test_blocking_connection_basic_get_empty():
     QUEUE = f"test_blocking_empty-{os.getpid()}"
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
         channel.queue_declare(queue=QUEUE)
 
@@ -106,7 +112,9 @@ def test_blocking_connection_basic_get_outside_transaction(producer):
 
     @capture_transaction_metrics(metrics_list)
     def test_basic_get():
-        with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+        with pika.BlockingConnection(
+            pika.ConnectionParameters(DB_SETTINGS["host"])
+        ) as connection:
             channel = connection.channel()
             channel.queue_declare(queue=QUEUE)
 
@@ -124,9 +132,13 @@ def test_blocking_connection_basic_get_outside_transaction(producer):
 _test_blocking_conn_basic_consume_no_txn_metrics = [
     (f"MessageBroker/RabbitMQ/Exchange/Produce/Named/{EXCHANGE}", None),
     (f"MessageBroker/RabbitMQ/Exchange/Consume/Named/{EXCHANGE}", None),
-    ("Function/test_pika_blocking_connection_consume:test_blocking_connection_basic_consume_outside_transaction.<locals>.on_message", None),
+    (
+        "Function/test_pika_blocking_connection_consume:test_blocking_connection_basic_consume_outside_transaction.<locals>.on_message",
+        None,
+    ),
 ]
 _txn_name = "test_pika_blocking_connection_consume:test_blocking_connection_basic_consume_outside_transaction.<locals>.on_message"
+
 
 @pytest.mark.parametrize("as_partial", [True, False])
 @dt_enabled
@@ -156,7 +168,9 @@ def test_blocking_connection_basic_consume_outside_transaction(producer, as_part
     if as_partial:
         on_message = functools.partial(on_message)
 
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         basic_consume(channel, QUEUE, on_message)
@@ -170,8 +184,12 @@ def test_blocking_connection_basic_consume_outside_transaction(producer, as_part
 _test_blocking_conn_basic_consume_in_txn_metrics = [
     (f"MessageBroker/RabbitMQ/Exchange/Produce/Named/{EXCHANGE}", None),
     (f"MessageBroker/RabbitMQ/Exchange/Consume/Named/{EXCHANGE}", None),
-    ("Function/test_pika_blocking_connection_consume:test_blocking_connection_basic_consume_inside_txn.<locals>.on_message", 1),
+    (
+        "Function/test_pika_blocking_connection_consume:test_blocking_connection_basic_consume_inside_txn.<locals>.on_message",
+        1,
+    ),
 ]
+
 
 @pytest.mark.parametrize("as_partial", [True, False])
 @dt_enabled
@@ -196,7 +214,9 @@ def test_blocking_connection_basic_consume_inside_txn(producer, as_partial):
     if as_partial:
         on_message = functools.partial(on_message)
 
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
         basic_consume(channel, QUEUE, on_message)
         try:
@@ -210,8 +230,12 @@ _test_blocking_conn_basic_consume_stopped_txn_metrics = [
     (f"MessageBroker/RabbitMQ/Exchange/Produce/Named/{EXCHANGE}", None),
     (f"MessageBroker/RabbitMQ/Exchange/Consume/Named/{EXCHANGE}", None),
     (f"OtherTransaction/Message/RabbitMQ/Exchange/Named/{EXCHANGE}", None),
-    ("Function/test_pika_blocking_connection_consume:test_blocking_connection_basic_consume_stopped_txn.<locals>.on_message", None),
+    (
+        "Function/test_pika_blocking_connection_consume:test_blocking_connection_basic_consume_stopped_txn.<locals>.on_message",
+        None,
+    ),
 ]
+
 
 @pytest.mark.parametrize("as_partial", [True, False])
 @validate_transaction_metrics(
@@ -233,7 +257,9 @@ def test_blocking_connection_basic_consume_stopped_txn(producer, as_partial):
     if as_partial:
         on_message = functools.partial(on_message)
 
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
         basic_consume(channel, QUEUE, on_message)
         try:

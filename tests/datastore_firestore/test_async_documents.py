@@ -30,7 +30,9 @@ from newrelic.api.background_task import background_task
 def exercise_async_documents(async_collection):
     async def _exercise_async_documents():
         italy_doc = async_collection.document("Italy")
-        await italy_doc.set({"capital": "Rome", "currency": "Euro", "language": "Italian"})
+        await italy_doc.set(
+            {"capital": "Rome", "currency": "Euro", "language": "Italian"}
+        )
         await italy_doc.get()
         italian_cities = italy_doc.collection("cities")
         await italian_cities.add({"capital": "Rome"})
@@ -38,7 +40,9 @@ def exercise_async_documents(async_collection):
         assert len(retrieved_coll) == 1
 
         usa_doc = async_collection.document("USA")
-        await usa_doc.create({"capital": "Washington D.C.", "currency": "Dollar", "language": "English"})
+        await usa_doc.create(
+            {"capital": "Washington D.C.", "currency": "Dollar", "language": "English"}
+        )
         await usa_doc.update({"president": "Joe Biden"})
 
         await async_collection.document("USA").delete()
@@ -67,7 +71,10 @@ def test_firestore_async_documents(loop, exercise_async_documents, instance_info
         ("Datastore/operation/Firestore/delete", 1),
         ("Datastore/all", 7),
         ("Datastore/allOther", 7),
-        (f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}", 7),
+        (
+            f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}",
+            7,
+        ),
     ]
 
     @validate_database_duration()
@@ -99,7 +106,9 @@ def test_firestore_async_documents_generators(
     assert_trace_for_async_generator(async_subcollection.collections)
 
 
-def test_firestore_async_documents_trace_node_datastore_params(loop, exercise_async_documents, instance_info):
+def test_firestore_async_documents_trace_node_datastore_params(
+    loop, exercise_async_documents, instance_info
+):
     @validate_tt_collector_json(datastore_params=instance_info)
     @background_task()
     def _test():

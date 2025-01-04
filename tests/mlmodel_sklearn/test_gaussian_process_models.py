@@ -27,12 +27,17 @@ from newrelic.api.background_task import background_task
         "GaussianProcessRegressor",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(gaussian_process_model_name, run_gaussian_process_model):
+def test_model_methods_wrapped_in_function_trace(
+    gaussian_process_model_name, run_gaussian_process_model
+):
     expected_scoped_metrics = {
         "GaussianProcessClassifier": [
             ("Function/MLModel/Sklearn/Named/GaussianProcessClassifier.fit", 1),
             ("Function/MLModel/Sklearn/Named/GaussianProcessClassifier.predict", 1),
-            ("Function/MLModel/Sklearn/Named/GaussianProcessClassifier.predict_proba", 1),
+            (
+                "Function/MLModel/Sklearn/Named/GaussianProcessClassifier.predict_proba",
+                1,
+            ),
         ],
         "GaussianProcessRegressor": [
             ("Function/MLModel/Sklearn/Named/GaussianProcessRegressor.fit", 1),
@@ -61,9 +66,13 @@ def run_gaussian_process_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
-        clf = getattr(sklearn.gaussian_process, gaussian_process_model_name)(random_state=0)
+        clf = getattr(sklearn.gaussian_process, gaussian_process_model_name)(
+            random_state=0
+        )
 
         model = clf.fit(x_train, y_train)
         if hasattr(model, "predict"):

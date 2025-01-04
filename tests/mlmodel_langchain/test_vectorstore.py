@@ -120,8 +120,12 @@ def test_vectorstore_modules_instrumented():
         if not hasattr(getattr(class_, "asimilarity_search"), "__wrapped__"):
             uninstrumented_async_classes.append(class_name)
 
-    assert not uninstrumented_sync_classes, f"Uninstrumented sync classes found: {str(uninstrumented_sync_classes)}"
-    assert not uninstrumented_async_classes, f"Uninstrumented async classes found: {str(uninstrumented_async_classes)}"
+    assert (
+        not uninstrumented_sync_classes
+    ), f"Uninstrumented sync classes found: {str(uninstrumented_sync_classes)}"
+    assert (
+        not uninstrumented_async_classes
+    ), f"Uninstrumented async classes found: {str(uninstrumented_async_classes)}"
 
 
 @reset_core_stats_engine()
@@ -171,7 +175,9 @@ def test_pdf_pagesplitter_vectorstore_in_txn(set_trace_info, embedding_openai_cl
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_pdf_pagesplitter_vectorstore_in_txn_no_content(set_trace_info, embedding_openai_client):
+def test_pdf_pagesplitter_vectorstore_in_txn_no_content(
+    set_trace_info, embedding_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
@@ -188,7 +194,9 @@ def test_pdf_pagesplitter_vectorstore_in_txn_no_content(set_trace_info, embeddin
 
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
-def test_pdf_pagesplitter_vectorstore_outside_txn(set_trace_info, embedding_openai_client):
+def test_pdf_pagesplitter_vectorstore_outside_txn(
+    set_trace_info, embedding_openai_client
+):
     set_trace_info()
 
     script_dir = os.path.dirname(__file__)
@@ -204,7 +212,9 @@ def test_pdf_pagesplitter_vectorstore_outside_txn(set_trace_info, embedding_open
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
 @background_task()
-def test_pdf_pagesplitter_vectorstore_ai_monitoring_disabled(set_trace_info, embedding_openai_client):
+def test_pdf_pagesplitter_vectorstore_ai_monitoring_disabled(
+    set_trace_info, embedding_openai_client
+):
     set_trace_info()
 
     script_dir = os.path.dirname(__file__)
@@ -231,7 +241,9 @@ def test_pdf_pagesplitter_vectorstore_ai_monitoring_disabled(set_trace_info, emb
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_async_pdf_pagesplitter_vectorstore_in_txn(loop, set_trace_info, embedding_openai_client):
+def test_async_pdf_pagesplitter_vectorstore_in_txn(
+    loop, set_trace_info, embedding_openai_client
+):
     async def _test():
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -244,7 +256,9 @@ def test_async_pdf_pagesplitter_vectorstore_in_txn(loop, set_trace_info, embeddi
             docs = loader.load()
 
             faiss_index = await FAISS.afrom_documents(docs, embedding_openai_client)
-            docs = await faiss_index.asimilarity_search("Complete this sentence: Hello", k=1)
+            docs = await faiss_index.asimilarity_search(
+                "Complete this sentence: Hello", k=1
+            )
             return docs
 
     docs = loop.run_until_complete(_test())
@@ -267,7 +281,9 @@ def test_async_pdf_pagesplitter_vectorstore_in_txn(loop, set_trace_info, embeddi
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_async_pdf_pagesplitter_vectorstore_in_txn_no_content(loop, set_trace_info, embedding_openai_client):
+def test_async_pdf_pagesplitter_vectorstore_in_txn_no_content(
+    loop, set_trace_info, embedding_openai_client
+):
     async def _test():
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -279,7 +295,9 @@ def test_async_pdf_pagesplitter_vectorstore_in_txn_no_content(loop, set_trace_in
         docs = loader.load()
 
         faiss_index = await FAISS.afrom_documents(docs, embedding_openai_client)
-        docs = await faiss_index.asimilarity_search("Complete this sentence: Hello", k=1)
+        docs = await faiss_index.asimilarity_search(
+            "Complete this sentence: Hello", k=1
+        )
         return docs
 
     docs = loop.run_until_complete(_test())
@@ -288,7 +306,9 @@ def test_async_pdf_pagesplitter_vectorstore_in_txn_no_content(loop, set_trace_in
 
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
-def test_async_pdf_pagesplitter_vectorstore_outside_txn(loop, set_trace_info, embedding_openai_client):
+def test_async_pdf_pagesplitter_vectorstore_outside_txn(
+    loop, set_trace_info, embedding_openai_client
+):
     async def _test():
         set_trace_info()
 
@@ -297,7 +317,9 @@ def test_async_pdf_pagesplitter_vectorstore_outside_txn(loop, set_trace_info, em
         docs = loader.load()
 
         faiss_index = await FAISS.afrom_documents(docs, embedding_openai_client)
-        docs = await faiss_index.asimilarity_search("Complete this sentence: Hello", k=1)
+        docs = await faiss_index.asimilarity_search(
+            "Complete this sentence: Hello", k=1
+        )
         return docs
 
     docs = loop.run_until_complete(_test())
@@ -307,7 +329,9 @@ def test_async_pdf_pagesplitter_vectorstore_outside_txn(loop, set_trace_info, em
 @disabled_ai_monitoring_settings
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
-def test_async_pdf_pagesplitter_vectorstore_ai_monitoring_disabled(loop, set_trace_info, embedding_openai_client):
+def test_async_pdf_pagesplitter_vectorstore_ai_monitoring_disabled(
+    loop, set_trace_info, embedding_openai_client
+):
     async def _test():
         set_trace_info()
 
@@ -316,7 +340,9 @@ def test_async_pdf_pagesplitter_vectorstore_ai_monitoring_disabled(loop, set_tra
         docs = loader.load()
 
         faiss_index = await FAISS.afrom_documents(docs, embedding_openai_client)
-        docs = await faiss_index.asimilarity_search("Complete this sentence: Hello", k=1)
+        docs = await faiss_index.asimilarity_search(
+            "Complete this sentence: Hello", k=1
+        )
         return docs
 
     docs = loop.run_until_complete(_test())
@@ -421,7 +447,9 @@ def test_async_vectorstore_error(loop, set_trace_info, embedding_openai_client):
         docs = loader.load()
 
         faiss_index = await FAISS.afrom_documents(docs, embedding_openai_client)
-        docs = await faiss_index.asimilarity_search(query="Complete this sentence: Hello", k=-1)
+        docs = await faiss_index.asimilarity_search(
+            query="Complete this sentence: Hello", k=-1
+        )
         return docs
 
     with pytest.raises(AssertionError):
@@ -446,7 +474,9 @@ def test_async_vectorstore_error(loop, set_trace_info, embedding_openai_client):
     background_task=True,
 )
 @background_task()
-def test_async_vectorstore_error_no_content(loop, set_trace_info, embedding_openai_client):
+def test_async_vectorstore_error_no_content(
+    loop, set_trace_info, embedding_openai_client
+):
     async def _test():
         set_trace_info()
 
@@ -455,7 +485,9 @@ def test_async_vectorstore_error_no_content(loop, set_trace_info, embedding_open
         docs = loader.load()
 
         faiss_index = await FAISS.afrom_documents(docs, embedding_openai_client)
-        docs = await faiss_index.asimilarity_search(query="Complete this sentence: Hello", k=-1)
+        docs = await faiss_index.asimilarity_search(
+            query="Complete this sentence: Hello", k=-1
+        )
         return docs
 
     with pytest.raises(AssertionError):

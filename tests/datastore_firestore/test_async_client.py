@@ -52,7 +52,10 @@ def test_firestore_async_client(loop, exercise_async_client, instance_info):
     _test_rollup_metrics = [
         ("Datastore/all", 2),
         ("Datastore/allOther", 2),
-        (f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}", 2),
+        (
+            f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}",
+            2,
+        ),
     ]
 
     @validate_database_duration()
@@ -70,7 +73,9 @@ def test_firestore_async_client(loop, exercise_async_client, instance_info):
 
 
 @background_task()
-def test_firestore_async_client_generators(async_client, collection, assert_trace_for_async_generator):
+def test_firestore_async_client_generators(
+    async_client, collection, assert_trace_for_async_generator
+):
     doc = collection.document("test")
     doc.set({})
 
@@ -78,7 +83,9 @@ def test_firestore_async_client_generators(async_client, collection, assert_trac
     assert_trace_for_async_generator(async_client.get_all, [doc])
 
 
-def test_firestore_async_client_trace_node_datastore_params(loop, exercise_async_client, instance_info):
+def test_firestore_async_client_trace_node_datastore_params(
+    loop, exercise_async_client, instance_info
+):
     @validate_tt_collector_json(datastore_params=instance_info)
     @background_task()
     def _test():

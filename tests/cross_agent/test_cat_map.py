@@ -105,14 +105,19 @@ def target_wsgi_application(environ, start_response):
 
         set_transaction_name(outgoing_name[2], group=outgoing_name[1])
 
-        expected_outbound_header = obfuscate(json_encode(req["expectedOutboundPayload"]), ENCODING_KEY)
+        expected_outbound_header = obfuscate(
+            json_encode(req["expectedOutboundPayload"]), ENCODING_KEY
+        )
         generated_outbound_header = dict(ExternalTrace.generate_request_headers(txn))
 
         # A 500 error is returned because 'assert' statements in the wsgi app
         # are ignored.
 
         if old_cat:
-            if expected_outbound_header != generated_outbound_header["X-NewRelic-Transaction"]:
+            if (
+                expected_outbound_header
+                != generated_outbound_header["X-NewRelic-Transaction"]
+            ):
                 status = "500 Outbound Headers Check Failed."
         else:
             if "X-NewRelic-Transaction" in generated_outbound_header:
@@ -130,7 +135,10 @@ def target_wsgi_application(environ, start_response):
 
     output = (text % get_browser_timing_header()).encode("UTF-8")
 
-    response_headers = [("Content-type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     return [output]
@@ -180,7 +188,9 @@ def test_cat_map(
 
     @validate_tt_parameters(required_params=_external_node_params)
     @validate_analytics_catmap_data(
-        transactionName, expected_attributes=expectedIntrinsicFields, non_expected_attributes=nonExpectedIntrinsicFields
+        transactionName,
+        expected_attributes=expectedIntrinsicFields,
+        non_expected_attributes=nonExpectedIntrinsicFields,
     )
     @override_application_settings(_custom_settings)
     @override_application_name(appName)

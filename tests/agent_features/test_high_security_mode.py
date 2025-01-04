@@ -232,9 +232,15 @@ def test_local_config_file_override_hsm_disabled(settings):
     original_strip_messages = settings.strip_exception_messages.enabled
     original_custom_events = settings.custom_insights_events.enabled
     original_ml_events = settings.ml_insights_events.enabled
-    original_message_segment_params_enabled = settings.message_tracer.segment_parameters_enabled
-    original_application_logging_forwarding_enabled = settings.application_logging.forwarding.enabled
-    original_machine_learning_inference_event_value_enabled = settings.machine_learning.inference_events_value.enabled
+    original_message_segment_params_enabled = (
+        settings.message_tracer.segment_parameters_enabled
+    )
+    original_application_logging_forwarding_enabled = (
+        settings.application_logging.forwarding.enabled
+    )
+    original_machine_learning_inference_event_value_enabled = (
+        settings.machine_learning.inference_events_value.enabled
+    )
     original_ai_monitoring_enabled = settings.ai_monitoring.enabled
     apply_local_high_security_mode_setting(settings)
 
@@ -243,8 +249,14 @@ def test_local_config_file_override_hsm_disabled(settings):
     assert settings.strip_exception_messages.enabled == original_strip_messages
     assert settings.custom_insights_events.enabled == original_custom_events
     assert settings.ml_insights_events.enabled == original_ml_events
-    assert settings.message_tracer.segment_parameters_enabled == original_message_segment_params_enabled
-    assert settings.application_logging.forwarding.enabled == original_application_logging_forwarding_enabled
+    assert (
+        settings.message_tracer.segment_parameters_enabled
+        == original_message_segment_params_enabled
+    )
+    assert (
+        settings.application_logging.forwarding.enabled
+        == original_application_logging_forwarding_enabled
+    )
     assert (
         settings.machine_learning.inference_events_value.enabled
         == original_machine_learning_inference_event_value_enabled
@@ -392,7 +404,9 @@ _server_side_config_settings_hsm_enabled = [
 ]
 
 
-@pytest.mark.parametrize("local_settings,server_settings", _server_side_config_settings_hsm_disabled)
+@pytest.mark.parametrize(
+    "local_settings,server_settings", _server_side_config_settings_hsm_disabled
+)
 def test_remote_config_fixups_hsm_disabled(local_settings, server_settings):
     assert "high_security" in local_settings
     assert local_settings["high_security"] is False
@@ -407,13 +421,15 @@ def test_remote_config_fixups_hsm_disabled(local_settings, server_settings):
     original_custom_events = agent_config["custom_insights_events.enabled"]
     original_ml_events = agent_config["ml_insights_events.enabled"]
     original_log_forwarding = agent_config["application_logging.forwarding.enabled"]
-    original_machine_learning_events = agent_config["machine_learning.inference_events_value.enabled"]
+    original_machine_learning_events = agent_config[
+        "machine_learning.inference_events_value.enabled"
+    ]
     original_ai_monitoring = agent_config["ai_monitoring.enabled"]
 
     _settings = global_settings()
-    settings = override_generic_settings(_settings, local_settings)(AgentProtocol._apply_high_security_mode_fixups)(
-        server_settings, _settings
-    )
+    settings = override_generic_settings(_settings, local_settings)(
+        AgentProtocol._apply_high_security_mode_fixups
+    )(server_settings, _settings)
 
     agent_config = settings["agent_config"]
 
@@ -424,12 +440,20 @@ def test_remote_config_fixups_hsm_disabled(local_settings, server_settings):
     assert agent_config["strip_exception_messages.enabled"] == original_strip_messages
     assert agent_config["custom_insights_events.enabled"] == original_custom_events
     assert agent_config["ml_insights_events.enabled"] == original_ml_events
-    assert agent_config["application_logging.forwarding.enabled"] == original_log_forwarding
-    assert agent_config["machine_learning.inference_events_value.enabled"] == original_machine_learning_events
+    assert (
+        agent_config["application_logging.forwarding.enabled"]
+        == original_log_forwarding
+    )
+    assert (
+        agent_config["machine_learning.inference_events_value.enabled"]
+        == original_machine_learning_events
+    )
     assert agent_config["ai_monitoring.enabled"] == original_ai_monitoring
 
 
-@pytest.mark.parametrize("local_settings,server_settings", _server_side_config_settings_hsm_enabled)
+@pytest.mark.parametrize(
+    "local_settings,server_settings", _server_side_config_settings_hsm_enabled
+)
 def test_remote_config_fixups_hsm_enabled(local_settings, server_settings):
     assert "high_security" in local_settings
     assert local_settings["high_security"] is True
@@ -437,9 +461,9 @@ def test_remote_config_fixups_hsm_enabled(local_settings, server_settings):
     assert "high_security" in server_settings
 
     _settings = global_settings()
-    settings = override_generic_settings(_settings, local_settings)(AgentProtocol._apply_high_security_mode_fixups)(
-        server_settings, _settings
-    )
+    settings = override_generic_settings(_settings, local_settings)(
+        AgentProtocol._apply_high_security_mode_fixups
+    )(server_settings, _settings)
 
     agent_config = settings["agent_config"]
 
@@ -468,9 +492,9 @@ def test_remote_config_hsm_fixups_server_side_disabled():
     server_settings = {"high_security": True}
 
     _settings = global_settings()
-    settings = override_generic_settings(_settings, local_settings)(AgentProtocol._apply_high_security_mode_fixups)(
-        server_settings, _settings
-    )
+    settings = override_generic_settings(_settings, local_settings)(
+        AgentProtocol._apply_high_security_mode_fixups
+    )(server_settings, _settings)
 
     assert "high_security" not in settings
 
@@ -497,7 +521,9 @@ def test_other_transaction_custom_parameters_hsm_disabled():
 
 
 @override_application_settings(_test_transaction_settings_hsm_disabled)
-@validate_custom_parameters(required_params=[("key-1", "value-1"), ("key-2", "value-2")])
+@validate_custom_parameters(
+    required_params=[("key-1", "value-1"), ("key-2", "value-2")]
+)
 @background_task()
 def test_other_transaction_multiple_custom_parameters_hsm_disabled():
     transaction = current_transaction()
@@ -527,7 +553,10 @@ _test_exception_name = f"{__name__}:{TestException.__name__}"
 
 
 @override_application_settings(_test_transaction_settings_hsm_disabled)
-@validate_transaction_errors(errors=[(_test_exception_name, "test message")], required_params=[("key-2", "value-2")])
+@validate_transaction_errors(
+    errors=[(_test_exception_name, "test message")],
+    required_params=[("key-2", "value-2")],
+)
 @validate_custom_parameters(required_params=[("key-1", "value-1")])
 @background_task()
 def test_other_transaction_error_parameters_hsm_disabled():
@@ -540,7 +569,8 @@ def test_other_transaction_error_parameters_hsm_disabled():
 
 @override_application_settings(_test_transaction_settings_hsm_enabled)
 @validate_transaction_errors(
-    errors=[(_test_exception_name, STRIP_EXCEPTION_MESSAGE)], forgone_params=[("key-2", "value-2")]
+    errors=[(_test_exception_name, STRIP_EXCEPTION_MESSAGE)],
+    forgone_params=[("key-2", "value-2")],
 )
 @validate_custom_parameters(forgone_params=[("key-1", "value-1")])
 @background_task()
@@ -562,7 +592,9 @@ _intrinsic_attributes = {
 
 @reset_core_stats_engine()
 @override_application_settings(_test_transaction_settings_hsm_disabled)
-@validate_non_transaction_error_event(required_intrinsics=_intrinsic_attributes, required_user={"key-1": "value-1"})
+@validate_non_transaction_error_event(
+    required_intrinsics=_intrinsic_attributes, required_user={"key-1": "value-1"}
+)
 def test_non_transaction_error_parameters_hsm_disabled():
     try:
         raise TestException(_err_message)
@@ -580,7 +612,9 @@ _intrinsic_attributes = {
 
 @reset_core_stats_engine()
 @override_application_settings(_test_transaction_settings_hsm_enabled)
-@validate_non_transaction_error_event(required_intrinsics=_intrinsic_attributes, forgone_user={"key-1": "value-1"})
+@validate_non_transaction_error_event(
+    required_intrinsics=_intrinsic_attributes, forgone_user={"key-1": "value-1"}
+)
 def test_non_transaction_error_parameters_hsm_enabled():
     try:
         raise TestException(_err_message)
@@ -594,7 +628,10 @@ def target_wsgi_application_capture_params(environ, start_response):
     status = "200 OK"
     output = b"Hello World!"
 
-    response_headers = [("Content-Type", "text/plain; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/plain; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     return [output]
@@ -606,13 +643,19 @@ def target_wsgi_application_capture_params_api_called(environ, start_response):
     output = b"Hello World!"
 
     capture_request_params(True)
-    response_headers = [("Content-Type", "text/plain; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/plain; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     return [output]
 
 
-_test_transaction_settings_hsm_enabled_capture_params = {"high_security": True, "capture_params": False}
+_test_transaction_settings_hsm_enabled_capture_params = {
+    "high_security": True,
+    "capture_params": False,
+}
 
 
 @override_application_settings(_test_transaction_settings_hsm_enabled_capture_params)
@@ -648,7 +691,9 @@ def test_transaction_hsm_enabled_environ_capture_request_params_enabled():
 @override_application_settings(_test_transaction_settings_hsm_enabled_capture_params)
 @validate_request_params_omitted()
 def test_transaction_hsm_enabled_environ_capture_request_params_api_called():
-    target_application = webtest.TestApp(target_wsgi_application_capture_params_api_called)
+    target_application = webtest.TestApp(
+        target_wsgi_application_capture_params_api_called
+    )
 
     target_application.get("/", params="key-1=value-1")
 
@@ -700,7 +745,9 @@ _required_attr = Attribute(
 # destinations.
 
 _forgone_attr = Attribute(
-    name="request.headers.referer", value="http://example.com/blah?query=value", destinations=DST_ALL
+    name="request.headers.referer",
+    value="http://example.com/blah?query=value",
+    destinations=DST_ALL,
 )
 
 _required_attrs = [_required_attr]
@@ -726,10 +773,14 @@ def test_function_trace_params_dropped_in_hsm(hsm_enabled):
             pass
 
     if hsm_enabled:
-        _test = override_application_settings(_test_transaction_settings_hsm_enabled_capture_params)(_test)
+        _test = override_application_settings(
+            _test_transaction_settings_hsm_enabled_capture_params
+        )(_test)
         _test = validate_tt_segment_params(forgone_params=("secret",))(_test)
     else:
-        _test = override_application_settings(_test_transaction_settings_hsm_disabled)(_test)
+        _test = override_application_settings(_test_transaction_settings_hsm_disabled)(
+            _test
+        )
         _test = validate_tt_segment_params(present_params=("secret",))(_test)
 
     _test()
@@ -739,14 +790,24 @@ def test_function_trace_params_dropped_in_hsm(hsm_enabled):
 def test_message_trace_params_dropped_in_hsm(hsm_enabled):
     @background_task()
     def _test():
-        with MessageTrace("library", "operation", "dest_type", "dest_name", params={"secret": "super secret"}):
+        with MessageTrace(
+            "library",
+            "operation",
+            "dest_type",
+            "dest_name",
+            params={"secret": "super secret"},
+        ):
             pass
 
     if hsm_enabled:
-        _test = override_application_settings(_test_transaction_settings_hsm_enabled_capture_params)(_test)
+        _test = override_application_settings(
+            _test_transaction_settings_hsm_enabled_capture_params
+        )(_test)
         _test = validate_tt_segment_params(forgone_params=("secret",))(_test)
     else:
-        _test = override_application_settings(_test_transaction_settings_hsm_disabled)(_test)
+        _test = override_application_settings(_test_transaction_settings_hsm_disabled)(
+            _test
+        )
         _test = validate_tt_segment_params(present_params=("secret",))(_test)
 
     _test()

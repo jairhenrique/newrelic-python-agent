@@ -144,14 +144,19 @@ chat_completion_recorded_events = [
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_sync_with_llm_metadata(set_trace_info, sync_openai_client):
+def test_openai_chat_completion_sync_with_llm_metadata(
+    set_trace_info, sync_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
     add_custom_attribute("non_llm_attr", "python-agent")
     with WithLlmCustomAttributes({"context": "attr"}):
         sync_openai_client.chat.completions.create(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
 
 
@@ -168,14 +173,19 @@ def test_openai_chat_completion_sync_with_llm_metadata(set_trace_info, sync_open
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_sync_with_llm_metadata_with_raw_response(set_trace_info, sync_openai_client):
+def test_openai_chat_completion_sync_with_llm_metadata_with_raw_response(
+    set_trace_info, sync_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
     add_custom_attribute("non_llm_attr", "python-agent")
 
     sync_openai_client.chat.completions.with_raw_response.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -199,7 +209,10 @@ def test_openai_chat_completion_sync_no_content(set_trace_info, sync_openai_clie
     add_custom_attribute("llm.foo", "bar")
 
     sync_openai_client.chat.completions.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -217,13 +230,18 @@ def test_openai_chat_completion_sync_no_content(set_trace_info, sync_openai_clie
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_sync_with_token_count(set_trace_info, sync_openai_client):
+def test_openai_chat_completion_sync_with_token_count(
+    set_trace_info, sync_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
 
     sync_openai_client.chat.completions.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -238,11 +256,16 @@ def test_openai_chat_completion_sync_with_token_count(set_trace_info, sync_opena
     background_task=True,
 )
 @background_task()
-def test_openai_chat_completion_sync_no_llm_metadata(set_trace_info, sync_openai_client):
+def test_openai_chat_completion_sync_no_llm_metadata(
+    set_trace_info, sync_openai_client
+):
     set_trace_info()
 
     sync_openai_client.chat.completions.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -258,11 +281,16 @@ def test_openai_chat_completion_sync_no_llm_metadata(set_trace_info, sync_openai
     background_task=True,
 )
 @background_task()
-def test_openai_chat_completion_sync_stream_monitoring_disabled(set_trace_info, sync_openai_client):
+def test_openai_chat_completion_sync_stream_monitoring_disabled(
+    set_trace_info, sync_openai_client
+):
     set_trace_info()
 
     sync_openai_client.chat.completions.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -270,7 +298,10 @@ def test_openai_chat_completion_sync_stream_monitoring_disabled(set_trace_info, 
 @validate_custom_event_count(count=0)
 def test_openai_chat_completion_sync_outside_txn(sync_openai_client):
     sync_openai_client.chat.completions.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -280,7 +311,10 @@ def test_openai_chat_completion_sync_outside_txn(sync_openai_client):
 @background_task()
 def test_openai_chat_completion_sync_ai_monitoring_disabled(sync_openai_client):
     sync_openai_client.chat.completions.create(
-        model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=_test_openai_chat_completion_messages,
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -294,12 +328,17 @@ def test_openai_chat_completion_sync_ai_monitoring_disabled(sync_openai_client):
     background_task=True,
 )
 @background_task()
-def test_openai_chat_completion_async_no_llm_metadata(loop, set_trace_info, async_openai_client):
+def test_openai_chat_completion_async_no_llm_metadata(
+    loop, set_trace_info, async_openai_client
+):
     set_trace_info()
 
     loop.run_until_complete(
         async_openai_client.chat.completions.create(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -315,12 +354,17 @@ def test_openai_chat_completion_async_no_llm_metadata(loop, set_trace_info, asyn
     background_task=True,
 )
 @background_task()
-def test_openai_chat_completion_async_stream_monitoring_disabled(loop, set_trace_info, async_openai_client):
+def test_openai_chat_completion_async_stream_monitoring_disabled(
+    loop, set_trace_info, async_openai_client
+):
     set_trace_info()
 
     loop.run_until_complete(
         async_openai_client.chat.completions.create(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -339,7 +383,9 @@ def test_openai_chat_completion_async_stream_monitoring_disabled(loop, set_trace
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_async_with_llm_metadata(loop, set_trace_info, async_openai_client):
+def test_openai_chat_completion_async_with_llm_metadata(
+    loop, set_trace_info, async_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
@@ -348,7 +394,10 @@ def test_openai_chat_completion_async_with_llm_metadata(loop, set_trace_info, as
     with WithLlmCustomAttributes({"context": "attr"}):
         loop.run_until_complete(
             async_openai_client.chat.completions.create(
-                model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+                model="gpt-3.5-turbo",
+                messages=_test_openai_chat_completion_messages,
+                temperature=0.7,
+                max_tokens=100,
             )
         )
 
@@ -367,7 +416,9 @@ def test_openai_chat_completion_async_with_llm_metadata(loop, set_trace_info, as
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_async_with_llm_metadata_with_raw_response(loop, set_trace_info, async_openai_client):
+def test_openai_chat_completion_async_with_llm_metadata_with_raw_response(
+    loop, set_trace_info, async_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
@@ -375,7 +426,10 @@ def test_openai_chat_completion_async_with_llm_metadata_with_raw_response(loop, 
 
     loop.run_until_complete(
         async_openai_client.chat.completions.with_raw_response.create(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -395,14 +449,19 @@ def test_openai_chat_completion_async_with_llm_metadata_with_raw_response(loop, 
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_async_with_llm_metadata_no_content(loop, set_trace_info, async_openai_client):
+def test_openai_chat_completion_async_with_llm_metadata_no_content(
+    loop, set_trace_info, async_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
 
     loop.run_until_complete(
         async_openai_client.chat.completions.create(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -421,14 +480,19 @@ def test_openai_chat_completion_async_with_llm_metadata_no_content(loop, set_tra
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_async_in_txn_with_token_count(set_trace_info, loop, async_openai_client):
+def test_openai_chat_completion_async_in_txn_with_token_count(
+    set_trace_info, loop, async_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
 
     loop.run_until_complete(
         async_openai_client.chat.completions.create(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -438,7 +502,10 @@ def test_openai_chat_completion_async_in_txn_with_token_count(set_trace_info, lo
 def test_openai_chat_completion_async_outside_transaction(loop, async_openai_client):
     loop.run_until_complete(
         async_openai_client.chat.completions.create(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -450,7 +517,10 @@ def test_openai_chat_completion_async_outside_transaction(loop, async_openai_cli
 def test_openai_chat_completion_async_ai_monitoring_disabled(loop, async_openai_client):
     loop.run_until_complete(
         async_openai_client.chat.completions.create(
-            model="gpt-3.5-turbo", messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100
+            model="gpt-3.5-turbo",
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
         )
     )
 
@@ -464,7 +534,10 @@ def test_openai_chat_completion_no_usage_data(set_trace_info, sync_openai_client
     # Only testing that there are events, and there was no exception raised
     set_trace_info()
     sync_openai_client.chat.completions.create(
-        model="gpt-3.5-turbo", messages=({"role": "user", "content": "No usage data"},), temperature=0.7, max_tokens=100
+        model="gpt-3.5-turbo",
+        messages=({"role": "user", "content": "No usage data"},),
+        temperature=0.7,
+        max_tokens=100,
     )
 
 
@@ -473,7 +546,9 @@ def test_openai_chat_completion_no_usage_data(set_trace_info, sync_openai_client
 @validate_custom_event_count(count=3)
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_openai_chat_completion_async_no_usage_data(set_trace_info, async_openai_client, loop):
+def test_openai_chat_completion_async_no_usage_data(
+    set_trace_info, async_openai_client, loop
+):
     # Only testing that there are events, and there was no exception raised
     set_trace_info()
     loop.run_until_complete(

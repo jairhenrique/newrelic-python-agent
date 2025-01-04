@@ -42,7 +42,9 @@ SKLEARN_VERSION = get_package_version_tuple("sklearn")
         "VotingClassifier",
     ],
 )
-def test_below_v1_0_model_methods_wrapped_in_function_trace(ensemble_model_name, run_ensemble_model):
+def test_below_v1_0_model_methods_wrapped_in_function_trace(
+    ensemble_model_name, run_ensemble_model
+):
     expected_scoped_metrics = {
         "AdaBoostClassifier": [
             ("Function/MLModel/Sklearn/Named/AdaBoostClassifier.fit", 1),
@@ -72,7 +74,10 @@ def test_below_v1_0_model_methods_wrapped_in_function_trace(ensemble_model_name,
             ("Function/MLModel/Sklearn/Named/ExtraTreesClassifier.fit", 1),
             ("Function/MLModel/Sklearn/Named/ExtraTreesClassifier.predict", 2),
             ("Function/MLModel/Sklearn/Named/ExtraTreesClassifier.score", 1),
-            ("Function/MLModel/Sklearn/Named/ExtraTreesClassifier.predict_log_proba", 1),
+            (
+                "Function/MLModel/Sklearn/Named/ExtraTreesClassifier.predict_log_proba",
+                1,
+            ),
             ("Function/MLModel/Sklearn/Named/ExtraTreesClassifier.predict_proba", 4),
         ],
         "ExtraTreesRegressor": [
@@ -84,8 +89,14 @@ def test_below_v1_0_model_methods_wrapped_in_function_trace(ensemble_model_name,
             ("Function/MLModel/Sklearn/Named/GradientBoostingClassifier.fit", 1),
             ("Function/MLModel/Sklearn/Named/GradientBoostingClassifier.predict", 2),
             ("Function/MLModel/Sklearn/Named/GradientBoostingClassifier.score", 1),
-            ("Function/MLModel/Sklearn/Named/GradientBoostingClassifier.predict_log_proba", 1),
-            ("Function/MLModel/Sklearn/Named/GradientBoostingClassifier.predict_proba", 2),
+            (
+                "Function/MLModel/Sklearn/Named/GradientBoostingClassifier.predict_log_proba",
+                1,
+            ),
+            (
+                "Function/MLModel/Sklearn/Named/GradientBoostingClassifier.predict_proba",
+                2,
+            ),
         ],
         "GradientBoostingRegressor": [
             ("Function/MLModel/Sklearn/Named/GradientBoostingRegressor.fit", 1),
@@ -100,7 +111,10 @@ def test_below_v1_0_model_methods_wrapped_in_function_trace(ensemble_model_name,
             ("Function/MLModel/Sklearn/Named/RandomForestClassifier.fit", 1),
             ("Function/MLModel/Sklearn/Named/RandomForestClassifier.predict", 2),
             ("Function/MLModel/Sklearn/Named/RandomForestClassifier.score", 1),
-            ("Function/MLModel/Sklearn/Named/RandomForestClassifier.predict_log_proba", 1),
+            (
+                "Function/MLModel/Sklearn/Named/RandomForestClassifier.predict_log_proba",
+                1,
+            ),
             ("Function/MLModel/Sklearn/Named/RandomForestClassifier.predict_proba", 4),
         ],
         "RandomForestRegressor": [
@@ -134,7 +148,10 @@ def test_below_v1_0_model_methods_wrapped_in_function_trace(ensemble_model_name,
     _test()
 
 
-@pytest.mark.skipif(SKLEARN_VERSION < (1, 0, 0) or SKLEARN_VERSION >= (1, 1, 0), reason="Requires 1.0 <= sklearn < 1.1")
+@pytest.mark.skipif(
+    SKLEARN_VERSION < (1, 0, 0) or SKLEARN_VERSION >= (1, 1, 0),
+    reason="Requires 1.0 <= sklearn < 1.1",
+)
 @pytest.mark.parametrize(
     "ensemble_model_name",
     [
@@ -145,13 +162,21 @@ def test_below_v1_0_model_methods_wrapped_in_function_trace(ensemble_model_name,
         "VotingRegressor",
     ],
 )
-def test_between_v1_0_and_v1_1_model_methods_wrapped_in_function_trace(ensemble_model_name, run_ensemble_model):
+def test_between_v1_0_and_v1_1_model_methods_wrapped_in_function_trace(
+    ensemble_model_name, run_ensemble_model
+):
     expected_scoped_metrics = {
         "HistGradientBoostingClassifier": [
             ("Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.fit", 1),
-            ("Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.predict", 2),
+            (
+                "Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.predict",
+                2,
+            ),
             ("Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.score", 1),
-            ("Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.predict_proba", 3),
+            (
+                "Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.predict_proba",
+                3,
+            ),
         ],
         "HistGradientBoostingRegressor": [
             ("Function/MLModel/Sklearn/Named/HistGradientBoostingRegressor.fit", 1),
@@ -196,7 +221,9 @@ def test_between_v1_0_and_v1_1_model_methods_wrapped_in_function_trace(ensemble_
         "VotingRegressor",
     ],
 )
-def test_above_v1_1_model_methods_wrapped_in_function_trace(ensemble_model_name, run_ensemble_model):
+def test_above_v1_1_model_methods_wrapped_in_function_trace(
+    ensemble_model_name, run_ensemble_model
+):
     expected_scoped_metrics = {
         "StackingClassifier": [
             ("Function/MLModel/Sklearn/Named/StackingClassifier.fit", 1),
@@ -218,7 +245,10 @@ def test_above_v1_1_model_methods_wrapped_in_function_trace(ensemble_model_name,
         ],
         "HistGradientBoostingClassifier": [
             ("Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.fit", 1),
-            ("Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.predict", 2),
+            (
+                "Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.predict",
+                2,
+            ),
             ("Function/MLModel/Sklearn/Named/HistGradientBoostingClassifier.score", 1),
         ],
         "HistGradientBoostingRegressor": [
@@ -249,11 +279,16 @@ def run_ensemble_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         kwargs = {"random_state": 0}
         if ensemble_model_name == "StackingClassifier":
-            kwargs = {"estimators": [("rf", RandomForestClassifier())], "final_estimator": RandomForestClassifier()}
+            kwargs = {
+                "estimators": [("rf", RandomForestClassifier())],
+                "final_estimator": RandomForestClassifier(),
+            }
         elif ensemble_model_name == "VotingClassifier":
             kwargs = {
                 "estimators": [("rf", RandomForestClassifier())],

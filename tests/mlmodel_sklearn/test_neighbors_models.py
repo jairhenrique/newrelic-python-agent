@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import pytest
-from sklearn.neighbors import __init__  # noqa: Needed for get_package_version
 from testing_support.validators.validate_transaction_metrics import (
     validate_transaction_metrics,
 )
@@ -37,7 +36,9 @@ SKLEARN_VERSION = get_package_version_tuple("sklearn")
         "NearestNeighbors",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(neighbors_model_name, run_neighbors_model):
+def test_model_methods_wrapped_in_function_trace(
+    neighbors_model_name, run_neighbors_model
+):
     expected_scoped_metrics = {
         "KNeighborsClassifier": [
             ("Function/MLModel/Sklearn/Named/KNeighborsClassifier.fit", 1),
@@ -96,7 +97,9 @@ def test_model_methods_wrapped_in_function_trace(neighbors_model_name, run_neigh
         "RadiusNeighborsClassifier",
     ],
 )
-def test_above_v1_0_model_methods_wrapped_in_function_trace(neighbors_model_name, run_neighbors_model):
+def test_above_v1_0_model_methods_wrapped_in_function_trace(
+    neighbors_model_name, run_neighbors_model
+):
     expected_scoped_metrics = {
         "KNeighborsTransformer": [
             ("Function/MLModel/Sklearn/Named/KNeighborsTransformer.fit", 1),
@@ -108,12 +111,18 @@ def test_above_v1_0_model_methods_wrapped_in_function_trace(neighbors_model_name
         ],
         "NeighborhoodComponentsAnalysis": [
             ("Function/MLModel/Sklearn/Named/NeighborhoodComponentsAnalysis.fit", 1),
-            ("Function/MLModel/Sklearn/Named/NeighborhoodComponentsAnalysis.transform", 1),
+            (
+                "Function/MLModel/Sklearn/Named/NeighborhoodComponentsAnalysis.transform",
+                1,
+            ),
         ],
         "RadiusNeighborsClassifier": [
             ("Function/MLModel/Sklearn/Named/RadiusNeighborsClassifier.fit", 1),
             ("Function/MLModel/Sklearn/Named/RadiusNeighborsClassifier.predict", 2),
-            ("Function/MLModel/Sklearn/Named/RadiusNeighborsClassifier.predict_proba", 3),  # Added in v1.0
+            (
+                "Function/MLModel/Sklearn/Named/RadiusNeighborsClassifier.predict_proba",
+                3,
+            ),  # Added in v1.0
         ],
     }
 
@@ -138,7 +147,9 @@ def run_neighbors_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         kwargs = {}
         if neighbors_model_name == "LocalOutlierFactor":

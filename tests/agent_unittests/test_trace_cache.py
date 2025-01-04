@@ -21,7 +21,7 @@ from newrelic.core.trace_cache import TraceCache
 _TEST_CONCURRENT_ITERATION_TC_SIZE = 20
 
 
-class DummyTrace():
+class DummyTrace:
     pass
 
 
@@ -80,7 +80,9 @@ def change_weakref_dict_size(trace_cache):
             causing the weakref dict to delete them and forcing further size changes.
         """
 
-        dict_size_change = _TEST_CONCURRENT_ITERATION_TC_SIZE // 2  # Remove up to half of items
+        dict_size_change = (
+            _TEST_CONCURRENT_ITERATION_TC_SIZE // 2
+        )  # Remove up to half of items
         while True:
             if shutdown.is_set():
                 return

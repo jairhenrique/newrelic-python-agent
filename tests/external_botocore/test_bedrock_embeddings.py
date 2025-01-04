@@ -55,7 +55,9 @@ from newrelic.common.object_names import callable_name
 from newrelic.hooks.external_botocore import MODEL_EXTRACTORS
 
 
-@pytest.fixture(scope="session", params=[False, True], ids=["RequestStandard", "RequestStreaming"])
+@pytest.fixture(
+    scope="session", params=[False, True], ids=["RequestStandard", "RequestStreaming"]
+)
 def request_streaming(request):
     return request.param
 
@@ -109,7 +111,9 @@ _test_bedrock_embedding_prompt = "This is an embedding test."
 
 
 @reset_core_stats_engine()
-def test_bedrock_embedding_with_llm_metadata(set_trace_info, exercise_model, expected_events):
+def test_bedrock_embedding_with_llm_metadata(
+    set_trace_info, exercise_model, expected_events
+):
     @validate_custom_events(expected_events)
     @validate_custom_event_count(count=1)
     @validate_transaction_metrics(
@@ -160,7 +164,9 @@ def test_bedrock_embedding_no_content(set_trace_info, exercise_model, model_id):
 
 
 @reset_core_stats_engine()
-def test_bedrock_embedding_no_llm_metadata(set_trace_info, exercise_model, expected_events):
+def test_bedrock_embedding_no_llm_metadata(
+    set_trace_info, exercise_model, expected_events
+):
     @validate_custom_events(events_sans_llm_metadata(expected_events))
     @validate_custom_event_count(count=1)
     @validate_transaction_metrics(
@@ -182,7 +188,9 @@ def test_bedrock_embedding_no_llm_metadata(set_trace_info, exercise_model, expec
 
 @reset_core_stats_engine()
 @override_llm_token_callback_settings(llm_token_count_callback)
-def test_bedrock_embedding_with_token_count(set_trace_info, exercise_model, expected_events):
+def test_bedrock_embedding_with_token_count(
+    set_trace_info, exercise_model, expected_events
+):
     @validate_custom_events(add_token_count_to_events(expected_events))
     @validate_custom_event_count(count=1)
     @validate_transaction_metrics(
@@ -217,7 +225,9 @@ def test_bedrock_embedding_outside_txn(exercise_model):
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
 @background_task(name="test_bedrock_embedding_disabled_ai_monitoring_setting")
-def test_bedrock_embedding_disabled_ai_monitoring_settings(set_trace_info, exercise_model):
+def test_bedrock_embedding_disabled_ai_monitoring_settings(
+    set_trace_info, exercise_model
+):
     set_trace_info()
     exercise_model(prompt=_test_bedrock_embedding_prompt)
 
@@ -264,7 +274,11 @@ def test_bedrock_embedding_error_incorrect_access_key(
     )
     @background_task(name="test_bedrock_embedding")
     def _test():
-        monkeypatch.setattr(bedrock_server._request_signer._credentials, "access_key", "INVALID-ACCESS-KEY")
+        monkeypatch.setattr(
+            bedrock_server._request_signer._credentials,
+            "access_key",
+            "INVALID-ACCESS-KEY",
+        )
 
         with pytest.raises(_client_error):
             set_trace_info()
@@ -286,7 +300,9 @@ def test_bedrock_embedding_error_incorrect_access_key_no_content(
     set_trace_info,
     expected_invalid_access_key_error_events,
 ):
-    @validate_custom_events(events_sans_content(expected_invalid_access_key_error_events))
+    @validate_custom_events(
+        events_sans_content(expected_invalid_access_key_error_events)
+    )
     @validate_error_trace_attributes(
         _client_error_name,
         exact_attrs={
@@ -307,7 +323,11 @@ def test_bedrock_embedding_error_incorrect_access_key_no_content(
     )
     @background_task(name="test_bedrock_embedding")
     def _test():
-        monkeypatch.setattr(bedrock_server._request_signer._credentials, "access_key", "INVALID-ACCESS-KEY")
+        monkeypatch.setattr(
+            bedrock_server._request_signer._credentials,
+            "access_key",
+            "INVALID-ACCESS-KEY",
+        )
 
         with pytest.raises(_client_error):
             set_trace_info()
@@ -329,7 +349,9 @@ def test_bedrock_embedding_error_incorrect_access_key_with_token_count(
     set_trace_info,
     expected_invalid_access_key_error_events,
 ):
-    @validate_custom_events(add_token_count_to_events(expected_invalid_access_key_error_events))
+    @validate_custom_events(
+        add_token_count_to_events(expected_invalid_access_key_error_events)
+    )
     @validate_error_trace_attributes(
         _client_error_name,
         exact_attrs={
@@ -350,9 +372,15 @@ def test_bedrock_embedding_error_incorrect_access_key_with_token_count(
     )
     @background_task(name="test_bedrock_embedding")
     def _test():
-        monkeypatch.setattr(bedrock_server._request_signer._credentials, "access_key", "INVALID-ACCESS-KEY")
+        monkeypatch.setattr(
+            bedrock_server._request_signer._credentials,
+            "access_key",
+            "INVALID-ACCESS-KEY",
+        )
 
-        with pytest.raises(_client_error):  # not sure where this exception actually comes from
+        with pytest.raises(
+            _client_error
+        ):  # not sure where this exception actually comes from
             set_trace_info()
             add_custom_attribute("llm.conversation_id", "my-awesome-id")
             add_custom_attribute("llm.foo", "bar")
@@ -463,7 +491,9 @@ def test_bedrock_embedding_error_malformed_response_body(
 
 
 def test_embedding_models_instrumented():
-    SUPPORTED_MODELS = [model for model, _, _, _ in MODEL_EXTRACTORS if "embed" in model]
+    SUPPORTED_MODELS = [
+        model for model, _, _, _ in MODEL_EXTRACTORS if "embed" in model
+    ]
 
     _id = os.environ.get("AWS_ACCESS_KEY_ID")
     key = os.environ.get("AWS_SECRET_ACCESS_KEY")
@@ -478,8 +508,12 @@ def test_embedding_models_instrumented():
     models = [model["modelId"] for model in response["modelSummaries"]]
     not_supported = []
     for model in models:
-        is_supported = any([model.startswith(supported_model) for supported_model in SUPPORTED_MODELS])
+        is_supported = any(
+            [model.startswith(supported_model) for supported_model in SUPPORTED_MODELS]
+        )
         if not is_supported:
             not_supported.append(model)
 
-    assert not not_supported, f"The following unsupported models were found: {not_supported}"
+    assert (
+        not not_supported
+    ), f"The following unsupported models were found: {not_supported}"

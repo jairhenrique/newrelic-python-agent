@@ -13,12 +13,13 @@
 # limitations under the License.
 
 import io
-import socket
 import sys
 
 import pytest
 from testing_support.fixtures import override_application_settings
-from testing_support.validators.validate_transaction_metrics import validate_transaction_metrics
+from testing_support.validators.validate_transaction_metrics import (
+    validate_transaction_metrics,
+)
 from testing_support.mock_external_http_server import (
     MockExternalHTTPHResponseHeadersServer,
     MockExternalHTTPServer,
@@ -47,7 +48,9 @@ def external():
 
 
 @background_task(name="make_request")
-def make_request(port, req_type, client_cls, count=1, raise_error=True, as_kwargs=True, **kwargs):
+def make_request(
+    port, req_type, client_cls, count=1, raise_error=True, as_kwargs=True, **kwargs
+):
     import tornado.concurrent
     import tornado.gen
     import tornado.httpclient
@@ -59,7 +62,9 @@ def make_request(port, req_type, client_cls, count=1, raise_error=True, as_kwarg
             for k, v in request.headers.items():
                 out.append(f"{k}: {v}")
             body = "\n".join(out).encode("utf-8")
-            response = tornado.httpclient.HTTPResponse(request=request, code=200, buffer=io.BytesIO(body))
+            response = tornado.httpclient.HTTPResponse(
+                request=request, code=200, buffer=io.BytesIO(body)
+            )
             callback(response)
 
     cls = tornado.httpclient.AsyncHTTPClient
@@ -92,11 +97,15 @@ def make_request(port, req_type, client_cls, count=1, raise_error=True, as_kwarg
 
     @tornado.gen.coroutine
     def _make_request():
-
         if as_kwargs:
-            futures = [client.fetch(req, raise_error=raise_error, **kwargs) for _ in range(count)]
+            futures = [
+                client.fetch(req, raise_error=raise_error, **kwargs)
+                for _ in range(count)
+            ]
         elif tornado.version_info < (6, 0):
-            futures = [client.fetch(req, callback, raise_error, **kwargs) for _ in range(count)]
+            futures = [
+                client.fetch(req, callback, raise_error, **kwargs) for _ in range(count)
+            ]
         else:
             futures = [client.fetch(req, raise_error, **kwargs) for _ in range(count)]
 
@@ -160,7 +169,6 @@ def test_httpclient(
     external,
     as_kwargs,
 ):
-
     port = external.port
 
     expected_metrics = [(f"External/localhost:{port}/tornado/GET", num_requests)]
@@ -185,7 +193,12 @@ def test_httpclient(
             headers = {user_header: "USER"}
 
         response = make_request(
-            port, request_type, client_class, headers=headers, count=num_requests, as_kwargs=as_kwargs
+            port,
+            request_type,
+            client_class,
+            headers=headers,
+            count=num_requests,
+            as_kwargs=as_kwargs,
         )
         assert response.code == 200
 
@@ -252,7 +265,9 @@ def cat_response_server():
         yield external
 
 
-@pytest.mark.parametrize("client_class", ["AsyncHTTPClient", "CurlAsyncHTTPClient", "HTTPClient"])
+@pytest.mark.parametrize(
+    "client_class", ["AsyncHTTPClient", "CurlAsyncHTTPClient", "HTTPClient"]
+)
 @pytest.mark.parametrize("cat_enabled", [True, False])
 @pytest.mark.parametrize("request_type", ["uri", "class"])
 @pytest.mark.parametrize(
@@ -264,7 +279,12 @@ def cat_response_server():
     ],
 )
 def test_client_cat_response_processing(
-    cat_enabled, request_type, client_class, raise_error, response_code, cat_response_server
+    cat_enabled,
+    request_type,
+    client_class,
+    raise_error,
+    response_code,
+    cat_response_server,
 ):
     global CAT_RESPONSE_CODE
     CAT_RESPONSE_CODE = response_code
@@ -280,11 +300,17 @@ def test_client_cat_response_processing(
 
     port = cat_response_server.port
     expected_metrics = [
-        (f"ExternalTransaction/localhost:{port}/1#1/WebTransaction/Function/app:beep", 1 if cat_enabled else None),
+        (
+            f"ExternalTransaction/localhost:{port}/1#1/WebTransaction/Function/app:beep",
+            1 if cat_enabled else None,
+        ),
     ]
 
     @validate_transaction_metrics(
-        "make_request", background_task=True, rollup_metrics=expected_metrics, scoped_metrics=expected_metrics
+        "make_request",
+        background_task=True,
+        rollup_metrics=expected_metrics,
+        scoped_metrics=expected_metrics,
     )
     @override_application_settings(_custom_settings)
     def _test():
@@ -292,7 +318,9 @@ def test_client_cat_response_processing(
         import tornado.httpclient
 
         try:
-            response = make_request(port, request_type, client_class, raise_error=raise_error)
+            response = make_request(
+                port, request_type, client_class, raise_error=raise_error
+            )
         except tornado.httpclient.HTTPError as e:
             assert raise_error
             response = e.response
@@ -304,14 +332,18 @@ def test_client_cat_response_processing(
     _test()
 
 
-@pytest.mark.parametrize("client_class", ["AsyncHTTPClient", "CurlAsyncHTTPClient", "HTTPClient"])
+@pytest.mark.parametrize(
+    "client_class", ["AsyncHTTPClient", "CurlAsyncHTTPClient", "HTTPClient"]
+)
 @validate_transaction_metrics("make_request", background_task=True)
 def test_httpclient_invalid_method(client_class, external):
     with pytest.raises(KeyError):
         make_request(external.port, "uri", client_class, method="COOKIES")
 
 
-@pytest.mark.parametrize("client_class", ["AsyncHTTPClient", "CurlAsyncHTTPClient", "HTTPClient"])
+@pytest.mark.parametrize(
+    "client_class", ["AsyncHTTPClient", "CurlAsyncHTTPClient", "HTTPClient"]
+)
 @validate_transaction_metrics("make_request", background_task=True)
 def test_httpclient_invalid_kwarg(client_class, external):
     with pytest.raises(TypeError):
@@ -337,7 +369,9 @@ def test_httpclient_fetch_crashes(external):
 
         port = external.port
         with pytest.raises(ValueError):
-            tornado.ioloop.IOLoop.current().run_sync(lambda: client.fetch(f"http://localhost:{port}"))
+            tornado.ioloop.IOLoop.current().run_sync(
+                lambda: client.fetch(f"http://localhost:{port}")
+            )
 
     _test()
 

@@ -22,7 +22,8 @@ from newrelic.api.background_task import background_task
 
 OPENAI_VERSION = get_openai_version()
 SKIP_IF_NO_OPENAI_EMBEDDING_STREAMING_SUPPORT = pytest.mark.skipif(
-    OPENAI_VERSION < (1, 8), reason="OpenAI does not support embedding streaming until v1.8"
+    OPENAI_VERSION < (1, 8),
+    reason="OpenAI does not support embedding streaming until v1.8",
 )
 
 

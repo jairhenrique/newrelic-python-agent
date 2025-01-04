@@ -29,7 +29,9 @@ from newrelic.api.background_task import background_task
         "OutputCodeClassifier",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(multiclass_model_name, run_multiclass_model):
+def test_model_methods_wrapped_in_function_trace(
+    multiclass_model_name, run_multiclass_model
+):
     expected_scoped_metrics = {
         "OneVsRestClassifier": [
             ("Function/MLModel/Sklearn/Named/OneVsRestClassifier.fit", 1),
@@ -67,12 +69,16 @@ def run_multiclass_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         # This is an example of a model that has all the available attributes
         # We could have choosen any estimator that has predict, score,
         # predict_log_proba, and predict_proba
-        clf = getattr(sklearn.multiclass, multiclass_model_name)(estimator=AdaBoostClassifier())
+        clf = getattr(sklearn.multiclass, multiclass_model_name)(
+            estimator=AdaBoostClassifier()
+        )
 
         model = clf.fit(x_train, y_train)
         model.predict(x_test)

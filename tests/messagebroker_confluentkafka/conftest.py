@@ -50,7 +50,9 @@ collector_agent_registration = collector_agent_registration_fixture(
 )
 
 
-@pytest.fixture(scope="session", params=["cimpl", "serializer_function", "serializer_object"])
+@pytest.fixture(
+    scope="session", params=["cimpl", "serializer_function", "serializer_object"]
+)
 def client_type(request):
     return request.param
 
@@ -72,7 +74,9 @@ def producer(topic, client_type, json_serializer, broker):
             {
                 "bootstrap.servers": broker,
                 "value.serializer": lambda v, c: json.dumps(v).encode("utf-8"),
-                "key.serializer": lambda v, c: json.dumps(v).encode("utf-8") if v is not None else None,
+                "key.serializer": lambda v, c: json.dumps(v).encode("utf-8")
+                if v is not None
+                else None,
             }
         )
     elif client_type == "serializer_object":
@@ -111,7 +115,9 @@ def consumer(group_id, topic, producer, client_type, json_deserializer, broker):
                 "heartbeat.interval.ms": 1000,
                 "group.id": group_id,
                 "value.deserializer": lambda v, c: json.loads(v.decode("utf-8")),
-                "key.deserializer": lambda v, c: json.loads(v.decode("utf-8")) if v is not None else None,
+                "key.deserializer": lambda v, c: json.loads(v.decode("utf-8"))
+                if v is not None
+                else None,
             }
         )
     elif client_type == "serializer_object":
@@ -202,9 +208,13 @@ def send_producer_message(topic, producer, serialize, client_type):
 
     def _test():
         if client_type == "cimpl":
-            producer.produce(topic, value=serialize({"foo": 1}), callback=producer_callback)
+            producer.produce(
+                topic, value=serialize({"foo": 1}), callback=producer_callback
+            )
         else:
-            producer.produce(topic, value=serialize({"foo": 1}), on_delivery=producer_callback)
+            producer.produce(
+                topic, value=serialize({"foo": 1}), on_delivery=producer_callback
+            )
         producer.flush()
         assert callback_called
 
@@ -232,7 +242,9 @@ def get_consumer_record(topic, send_producer_message, consumer, deserialize):
             record_count += 1
         consumer.poll(0.5)  # Exit the transaction.
 
-        assert record_count == 1, f"Incorrect count of records consumed: {record_count}. Expected 1."
+        assert (
+            record_count == 1
+        ), f"Incorrect count of records consumed: {record_count}. Expected 1."
 
     return _test
 
@@ -279,9 +291,13 @@ def cache_kafka_consumer_headers():
 @pytest.fixture(autouse=True)
 def assert_no_active_transaction():
     # Run before test
-    assert not current_transaction(active_only=False), "Transaction exists before test run."
+    assert not current_transaction(
+        active_only=False
+    ), "Transaction exists before test run."
 
     yield  # Run test
 
     # Run after test
-    assert not current_transaction(active_only=False), "Transaction was not properly exited."
+    assert not current_transaction(
+        active_only=False
+    ), "Transaction was not properly exited."

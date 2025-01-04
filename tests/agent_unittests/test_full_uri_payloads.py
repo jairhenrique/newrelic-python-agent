@@ -22,8 +22,13 @@ from newrelic.core.agent_protocol import AgentProtocol
 from newrelic.common.agent_http import HttpClient
 from newrelic.core.config import global_settings, _environ_as_bool
 
-DEVELOPER_MODE = _environ_as_bool("NEW_RELIC_DEVELOPER_MODE", False) or "NEW_RELIC_LICENSE_KEY" not in os.environ
-SKIP_IF_DEVELOPER_MODE = pytest.mark.skipif(DEVELOPER_MODE, reason="Cannot connect to collector in developer mode")
+DEVELOPER_MODE = (
+    _environ_as_bool("NEW_RELIC_DEVELOPER_MODE", False)
+    or "NEW_RELIC_LICENSE_KEY" not in os.environ
+)
+SKIP_IF_DEVELOPER_MODE = pytest.mark.skipif(
+    DEVELOPER_MODE, reason="Cannot connect to collector in developer mode"
+)
 
 
 class FullUriClient(HttpClient):

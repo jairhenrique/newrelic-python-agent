@@ -47,7 +47,9 @@ async def execute_db_calls_with_cursor(cursor):
     async for _ in cursor:
         pass
 
-    await cursor.execute(f"update {TABLE_NAME} set a=%s, b=%s, c=%s where a=%s", (4, 4.0, "4.0", 1))
+    await cursor.execute(
+        f"update {TABLE_NAME} set a=%s, b=%s, c=%s where a=%s", (4, 4.0, "4.0", 1)
+    )
 
     await cursor.execute(f"""delete from {TABLE_NAME} where a=2""")
     await cursor.execute(f"""drop procedure if exists {PROCEDURE_NAME}""")

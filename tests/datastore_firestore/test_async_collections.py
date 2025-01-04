@@ -30,8 +30,13 @@ from newrelic.api.background_task import background_task
 def exercise_async_collections(async_collection):
     async def _exercise_async_collections():
         async_collection.document("DoesNotExist")
-        await async_collection.add({"capital": "Rome", "currency": "Euro", "language": "Italian"}, "Italy")
-        await async_collection.add({"capital": "Mexico City", "currency": "Peso", "language": "Spanish"}, "Mexico")
+        await async_collection.add(
+            {"capital": "Rome", "currency": "Euro", "language": "Italian"}, "Italy"
+        )
+        await async_collection.add(
+            {"capital": "Mexico City", "currency": "Peso", "language": "Spanish"},
+            "Mexico",
+        )
 
         documents_get = await async_collection.get()
         assert len(documents_get) == 2
@@ -43,7 +48,9 @@ def exercise_async_collections(async_collection):
     return _exercise_async_collections
 
 
-def test_firestore_async_collections(loop, exercise_async_collections, async_collection, instance_info):
+def test_firestore_async_collections(
+    loop, exercise_async_collections, async_collection, instance_info
+):
     _test_scoped_metrics = [
         (f"Datastore/statement/Firestore/{async_collection.id}/stream", 1),
         (f"Datastore/statement/Firestore/{async_collection.id}/get", 1),
@@ -58,7 +65,10 @@ def test_firestore_async_collections(loop, exercise_async_collections, async_col
         ("Datastore/operation/Firestore/list_documents", 1),
         ("Datastore/all", 5),
         ("Datastore/allOther", 5),
-        (f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}", 5),
+        (
+            f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}",
+            5,
+        ),
     ]
 
     @validate_database_duration()
@@ -76,7 +86,9 @@ def test_firestore_async_collections(loop, exercise_async_collections, async_col
 
 
 @background_task()
-def test_firestore_async_collections_generators(collection, async_collection, assert_trace_for_async_generator):
+def test_firestore_async_collections_generators(
+    collection, async_collection, assert_trace_for_async_generator
+):
     collection.add({})
     collection.add({})
     assert len([_ for _ in collection.list_documents()]) == 2
@@ -85,7 +97,9 @@ def test_firestore_async_collections_generators(collection, async_collection, as
     assert_trace_for_async_generator(async_collection.list_documents)
 
 
-def test_firestore_async_collections_trace_node_datastore_params(loop, exercise_async_collections, instance_info):
+def test_firestore_async_collections_trace_node_datastore_params(
+    loop, exercise_async_collections, instance_info
+):
     @validate_tt_collector_json(datastore_params=instance_info)
     @background_task()
     def _test():

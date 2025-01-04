@@ -36,14 +36,14 @@ from newrelic.api.transaction import (
 from newrelic.core.config import _parse_attributes
 
 
-class NonPrintableObject():
+class NonPrintableObject:
     def __str__(self):
         raise RuntimeError("Unable to print object.")
 
     __repr__ = __str__
 
 
-class NonSerializableObject():
+class NonSerializableObject:
     def __str__(self):
         return f"<{self.__class__.__name__} object>"
 
@@ -70,7 +70,12 @@ def exercise_record_log_event():
 
     record_log_event("no_other_arguments")
     # Attributes with value None should be dropped.
-    record_log_event("keyword_arguments", timestamp=1234, level="ERROR", attributes={"key": "value", "drop-me": None})
+    record_log_event(
+        "keyword_arguments",
+        timestamp=1234,
+        level="ERROR",
+        attributes={"key": "value", "drop-me": None},
+    )
     record_log_event("positional_arguments", "WARNING", 2345, {"key": "value"})
     record_log_event("serialized_attributes", attributes=_serialized_attributes)
     record_log_event(None, attributes={"attributes_only": "value"})
@@ -95,10 +100,15 @@ enable_log_forwarding = override_application_settings(
         "application_logging.forwarding.context_data.exclude": ["filtered_attribute"],
     }
 )
-disable_log_forwarding = override_application_settings({"application_logging.forwarding.enabled": False})
+disable_log_forwarding = override_application_settings(
+    {"application_logging.forwarding.enabled": False}
+)
 
 disable_log_attributes = override_application_settings(
-    {"application_logging.forwarding.enabled": True, "application_logging.forwarding.context_data.enabled": False}
+    {
+        "application_logging.forwarding.enabled": True,
+        "application_logging.forwarding.context_data.enabled": False,
+    }
 )
 
 _common_attributes_service_linking = {
@@ -107,7 +117,10 @@ _common_attributes_service_linking = {
     "entity.name": "Python Agent Test (agent_features)",
     "entity.guid": None,
 }
-_common_attributes_trace_linking = {"span.id": "abcdefgh", "trace.id": "abcdefgh12345678"}
+_common_attributes_trace_linking = {
+    "span.id": "abcdefgh",
+    "trace.id": "abcdefgh12345678",
+}
 _common_attributes_trace_linking.update(_common_attributes_service_linking)
 
 _serialized_attributes = {
@@ -124,8 +137,18 @@ _serialized_attributes = {
 
 _exercise_record_log_event_events = [
     {"message": "no_other_arguments", "level": "UNKNOWN"},
-    {"message": "keyword_arguments", "level": "ERROR", "timestamp": 1234, "context.key": "value"},
-    {"message": "positional_arguments", "level": "WARNING", "timestamp": 2345, "context.key": "value"},
+    {
+        "message": "keyword_arguments",
+        "level": "ERROR",
+        "timestamp": 1234,
+        "context.key": "value",
+    },
+    {
+        "message": "positional_arguments",
+        "level": "WARNING",
+        "timestamp": 2345,
+        "context.key": "value",
+    },
     {
         "message": "serialized_attributes",
         "context.str_attr": "Value",
@@ -141,10 +164,12 @@ _exercise_record_log_event_events = [
     {"message": "123"},
 ]
 _exercise_record_log_event_inside_transaction_events = [
-    combine_dicts(_common_attributes_trace_linking, log) for log in _exercise_record_log_event_events
+    combine_dicts(_common_attributes_trace_linking, log)
+    for log in _exercise_record_log_event_events
 ]
 _exercise_record_log_event_outside_transaction_events = [
-    combine_dicts(_common_attributes_service_linking, log) for log in _exercise_record_log_event_events
+    combine_dicts(_common_attributes_service_linking, log)
+    for log in _exercise_record_log_event_events
 ]
 _exercise_record_log_event_forgone_attrs = [
     "context.non_printable_attr",
@@ -161,7 +186,8 @@ _exercise_record_log_event_forgone_attrs = [
 @enable_log_forwarding
 def test_record_log_event_inside_transaction():
     @validate_log_events(
-        _exercise_record_log_event_inside_transaction_events, forgone_attrs=_exercise_record_log_event_forgone_attrs
+        _exercise_record_log_event_inside_transaction_events,
+        forgone_attrs=_exercise_record_log_event_forgone_attrs,
     )
     @validate_log_event_count(len(_exercise_record_log_event_inside_transaction_events))
     @background_task()
@@ -175,9 +201,12 @@ def test_record_log_event_inside_transaction():
 @reset_core_stats_engine()
 def test_record_log_event_outside_transaction():
     @validate_log_events_outside_transaction(
-        _exercise_record_log_event_outside_transaction_events, forgone_attrs=_exercise_record_log_event_forgone_attrs
+        _exercise_record_log_event_outside_transaction_events,
+        forgone_attrs=_exercise_record_log_event_forgone_attrs,
     )
-    @validate_log_event_count_outside_transaction(len(_exercise_record_log_event_outside_transaction_events))
+    @validate_log_event_count_outside_transaction(
+        len(_exercise_record_log_event_outside_transaction_events)
+    )
     def test():
         exercise_record_log_event()
 
@@ -269,7 +298,9 @@ def test_attributes_disabled_inside_transaction():
 @disable_log_attributes
 @reset_core_stats_engine()
 def test_attributes_disabled_outside_transaction():
-    @validate_log_events_outside_transaction([{"message": "A"}], forgone_attrs=["context.key"])
+    @validate_log_events_outside_transaction(
+        [{"message": "A"}], forgone_attrs=["context.key"]
+    )
     @validate_log_event_count_outside_transaction(1)
     def test():
         record_log_event("A", attributes={"key": "value"})
@@ -303,8 +334,13 @@ _test_record_log_event_context_attribute_filtering_params = [
 
 
 @pytest.mark.parametrize("prefix", ("context", "message"))
-@pytest.mark.parametrize("include,exclude,attr,expected", _test_record_log_event_context_attribute_filtering_params)
-def test_record_log_event_context_attribute_filtering_inside_transaction(include, exclude, attr, expected, prefix):
+@pytest.mark.parametrize(
+    "include,exclude,attr,expected",
+    _test_record_log_event_context_attribute_filtering_params,
+)
+def test_record_log_event_context_attribute_filtering_inside_transaction(
+    include, exclude, attr, expected, prefix
+):
     if expected:
         expected_event = {"required_attrs": [f"{prefix}.{attr}"]}
     else:
@@ -314,8 +350,12 @@ def test_record_log_event_context_attribute_filtering_inside_transaction(include
         {
             "application_logging.forwarding.enabled": True,
             "application_logging.forwarding.context_data.enabled": True,
-            "application_logging.forwarding.context_data.include": _parse_attributes(include),
-            "application_logging.forwarding.context_data.exclude": _parse_attributes(exclude),
+            "application_logging.forwarding.context_data.include": _parse_attributes(
+                include
+            ),
+            "application_logging.forwarding.context_data.exclude": _parse_attributes(
+                exclude
+            ),
         }
     )
     @validate_log_events(**expected_event)
@@ -331,9 +371,14 @@ def test_record_log_event_context_attribute_filtering_inside_transaction(include
 
 
 @pytest.mark.parametrize("prefix", ("context", "message"))
-@pytest.mark.parametrize("include,exclude,attr,expected", _test_record_log_event_context_attribute_filtering_params)
+@pytest.mark.parametrize(
+    "include,exclude,attr,expected",
+    _test_record_log_event_context_attribute_filtering_params,
+)
 @reset_core_stats_engine()
-def test_record_log_event_context_attribute_filtering_outside_transaction(include, exclude, attr, expected, prefix):
+def test_record_log_event_context_attribute_filtering_outside_transaction(
+    include, exclude, attr, expected, prefix
+):
     if expected:
         expected_event = {"required_attrs": [f"{prefix}.{attr}"]}
     else:
@@ -343,8 +388,12 @@ def test_record_log_event_context_attribute_filtering_outside_transaction(includ
         {
             "application_logging.forwarding.enabled": True,
             "application_logging.forwarding.context_data.enabled": True,
-            "application_logging.forwarding.context_data.include": _parse_attributes(include),
-            "application_logging.forwarding.context_data.exclude": _parse_attributes(exclude),
+            "application_logging.forwarding.context_data.include": _parse_attributes(
+                include
+            ),
+            "application_logging.forwarding.context_data.exclude": _parse_attributes(
+                exclude
+            ),
         }
     )
     @validate_log_events_outside_transaction(**expected_event)
@@ -365,16 +414,24 @@ _test_record_log_event_linking_attribute_no_filtering_params = [
 ]
 
 
-@pytest.mark.parametrize("include,exclude", _test_record_log_event_linking_attribute_no_filtering_params)
-def test_record_log_event_linking_attribute_no_filtering_inside_transaction(include, exclude):
+@pytest.mark.parametrize(
+    "include,exclude", _test_record_log_event_linking_attribute_no_filtering_params
+)
+def test_record_log_event_linking_attribute_no_filtering_inside_transaction(
+    include, exclude
+):
     attr = "entity.name"
 
     @override_application_settings(
         {
             "application_logging.forwarding.enabled": True,
             "application_logging.forwarding.context_data.enabled": True,
-            "application_logging.forwarding.context_data.include": _parse_attributes(include),
-            "application_logging.forwarding.context_data.exclude": _parse_attributes(exclude),
+            "application_logging.forwarding.context_data.include": _parse_attributes(
+                include
+            ),
+            "application_logging.forwarding.context_data.exclude": _parse_attributes(
+                exclude
+            ),
         }
     )
     @validate_log_events(required_attrs=[attr])
@@ -386,17 +443,25 @@ def test_record_log_event_linking_attribute_no_filtering_inside_transaction(incl
     test()
 
 
-@pytest.mark.parametrize("include,exclude", _test_record_log_event_linking_attribute_no_filtering_params)
+@pytest.mark.parametrize(
+    "include,exclude", _test_record_log_event_linking_attribute_no_filtering_params
+)
 @reset_core_stats_engine()
-def test_record_log_event_linking_attribute_filtering_outside_transaction(include, exclude):
+def test_record_log_event_linking_attribute_filtering_outside_transaction(
+    include, exclude
+):
     attr = "entity.name"
 
     @override_application_settings(
         {
             "application_logging.forwarding.enabled": True,
             "application_logging.forwarding.context_data.enabled": True,
-            "application_logging.forwarding.context_data.include": _parse_attributes(include),
-            "application_logging.forwarding.context_data.exclude": _parse_attributes(exclude),
+            "application_logging.forwarding.context_data.include": _parse_attributes(
+                include
+            ),
+            "application_logging.forwarding.context_data.exclude": _parse_attributes(
+                exclude
+            ),
         }
     )
     @validate_log_events_outside_transaction(required_attrs=[attr])
@@ -416,10 +481,13 @@ def test_record_log_event_linking_attribute_filtering_outside_transaction(includ
 TEST_LABELS = {"testlabel1": "A", "testlabel2": "B", "testlabelexclude": "C"}
 TEST_LABELS = [{"label_type": k, "label_value": v} for k, v in TEST_LABELS.items()]
 
-@override_application_settings({
-    "labels": TEST_LABELS,
-    "application_logging.forwarding.labels.enabled": True,
-})
+
+@override_application_settings(
+    {
+        "labels": TEST_LABELS,
+        "application_logging.forwarding.labels.enabled": True,
+    }
+)
 @background_task()
 def test_label_forwarding_enabled():
     txn = current_transaction()
@@ -427,14 +495,20 @@ def test_label_forwarding_enabled():
 
     common = session.get_log_events_common_block()
     # Excluded label should not appear, and other labels should be prefixed with 'tag.'
-    assert common == {"tags.testlabel1": "A", "tags.testlabel2": "B", "tags.testlabelexclude": "C"}
+    assert common == {
+        "tags.testlabel1": "A",
+        "tags.testlabel2": "B",
+        "tags.testlabelexclude": "C",
+    }
 
 
-@override_application_settings({
-    "labels": TEST_LABELS,
-    "application_logging.forwarding.labels.enabled": True,
-    "application_logging.forwarding.labels.exclude": {"testlabelexclude"},
-})
+@override_application_settings(
+    {
+        "labels": TEST_LABELS,
+        "application_logging.forwarding.labels.enabled": True,
+        "application_logging.forwarding.labels.exclude": {"testlabelexclude"},
+    }
+)
 @background_task()
 def test_label_forwarding_enabled_exclude():
     txn = current_transaction()
@@ -445,10 +519,12 @@ def test_label_forwarding_enabled_exclude():
     assert common == {"tags.testlabel1": "A", "tags.testlabel2": "B"}
 
 
-@override_application_settings({
-    "labels": TEST_LABELS,
-    "application_logging.forwarding.labels.enabled": False,
-})
+@override_application_settings(
+    {
+        "labels": TEST_LABELS,
+        "application_logging.forwarding.labels.enabled": False,
+    }
+)
 @background_task()
 def test_label_forwarding_disabled():
     txn = current_transaction()
@@ -464,9 +540,14 @@ def test_label_forwarding_disabled():
 # ================================================
 
 
-@override_application_settings({
-    "application_logging.forwarding.custom_attributes": [("custom_attr_1", "value 1"), ("custom_attr_2", "value 2")],
-})
+@override_application_settings(
+    {
+        "application_logging.forwarding.custom_attributes": [
+            ("custom_attr_1", "value 1"),
+            ("custom_attr_2", "value 2"),
+        ],
+    }
+)
 @background_task()
 def test_global_custom_attribute_forwarding_enabled():
     txn = current_transaction()
@@ -477,9 +558,13 @@ def test_global_custom_attribute_forwarding_enabled():
     assert common == {"custom_attr_1": "value 1", "custom_attr_2": "value 2"}
 
 
-@override_application_settings({
-    "application_logging.forwarding.custom_attributes": [("custom_attr_1", "a" * 256)],
-})
+@override_application_settings(
+    {
+        "application_logging.forwarding.custom_attributes": [
+            ("custom_attr_1", "a" * 256)
+        ],
+    }
+)
 @background_task()
 def test_global_custom_attribute_forwarding_truncation():
     txn = current_transaction()
@@ -490,9 +575,13 @@ def test_global_custom_attribute_forwarding_truncation():
     assert common == {"custom_attr_1": "a" * 255}
 
 
-@override_application_settings({
-    "application_logging.forwarding.custom_attributes": [(f"custom_attr_{i+1}", "value") for i in range(129)],
-})
+@override_application_settings(
+    {
+        "application_logging.forwarding.custom_attributes": [
+            (f"custom_attr_{i+1}", "value") for i in range(129)
+        ],
+    }
+)
 @background_task()
 def test_global_custom_attribute_forwarding_max_num_attrs():
     txn = current_transaction()

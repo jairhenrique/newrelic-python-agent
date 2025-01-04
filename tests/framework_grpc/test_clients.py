@@ -25,7 +25,10 @@ from testing_support.validators.validate_transaction_metrics import (
 from newrelic.api.background_task import background_task
 
 _test_matrix = [
-    ("service_method_type,service_method_method_name,raises_exception," "message_count,cancel"),
+    (
+        "service_method_type,service_method_method_name,raises_exception,"
+        "message_count,cancel"
+    ),
     (
         ("unary_unary", "__call__", False, 1, False),
         ("unary_unary", "__call__", True, 1, False),
@@ -59,7 +62,13 @@ _test_matrix = [
 
 @pytest.mark.parametrize(*_test_matrix)
 def test_client(
-    service_method_type, service_method_method_name, raises_exception, message_count, cancel, mock_grpc_server, stub
+    service_method_type,
+    service_method_method_name,
+    raises_exception,
+    message_count,
+    cancel,
+    mock_grpc_server,
+    stub,
 ):
     port = mock_grpc_server
 
@@ -68,10 +77,16 @@ def test_client(
     streaming_response = service_method_type.split("_")[1] == "stream"
 
     _test_scoped_metrics = [
-        (f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}", 1),
+        (
+            f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}",
+            1,
+        ),
     ]
     _test_rollup_metrics = [
-        (f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}", 1),
+        (
+            f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}",
+            1,
+        ),
         (f"External/localhost:{port}/all", 1),
         ("External/allOther", 1),
         ("External/all", 1),
@@ -93,13 +108,17 @@ def test_client(
     @background_task()
     def _test_client():
         service_method_class = getattr(stub, service_method_class_name)
-        service_method_method = getattr(service_method_class, service_method_method_name)
+        service_method_method = getattr(
+            service_method_class, service_method_method_name
+        )
 
         # In the case that we're preparing to cancel a request it's important
         # that the request does not return prior to cancelling. If the request
         # returns prior to cancellation then the response might be valid. In
         # order to force the request to not return, the timesout option is set.
-        request = create_request(streaming_request, count=message_count, timesout=cancel)
+        request = create_request(
+            streaming_request, count=message_count, timesout=cancel
+        )
 
         reply = service_method_method(request, None, None, None)
 
@@ -153,17 +172,29 @@ _test_matrix = [
 
 
 @pytest.mark.parametrize(*_test_matrix)
-def test_future_timeout_error(service_method_type, service_method_method_name, future_response, mock_grpc_server, stub):
+def test_future_timeout_error(
+    service_method_type,
+    service_method_method_name,
+    future_response,
+    mock_grpc_server,
+    stub,
+):
     port = mock_grpc_server
 
     service_method_class_name = f"NoTxn{service_method_type.title().replace('_', '')}"
     streaming_request = service_method_type.split("_")[0] == "stream"
 
     _test_scoped_metrics = [
-        (f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}", 1),
+        (
+            f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}",
+            1,
+        ),
     ]
     _test_rollup_metrics = [
-        (f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}", 1),
+        (
+            f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}",
+            1,
+        ),
         (f"External/localhost:{port}/all", 1),
         ("External/allOther", 1),
         ("External/all", 1),
@@ -179,7 +210,9 @@ def test_future_timeout_error(service_method_type, service_method_method_name, f
     @background_task()
     def _test_future_timeout_error():
         service_method_class = getattr(stub, service_method_class_name)
-        service_method_method = getattr(service_method_class, service_method_method_name)
+        service_method_method = getattr(
+            service_method_class, service_method_method_name
+        )
 
         request = create_request(streaming_request, count=1, timesout=True)
 
@@ -201,17 +234,25 @@ _test_matrix = [
 
 
 @pytest.mark.parametrize(*_test_matrix)
-def test_repeated_result(service_method_type, service_method_method_name, mock_grpc_server, stub):
+def test_repeated_result(
+    service_method_type, service_method_method_name, mock_grpc_server, stub
+):
     port = mock_grpc_server
 
     service_method_class_name = f"NoTxn{service_method_type.title().replace('_', '')}"
     streaming_request = service_method_type.split("_")[0] == "stream"
 
     _test_scoped_metrics = [
-        (f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}", 1),
+        (
+            f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}",
+            1,
+        ),
     ]
     _test_rollup_metrics = [
-        (f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}", 1),
+        (
+            f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}",
+            1,
+        ),
         (f"External/localhost:{port}/all", 1),
         ("External/allOther", 1),
         ("External/all", 1),
@@ -227,7 +268,9 @@ def test_repeated_result(service_method_type, service_method_method_name, mock_g
     @background_task()
     def _test_repeated_result():
         service_method_class = getattr(stub, service_method_class_name)
-        service_method_method = getattr(service_method_class, service_method_method_name)
+        service_method_method = getattr(
+            service_method_class, service_method_method_name
+        )
 
         request = create_request(streaming_request, count=1, timesout=False)
 
@@ -251,17 +294,29 @@ _test_matrix = [
 
 
 @pytest.mark.parametrize(*_test_matrix)
-def test_future_cancel(service_method_type, service_method_method_name, future_response, mock_grpc_server, stub):
+def test_future_cancel(
+    service_method_type,
+    service_method_method_name,
+    future_response,
+    mock_grpc_server,
+    stub,
+):
     port = mock_grpc_server
 
     service_method_class_name = f"NoTxn{service_method_type.title().replace('_', '')}"
     streaming_request = service_method_type.split("_")[0] == "stream"
 
     _test_scoped_metrics = [
-        (f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}", 1),
+        (
+            f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}",
+            1,
+        ),
     ]
     _test_rollup_metrics = [
-        (f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}", 1),
+        (
+            f"External/localhost:{port}/gRPC/SampleApplication/{service_method_class_name}",
+            1,
+        ),
         (f"External/localhost:{port}/all", 1),
         ("External/allOther", 1),
         ("External/all", 1),
@@ -277,7 +332,9 @@ def test_future_cancel(service_method_type, service_method_method_name, future_r
     @background_task()
     def _test_future_cancel():
         service_method_class = getattr(stub, service_method_class_name)
-        service_method_method = getattr(service_method_class, service_method_method_name)
+        service_method_method = getattr(
+            service_method_class, service_method_method_name
+        )
 
         request = create_request(streaming_request, count=3, timesout=False)
 

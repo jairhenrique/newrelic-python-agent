@@ -123,7 +123,7 @@ def test_distributed_tracing_web_transaction():
     assert "X-NewRelic-App-Data" not in response.headers
 
 
-class TestAsgiRequest():
+class TestAsgiRequest:
     scope = {
         "asgi": {"spec_version": "2.1", "version": "3.0"},
         "client": ("127.0.0.1", 54768),
@@ -178,7 +178,9 @@ def test_distributed_tracing_metrics(web_transaction, gen_error, has_parent):
     # now run the test
     transaction_name = f"test_dt_metrics_{'_'.join(metrics)}"
     _rollup_metrics = [
-        (f"{x}/{tag}{bt}", 1) for x in metrics for bt in ["", "Web" if web_transaction else "Other"]
+        (f"{x}/{tag}{bt}", 1)
+        for x in metrics
+        for bt in ["", "Web" if web_transaction else "Other"]
     ]
 
     def _make_test_transaction():
@@ -188,13 +190,17 @@ def test_distributed_tracing_metrics(web_transaction, gen_error, has_parent):
         if not web_transaction:
             return BackgroundTask(application, transaction_name)
 
-        tn = ASGIWebTransaction(application, request.scope, request.send, request.receive)
+        tn = ASGIWebTransaction(
+            application, request.scope, request.send, request.receive
+        )
         tn.set_transaction_name(transaction_name)
         return tn
 
     @override_application_settings(_override_settings)
     @validate_transaction_metrics(
-        transaction_name, background_task=not (web_transaction), rollup_metrics=_rollup_metrics
+        transaction_name,
+        background_task=not (web_transaction),
+        rollup_metrics=_rollup_metrics,
     )
     def _test():
         with _make_test_transaction() as transaction:

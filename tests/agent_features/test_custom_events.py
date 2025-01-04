@@ -132,14 +132,18 @@ def test_custom_event_inside_transaction_mixed_params():
 
 @override_application_settings({"custom_insights_events.max_attribute_value": 4095})
 @reset_core_stats_engine()
-@validate_custom_event_in_application_stats_engine([_intrinsics, {"foo": "bar", "bar": "a" * 4095}])
+@validate_custom_event_in_application_stats_engine(
+    [_intrinsics, {"foo": "bar", "bar": "a" * 4095}]
+)
 @background_task()
 def test_custom_event_inside_transaction_max_attribute_value():
     record_custom_event("FooEvent", {"foo": "bar", 123: "bad key", "bar": "a" * 5000})
 
 
 @reset_core_stats_engine()
-@validate_custom_event_in_application_stats_engine([_intrinsics, {"foo": "bar", "bar": "a" * 255}])
+@validate_custom_event_in_application_stats_engine(
+    [_intrinsics, {"foo": "bar", "bar": "a" * 255}]
+)
 @background_task()
 def test_custom_event_inside_transaction_default_attribute_value():
     record_custom_event("FooEvent", {"foo": "bar", 123: "bad key", "bar": "a" * 5000})
@@ -147,17 +151,25 @@ def test_custom_event_inside_transaction_default_attribute_value():
 
 @override_application_settings({"custom_insights_events.max_attribute_value": 4095})
 @reset_core_stats_engine()
-@validate_custom_event_in_application_stats_engine([_intrinsics, {"foo": "bar", "bar": "a" * 4095}])
+@validate_custom_event_in_application_stats_engine(
+    [_intrinsics, {"foo": "bar", "bar": "a" * 4095}]
+)
 def test_custom_event_outside_transaction_max_attribute_value():
     app = application()
-    record_custom_event("FooEvent", {"foo": "bar", 123: "bad key", "bar": "a" * 5000}, application=app)
+    record_custom_event(
+        "FooEvent", {"foo": "bar", 123: "bad key", "bar": "a" * 5000}, application=app
+    )
 
 
 @reset_core_stats_engine()
-@validate_custom_event_in_application_stats_engine([_intrinsics, {"foo": "bar", "bar": "a" * 255}])
+@validate_custom_event_in_application_stats_engine(
+    [_intrinsics, {"foo": "bar", "bar": "a" * 255}]
+)
 def test_custom_event_outside_transaction_default_attribute_value():
     app = application()
-    record_custom_event("FooEvent", {"foo": "bar", 123: "bad key", "bar": "a" * 5000}, application=app)
+    record_custom_event(
+        "FooEvent", {"foo": "bar", 123: "bad key", "bar": "a" * 5000}, application=app
+    )
 
 
 @reset_core_stats_engine()

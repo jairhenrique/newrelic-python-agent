@@ -112,7 +112,7 @@ def test_custom_model_int_list_no_features_and_labels():
         model = CustomTestModel().fit(x_train, y_train)
         wrap_mlmodel(model, name="MyCustomModel", version="1.2.3")
 
-        labels = model.predict(x_test)
+        model.predict(x_test)
 
         return model
 
@@ -156,7 +156,7 @@ def test_custom_model_int_list_with_metadata():
             metadata={"metadata1": "value1", "metadata2": "value2"},
         )
 
-        labels = model.predict(x_test)
+        model.predict(x_test)
 
         return model
 
@@ -187,9 +187,13 @@ def test_wrapper_attrs_custom_model_pandas_df():
     @validate_ml_events(pandas_df_recorded_custom_events)
     @background_task()
     def _test():
-        x_train = pandas.DataFrame({"col1": [0, 1], "col2": [0, 1], "col3": [1, 2]}, dtype="category")
+        x_train = pandas.DataFrame(
+            {"col1": [0, 1], "col2": [0, 1], "col3": [1, 2]}, dtype="category"
+        )
         y_train = [0, 1]
-        x_test = pandas.DataFrame({"col1": [0], "col2": [0], "col3": [1]}, dtype="category")
+        x_test = pandas.DataFrame(
+            {"col1": [0], "col2": [0], "col3": [1]}, dtype="category"
+        )
 
         model = CustomTestModel(random_state=0).fit(x_train, y_train)
         wrap_mlmodel(
@@ -277,9 +281,13 @@ def test_wrapper_mismatched_features_and_labels_df():
     def _test():
         import sklearn.tree
 
-        x_train = pandas.DataFrame({"col1": [7, 8], "col2": [9, 10], "col3": [24, 25]}, dtype="int")
+        x_train = pandas.DataFrame(
+            {"col1": [7, 8], "col2": [9, 10], "col3": [24, 25]}, dtype="int"
+        )
         y_train = pandas.DataFrame({"label": [0, 1]}, dtype="int")
-        x_test = pandas.DataFrame({"col1": [12], "col2": [14], "col3": [16]}, dtype="int")
+        x_test = pandas.DataFrame(
+            {"col1": [12], "col2": [14], "col3": [16]}, dtype="int"
+        )
 
         clf = getattr(sklearn.tree, "DecisionTreeClassifier")(random_state=0)
 
@@ -329,7 +337,12 @@ def test_wrapper_mismatched_features_and_labels_np_array():
         clf = getattr(sklearn.tree, "DecisionTreeClassifier")(random_state=0)
 
         model = clf.fit(x_train, y_train)
-        wrap_mlmodel(model, name="MyDecisionTreeClassifier", version="0.0.1", feature_names=["feature1"])
+        wrap_mlmodel(
+            model,
+            name="MyDecisionTreeClassifier",
+            version="0.0.1",
+            feature_names=["feature1"],
+        )
         model.predict(x_test)
 
         return model

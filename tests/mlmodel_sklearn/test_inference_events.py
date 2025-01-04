@@ -20,7 +20,6 @@ from testing_support.fixtures import (
     override_application_settings,
     reset_core_stats_engine,
 )
-from testing_support.fixtures import override_application_settings
 from testing_support.validators.validate_ml_event_count import validate_ml_event_count
 from testing_support.validators.validate_ml_events import validate_ml_events
 
@@ -53,11 +52,15 @@ def test_pandas_df_categorical_feature_event():
 
         clf = getattr(sklearn.tree, "DecisionTreeClassifier")(random_state=0)
         model = clf.fit(
-            pandas.DataFrame({"col1": [27.0, 24.0], "col2": [23.0, 25.0]}, dtype="category"),
+            pandas.DataFrame(
+                {"col1": [27.0, 24.0], "col2": [23.0, 25.0]}, dtype="category"
+            ),
             pandas.DataFrame({"label": [27.0, 28.0]}),
         )
 
-        labels = model.predict(pandas.DataFrame({"col1": [2.0], "col2": [4.0]}, dtype="category"))
+        model.predict(
+            pandas.DataFrame({"col1": [2.0], "col2": [4.0]}, dtype="category")
+        )
         return model
 
     _test()
@@ -92,14 +95,16 @@ def test_pandas_df_bool_feature_event():
         import sklearn.tree
 
         dtype_name = "bool" if sys.version_info < (3, 8) else "boolean"
-        x_train = pandas.DataFrame({"col1": [True, False], "col2": [True, False]}, dtype=dtype_name)
+        x_train = pandas.DataFrame(
+            {"col1": [True, False], "col2": [True, False]}, dtype=dtype_name
+        )
         y_train = pandas.DataFrame({"label": [True, False]}, dtype=dtype_name)
         x_test = pandas.DataFrame({"col1": [True], "col2": [True]}, dtype=dtype_name)
 
         clf = getattr(sklearn.tree, "DecisionTreeClassifier")(random_state=0)
         model = clf.fit(x_train, y_train)
 
-        labels = model.predict(x_test)
+        model.predict(x_test)
         return model
 
     _test()
@@ -130,14 +135,16 @@ def test_pandas_df_float_feature_event():
     def _test():
         import sklearn.tree
 
-        x_train = pandas.DataFrame({"col1": [120.0, 254.0], "col2": [236.9, 234.5]}, dtype="float64")
+        x_train = pandas.DataFrame(
+            {"col1": [120.0, 254.0], "col2": [236.9, 234.5]}, dtype="float64"
+        )
         y_train = pandas.DataFrame({"label": [345.6, 456.7]}, dtype="float64")
         x_test = pandas.DataFrame({"col1": [100.0], "col2": [300.0]}, dtype="float64")
 
         clf = getattr(sklearn.tree, "DecisionTreeRegressor")(random_state=0)
 
         model = clf.fit(x_train, y_train)
-        labels = model.predict(x_test)
+        model.predict(x_test)
 
         return model
 
@@ -176,7 +183,7 @@ def test_int_list():
         clf = getattr(sklearn.tree, "ExtraTreeRegressor")(random_state=0)
         model = clf.fit(x_train, y_train)
 
-        labels = model.predict(x_test)
+        model.predict(x_test)
         return model
 
     _test()
@@ -214,7 +221,7 @@ def test_numpy_int_array():
         clf = getattr(sklearn.tree, "ExtraTreeRegressor")(random_state=0)
         model = clf.fit(x_train, y_train)
 
-        labels = model.predict(x_test)
+        model.predict(x_test)
         return model
 
     _test()
@@ -264,7 +271,7 @@ def test_numpy_str_array_multiple_features():
         clf = getattr(sklearn.tree, "DecisionTreeClassifier")(random_state=0)
 
         model = clf.fit(x_train, y_train)
-        labels = model.predict(x_test)
+        model.predict(x_test)
 
         return model
 
@@ -288,7 +295,7 @@ numpy_str_recorded_custom_events_no_value = [
 disabled_inference_value_settings = {
     "machine_learning.enabled": True,
     "machine_learning.inference_events_value.enabled": False,
-    "ml_insights_events.enabled": True
+    "ml_insights_events.enabled": True,
 }
 
 
@@ -307,7 +314,7 @@ def test_does_not_include_value_when_inference_event_value_enabled_is_false():
         clf = getattr(sklearn.tree, "DecisionTreeClassifier")(random_state=0)
 
         model = clf.fit(x_train, y_train)
-        labels = model.predict(x_test)
+        model.predict(x_test)
 
         return model
 
@@ -317,7 +324,7 @@ def test_does_not_include_value_when_inference_event_value_enabled_is_false():
 disabled_ml_insights_settings = {
     "machine_learning.enabled": True,
     "machine_learning.inference_events_value.enabled": True,
-    "ml_insights_events.enabled": False
+    "ml_insights_events.enabled": False,
 }
 
 
@@ -340,7 +347,7 @@ def test_does_not_include_events_when_ml_insights_events_enabled_is_false():
         clf = getattr(sklearn.tree, "DecisionTreeClassifier")(random_state=0)
 
         model = clf.fit(x_train, y_train)
-        labels = model.predict(x_test)
+        model.predict(x_test)
 
         return model
 
@@ -350,7 +357,7 @@ def test_does_not_include_events_when_ml_insights_events_enabled_is_false():
 disabled_ml_settings = {
     "machine_learning.enabled": False,
     "machine_learning.inference_events_value.enabled": True,
-    "ml_insights_events.enabled": True
+    "ml_insights_events.enabled": True,
 }
 
 
@@ -368,7 +375,7 @@ def test_does_not_include_events_when_machine_learning_enabled_is_false():
         clf = getattr(sklearn.tree, "DecisionTreeClassifier")(random_state=0)
 
         model = clf.fit(x_train, y_train)
-        labels = model.predict(x_test)
+        model.predict(x_test)
 
         return model
 

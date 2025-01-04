@@ -52,7 +52,13 @@ collector_agent_registration = collector_agent_registration_fixture(
 
 
 @pytest.fixture(
-    scope="session", params=["no_serializer", "serializer_function", "callable_object", "serializer_object"]
+    scope="session",
+    params=[
+        "no_serializer",
+        "serializer_function",
+        "callable_object",
+        "serializer_object",
+    ],
 )
 def client_type(request):
     return request.param
@@ -92,7 +98,15 @@ def producer(client_type, json_serializer, json_callable_serializer, broker):
 
 
 @pytest.fixture(scope="function")
-def consumer(group_id, topic, producer, client_type, json_deserializer, json_callable_deserializer, broker):
+def consumer(
+    group_id,
+    topic,
+    producer,
+    client_type,
+    json_deserializer,
+    json_callable_deserializer,
+    broker,
+):
     if client_type == "no_serializer":
         consumer = kafka.KafkaConsumer(
             topic,
@@ -176,7 +190,7 @@ def json_deserializer():
 
 @pytest.fixture(scope="session")
 def json_callable_serializer():
-    class JSONCallableSerializer():
+    class JSONCallableSerializer:
         def __call__(self, obj):
             return json.dumps(obj).encode("utf-8") if obj is not None else None
 
@@ -185,7 +199,7 @@ def json_callable_serializer():
 
 @pytest.fixture(scope="session")
 def json_callable_deserializer():
-    class JSONCallableDeserializer():
+    class JSONCallableDeserializer:
         def __call__(self, obj):
             return json.loads(obj.decode("utf-8")) if obj is not None else None
 
@@ -238,7 +252,9 @@ def get_consumer_record(topic, send_producer_message, consumer, deserialize):
                 record_count += 1
             attempts += 1
 
-        assert record_count == 1, f"Incorrect count of records consumed: {record_count}. Expected 1."
+        assert (
+            record_count == 1
+        ), f"Incorrect count of records consumed: {record_count}. Expected 1."
 
     return _test
 
@@ -276,9 +292,13 @@ def cache_kafka_consumer_headers(wrapped, instance, args, kwargs):
 @pytest.fixture(autouse=True)
 def assert_no_active_transaction():
     # Run before test
-    assert not current_transaction(active_only=False), "Transaction exists before test run."
+    assert not current_transaction(
+        active_only=False
+    ), "Transaction exists before test run."
 
     yield  # Run test
 
     # Run after test
-    assert not current_transaction(active_only=False), "Transaction was not properly exited."
+    assert not current_transaction(
+        active_only=False
+    ), "Transaction was not properly exited."

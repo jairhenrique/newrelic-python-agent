@@ -65,12 +65,16 @@ from newrelic.common.object_names import callable_name
 from newrelic.hooks.external_botocore import MODEL_EXTRACTORS
 
 
-@pytest.fixture(scope="session", params=[False, True], ids=["ResponseStandard", "ResponseStreaming"])
+@pytest.fixture(
+    scope="session", params=[False, True], ids=["ResponseStandard", "ResponseStreaming"]
+)
 def response_streaming(request):
     return request.param
 
 
-@pytest.fixture(scope="session", params=[False, True], ids=["RequestStandard", "RequestStreaming"])
+@pytest.fixture(
+    scope="session", params=[False, True], ids=["RequestStandard", "RequestStreaming"]
+)
 def request_streaming(request):
     return request.param
 
@@ -156,7 +160,9 @@ def expected_invalid_access_key_error_events(model_id):
     return chat_completion_invalid_access_key_error_events[model_id]
 
 
-_test_bedrock_chat_completion_prompt = "What is 212 degrees Fahrenheit converted to Celsius?"
+_test_bedrock_chat_completion_prompt = (
+    "What is 212 degrees Fahrenheit converted to Celsius?"
+)
 
 
 @reset_core_stats_engine()
@@ -183,14 +189,20 @@ def test_bedrock_chat_completion_in_txn_with_llm_metadata(
         add_custom_attribute("llm.foo", "bar")
         add_custom_attribute("non_llm_attr", "python-agent")
         with WithLlmCustomAttributes({"context": "attr"}):
-            exercise_model(prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100)
+            exercise_model(
+                prompt=_test_bedrock_chat_completion_prompt,
+                temperature=0.7,
+                max_tokens=100,
+            )
 
     _test()
 
 
 @disabled_ai_monitoring_record_content_settings
 @reset_core_stats_engine()
-def test_bedrock_chat_completion_no_content(set_trace_info, exercise_model, expected_events, expected_metrics):
+def test_bedrock_chat_completion_no_content(
+    set_trace_info, exercise_model, expected_events, expected_metrics
+):
     @validate_custom_events(events_sans_content(expected_events))
     # One summary event, one user message, and one response message from the assistant
     @validate_custom_event_count(count=3)
@@ -210,14 +222,18 @@ def test_bedrock_chat_completion_no_content(set_trace_info, exercise_model, expe
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
         add_custom_attribute("llm.foo", "bar")
         add_custom_attribute("non_llm_attr", "python-agent")
-        exercise_model(prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100)
+        exercise_model(
+            prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100
+        )
 
     _test()
 
 
 @reset_core_stats_engine()
 @override_llm_token_callback_settings(llm_token_count_callback)
-def test_bedrock_chat_completion_with_token_count(set_trace_info, exercise_model, expected_events, expected_metrics):
+def test_bedrock_chat_completion_with_token_count(
+    set_trace_info, exercise_model, expected_events, expected_metrics
+):
     @validate_custom_events(add_token_count_to_events(expected_events))
     # One summary event, one user message, and one response message from the assistant
     @validate_custom_event_count(count=3)
@@ -237,13 +253,17 @@ def test_bedrock_chat_completion_with_token_count(set_trace_info, exercise_model
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
         add_custom_attribute("llm.foo", "bar")
         add_custom_attribute("non_llm_attr", "python-agent")
-        exercise_model(prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100)
+        exercise_model(
+            prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100
+        )
 
     _test()
 
 
 @reset_core_stats_engine()
-def test_bedrock_chat_completion_no_llm_metadata(set_trace_info, exercise_model, expected_events, expected_metrics):
+def test_bedrock_chat_completion_no_llm_metadata(
+    set_trace_info, exercise_model, expected_events, expected_metrics
+):
     @validate_custom_events(events_sans_llm_metadata(expected_events))
     # One summary event, one user message, and one response message from the assistant
     @validate_custom_event_count(count=3)
@@ -259,7 +279,9 @@ def test_bedrock_chat_completion_no_llm_metadata(set_trace_info, exercise_model,
     @background_task(name="test_bedrock_chat_completion_in_txn_no_llm_metadata")
     def _test():
         set_trace_info()
-        exercise_model(prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100)
+        exercise_model(
+            prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100
+        )
 
     _test()
 
@@ -268,16 +290,22 @@ def test_bedrock_chat_completion_no_llm_metadata(set_trace_info, exercise_model,
 @validate_custom_event_count(count=0)
 def test_bedrock_chat_completion_outside_txn(exercise_model):
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
-    exercise_model(prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100)
+    exercise_model(
+        prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100
+    )
 
 
 @disabled_ai_monitoring_settings
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
 @background_task(name="test_bedrock_chat_completion_disabled_ai_monitoring_setting")
-def test_bedrock_chat_completion_disabled_ai_monitoring_settings(set_trace_info, exercise_model):
+def test_bedrock_chat_completion_disabled_ai_monitoring_settings(
+    set_trace_info, exercise_model
+):
     set_trace_info()
-    exercise_model(prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100)
+    exercise_model(
+        prompt=_test_bedrock_chat_completion_prompt, temperature=0.7, max_tokens=100
+    )
 
 
 @reset_core_stats_engine()
@@ -290,8 +318,12 @@ def test_bedrock_chat_completion_streaming_disabled(
     @validate_custom_event_count(count=0)
     @validate_transaction_metrics(
         name="test_bedrock_chat_completion",
-        scoped_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
-        rollup_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
+        scoped_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
+        rollup_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
         custom_metrics=[
             (f"Supportability/Python/ML/Bedrock/{BOTOCORE_VERSION}", 1),
         ],
@@ -300,9 +332,10 @@ def test_bedrock_chat_completion_streaming_disabled(
     @background_task(name="test_bedrock_chat_completion")
     def _test():
         model = "amazon.titan-text-express-v1"
-        body = (chat_completion_payload_templates[model] % (_test_bedrock_chat_completion_prompt, 0.7, 100)).encode(
-            "utf-8"
-        )
+        body = (
+            chat_completion_payload_templates[model]
+            % (_test_bedrock_chat_completion_prompt, 0.7, 100)
+        ).encode("utf-8")
 
         response = bedrock_server.invoke_model_with_response_stream(
             body=body,
@@ -323,7 +356,9 @@ _client_error_name = callable_name(_client_error)
 def test_bedrock_chat_completion_error_invalid_model(
     bedrock_server, set_trace_info, response_streaming, expected_metrics
 ):
-    @validate_custom_events(events_with_context_attrs(chat_completion_invalid_model_error_events))
+    @validate_custom_events(
+        events_with_context_attrs(chat_completion_invalid_model_error_events)
+    )
     @validate_error_trace_attributes(
         "botocore.errorfactory:ValidationException",
         exact_attrs={
@@ -413,7 +448,11 @@ def test_bedrock_chat_completion_error_incorrect_access_key(
     )
     @background_task(name="test_bedrock_chat_completion")
     def _test():
-        monkeypatch.setattr(bedrock_server._request_signer._credentials, "access_key", "INVALID-ACCESS-KEY")
+        monkeypatch.setattr(
+            bedrock_server._request_signer._credentials,
+            "access_key",
+            "INVALID-ACCESS-KEY",
+        )
 
         with pytest.raises(_client_error):
             set_trace_info()
@@ -442,7 +481,9 @@ def test_bedrock_chat_completion_error_incorrect_access_key_no_content(
     See the original test for a description of the error case.
     """
 
-    @validate_custom_events(events_sans_content(expected_invalid_access_key_error_events))
+    @validate_custom_events(
+        events_sans_content(expected_invalid_access_key_error_events)
+    )
     @validate_error_trace_attributes(
         _client_error_name,
         exact_attrs={
@@ -466,7 +507,11 @@ def test_bedrock_chat_completion_error_incorrect_access_key_no_content(
     )
     @background_task(name="test_bedrock_chat_completion")
     def _test():
-        monkeypatch.setattr(bedrock_server._request_signer._credentials, "access_key", "INVALID-ACCESS-KEY")
+        monkeypatch.setattr(
+            bedrock_server._request_signer._credentials,
+            "access_key",
+            "INVALID-ACCESS-KEY",
+        )
 
         with pytest.raises(_client_error):
             set_trace_info()
@@ -489,7 +534,9 @@ def test_bedrock_chat_completion_error_incorrect_access_key_with_token(
     expected_invalid_access_key_error_events,
     expected_metrics,
 ):
-    @validate_custom_events(add_token_count_to_events(expected_invalid_access_key_error_events))
+    @validate_custom_events(
+        add_token_count_to_events(expected_invalid_access_key_error_events)
+    )
     @validate_error_trace_attributes(
         _client_error_name,
         exact_attrs={
@@ -513,9 +560,15 @@ def test_bedrock_chat_completion_error_incorrect_access_key_with_token(
     )
     @background_task(name="test_bedrock_chat_completion")
     def _test():
-        monkeypatch.setattr(bedrock_server._request_signer._credentials, "access_key", "INVALID-ACCESS-KEY")
+        monkeypatch.setattr(
+            bedrock_server._request_signer._credentials,
+            "access_key",
+            "INVALID-ACCESS-KEY",
+        )
 
-        with pytest.raises(_client_error):  # not sure where this exception actually comes from
+        with pytest.raises(
+            _client_error
+        ):  # not sure where this exception actually comes from
             set_trace_info()
             add_custom_attribute("llm.conversation_id", "my-awesome-id")
             add_custom_attribute("llm.foo", "bar")
@@ -618,7 +671,9 @@ def test_bedrock_chat_completion_error_malformed_response_body(
     @background_task(name="test_bedrock_chat_completion")
     def _test():
         model = "amazon.titan-text-express-v1"
-        body = (chat_completion_payload_templates[model] % ("Malformed Body", 0.7, 100)).encode("utf-8")
+        body = (
+            chat_completion_payload_templates[model] % ("Malformed Body", 0.7, 100)
+        ).encode("utf-8")
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
         add_custom_attribute("llm.foo", "bar")
@@ -648,12 +703,18 @@ def test_bedrock_chat_completion_error_malformed_response_streaming_body(
     events are recorded as normal.
     """
 
-    @validate_custom_events(chat_completion_expected_malformed_response_streaming_body_events)
+    @validate_custom_events(
+        chat_completion_expected_malformed_response_streaming_body_events
+    )
     @validate_custom_event_count(count=2)
     @validate_transaction_metrics(
         name="test_bedrock_chat_completion",
-        scoped_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
-        rollup_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
+        scoped_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
+        rollup_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
         custom_metrics=[
             (f"Supportability/Python/ML/Bedrock/{BOTOCORE_VERSION}", 1),
         ],
@@ -662,7 +723,10 @@ def test_bedrock_chat_completion_error_malformed_response_streaming_body(
     @background_task(name="test_bedrock_chat_completion")
     def _test():
         model = "amazon.titan-text-express-v1"
-        body = (chat_completion_payload_templates[model] % ("Malformed Streaming Body", 0.7, 100)).encode("utf-8")
+        body = (
+            chat_completion_payload_templates[model]
+            % ("Malformed Streaming Body", 0.7, 100)
+        ).encode("utf-8")
 
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -697,7 +761,9 @@ def test_bedrock_chat_completion_error_malformed_response_streaming_chunk(
     recorded events.
     """
 
-    @validate_custom_events(chat_completion_expected_malformed_response_streaming_chunk_events)
+    @validate_custom_events(
+        chat_completion_expected_malformed_response_streaming_chunk_events
+    )
     @validate_custom_event_count(count=2)
     @validate_error_trace_attributes(
         "botocore.eventstream:ChecksumMismatch",
@@ -716,8 +782,12 @@ def test_bedrock_chat_completion_error_malformed_response_streaming_chunk(
     )
     @validate_transaction_metrics(
         name="test_bedrock_chat_completion",
-        scoped_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
-        rollup_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
+        scoped_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
+        rollup_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
         custom_metrics=[
             (f"Supportability/Python/ML/Bedrock/{BOTOCORE_VERSION}", 1),
         ],
@@ -726,7 +796,10 @@ def test_bedrock_chat_completion_error_malformed_response_streaming_chunk(
     @background_task(name="test_bedrock_chat_completion")
     def _test():
         model = "amazon.titan-text-express-v1"
-        body = (chat_completion_payload_templates[model] % ("Malformed Streaming Chunk", 0.7, 100)).encode("utf-8")
+        body = (
+            chat_completion_payload_templates[model]
+            % ("Malformed Streaming Chunk", 0.7, 100)
+        ).encode("utf-8")
         with pytest.raises(botocore.eventstream.ChecksumMismatch):
             set_trace_info()
             add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -784,8 +857,12 @@ def test_bedrock_chat_completion_error_streaming_exception(
     )
     @validate_transaction_metrics(
         name="test_bedrock_chat_completion",
-        scoped_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
-        rollup_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
+        scoped_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
+        rollup_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
         custom_metrics=[
             (f"Supportability/Python/ML/Bedrock/{BOTOCORE_VERSION}", 1),
         ],
@@ -795,7 +872,10 @@ def test_bedrock_chat_completion_error_streaming_exception(
     def _test():
         with pytest.raises(_event_stream_error):
             model = "amazon.titan-text-express-v1"
-            body = (chat_completion_payload_templates[model] % ("Streaming Exception", 0.7, 100)).encode("utf-8")
+            body = (
+                chat_completion_payload_templates[model]
+                % ("Streaming Exception", 0.7, 100)
+            ).encode("utf-8")
 
             set_trace_info()
             add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -825,7 +905,9 @@ def test_bedrock_chat_completion_error_streaming_exception_no_content(
     See the original test for a description of the error case.
     """
 
-    @validate_custom_events(events_sans_content(chat_completion_expected_streaming_error_events))
+    @validate_custom_events(
+        events_sans_content(chat_completion_expected_streaming_error_events)
+    )
     @validate_custom_event_count(count=2)
     @validate_error_trace_attributes(
         _event_stream_error_name,
@@ -845,8 +927,12 @@ def test_bedrock_chat_completion_error_streaming_exception_no_content(
     )
     @validate_transaction_metrics(
         name="test_bedrock_chat_completion",
-        scoped_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
-        rollup_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
+        scoped_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
+        rollup_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
         custom_metrics=[
             (f"Supportability/Python/ML/Bedrock/{BOTOCORE_VERSION}", 1),
         ],
@@ -856,7 +942,10 @@ def test_bedrock_chat_completion_error_streaming_exception_no_content(
     def _test():
         with pytest.raises(_event_stream_error):
             model = "amazon.titan-text-express-v1"
-            body = (chat_completion_payload_templates[model] % ("Streaming Exception", 0.7, 100)).encode("utf-8")
+            body = (
+                chat_completion_payload_templates[model]
+                % ("Streaming Exception", 0.7, 100)
+            ).encode("utf-8")
 
             set_trace_info()
             add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -886,7 +975,9 @@ def test_bedrock_chat_completion_error_streaming_exception_with_token_count(
     See the original test for a description of the error case.
     """
 
-    @validate_custom_events(add_token_count_to_events(chat_completion_expected_streaming_error_events))
+    @validate_custom_events(
+        add_token_count_to_events(chat_completion_expected_streaming_error_events)
+    )
     @validate_custom_event_count(count=2)
     @validate_error_trace_attributes(
         _event_stream_error_name,
@@ -906,8 +997,12 @@ def test_bedrock_chat_completion_error_streaming_exception_with_token_count(
     )
     @validate_transaction_metrics(
         name="test_bedrock_chat_completion",
-        scoped_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
-        rollup_metrics=[("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)],
+        scoped_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
+        rollup_metrics=[
+            ("Llm/completion/Bedrock/invoke_model_with_response_stream", 1)
+        ],
         custom_metrics=[
             (f"Supportability/Python/ML/Bedrock/{BOTOCORE_VERSION}", 1),
         ],
@@ -917,7 +1012,10 @@ def test_bedrock_chat_completion_error_streaming_exception_with_token_count(
     def _test():
         with pytest.raises(_event_stream_error):
             model = "amazon.titan-text-express-v1"
-            body = (chat_completion_payload_templates[model] % ("Streaming Exception", 0.7, 100)).encode("utf-8")
+            body = (
+                chat_completion_payload_templates[model]
+                % ("Streaming Exception", 0.7, 100)
+            ).encode("utf-8")
 
             set_trace_info()
             add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -935,12 +1033,16 @@ def test_bedrock_chat_completion_error_streaming_exception_with_token_count(
     _test()
 
 
-def test_bedrock_chat_completion_functions_marked_as_wrapped_for_sdk_compatibility(bedrock_server):
+def test_bedrock_chat_completion_functions_marked_as_wrapped_for_sdk_compatibility(
+    bedrock_server,
+):
     assert bedrock_server._nr_wrapped
 
 
 def test_chat_models_instrumented():
-    SUPPORTED_MODELS = [model for model, _, _, _ in MODEL_EXTRACTORS if "embed" not in model]
+    SUPPORTED_MODELS = [
+        model for model, _, _, _ in MODEL_EXTRACTORS if "embed" not in model
+    ]
 
     _id = os.environ.get("AWS_ACCESS_KEY_ID")
     key = os.environ.get("AWS_SECRET_ACCESS_KEY")
@@ -955,8 +1057,12 @@ def test_chat_models_instrumented():
     models = [model["modelId"] for model in response["modelSummaries"]]
     not_supported = []
     for model in models:
-        is_supported = any([model.startswith(supported_model) for supported_model in SUPPORTED_MODELS])
+        is_supported = any(
+            [model.startswith(supported_model) for supported_model in SUPPORTED_MODELS]
+        )
         if not is_supported:
             not_supported.append(model)
 
-    assert not not_supported, f"The following unsupported models were found: {not_supported}"
+    assert (
+        not not_supported
+    ), f"The following unsupported models were found: {not_supported}"

@@ -46,6 +46,7 @@ def test_strict_redis_client_instance_info(args, kwargs, expected):
     conn_kwargs = r.connection_pool.connection_kwargs
     assert _instance_info(conn_kwargs) == expected
 
+
 @pytest.mark.parametrize("args,kwargs,expected", _instance_info_tests)
 def test_strict_redis_connection_instance_info(args, kwargs, expected):
     r = aredis.StrictRedis(*args, **kwargs)
@@ -74,20 +75,42 @@ _instance_info_from_url_tests = [
 # (https://github.com/redis/redis-py/commit/cfe1041bbb8a8887531810429879bffbe705b03a)
 # and removed in v4.0.0b1 (https://github.com/redis/redis-py/blame/v4.0.0b1/redis/connection.py#L997)
 if (3, 5, 3) >= REDIS_PY_VERSION >= (2, 7, 5):
-    _instance_info_from_url_tests.append((("redis://127.0.0.1",), {}, ("127.0.0.1", "6379", "0")))
+    _instance_info_from_url_tests.append(
+        (("redis://127.0.0.1",), {}, ("127.0.0.1", "6379", "0"))
+    )
 
 if REDIS_PY_VERSION >= (2, 10):
     _instance_info_from_url_tests.extend(
         [
-            (("rediss://localhost:6379/2/",), {}, ("localhost", "6379", "2")),          # rediss: Not a typo
-            (("redis://localhost:6379",), {"host": "someotherhost"}, ("localhost", "6379", "0")),
+            (
+                ("rediss://localhost:6379/2/",),
+                {},
+                ("localhost", "6379", "2"),
+            ),  # rediss: Not a typo
+            (
+                ("redis://localhost:6379",),
+                {"host": "someotherhost"},
+                ("localhost", "6379", "0"),
+            ),
             (("redis://localhost:6379/2",), {"db": 3}, ("localhost", "6379", "2")),
             (("redis://localhost:6379/2/?db=111",), {}, ("localhost", "6379", "111")),
             (("redis://localhost:6379?db=2",), {}, ("localhost", "6379", "2")),
             (("redis://localhost:6379/2?db=111",), {}, ("localhost", "6379", "111")),
-            (("unix:///path/to/socket.sock",), {}, ("localhost", "/path/to/socket.sock", "0")),
-            (("unix:///path/to/socket.sock?db=2",), {}, ("localhost", "/path/to/socket.sock", "2")),
-            (("unix:///path/to/socket.sock",), {"db": 2}, ("localhost", "/path/to/socket.sock", "2")),
+            (
+                ("unix:///path/to/socket.sock",),
+                {},
+                ("localhost", "/path/to/socket.sock", "0"),
+            ),
+            (
+                ("unix:///path/to/socket.sock?db=2",),
+                {},
+                ("localhost", "/path/to/socket.sock", "2"),
+            ),
+            (
+                ("unix:///path/to/socket.sock",),
+                {"db": 2},
+                ("localhost", "/path/to/socket.sock", "2"),
+            ),
         ]
     )
 

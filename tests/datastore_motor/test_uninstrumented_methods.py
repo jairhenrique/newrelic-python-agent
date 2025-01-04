@@ -17,7 +17,9 @@ from newrelic.hooks.datastore_motor import (
     _motor_client_sync_methods,
 )
 
-expected_motor_client_methods = set(_motor_client_async_methods) | set(_motor_client_sync_methods)
+expected_motor_client_methods = set(_motor_client_async_methods) | set(
+    _motor_client_sync_methods
+)
 
 IGNORED_METHODS = {
     "codec_options",
@@ -47,6 +49,8 @@ def test_collection_uninstrumented_methods(client):
     assert not unexpected, f"Uninstrumented methods: {sorted(unexpected)}"
 
     # Check what was actually instrumented
-    is_wrapped = lambda m: hasattr(getattr(collection, m), "__wrapped__")
+    def is_wrapped(m):
+        return hasattr(getattr(collection, m), "__wrapped__")
+
     uninstrumented = {m for m in methods if not is_wrapped(m)}
     assert not uninstrumented, f"Uninstrumented methods: {sorted(uninstrumented)}"

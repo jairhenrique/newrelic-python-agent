@@ -111,13 +111,21 @@ def client_set(request, loop):  # noqa
         if AIOREDIS_VERSION >= (2, 0):
             if request.param == "Redis":
                 return (
-                    aioredis.Redis(host=DB_SETTINGS[0]["host"], port=DB_SETTINGS[0]["port"], db=0),
-                    aioredis.Redis(host=DB_SETTINGS[1]["host"], port=DB_SETTINGS[1]["port"], db=0),
+                    aioredis.Redis(
+                        host=DB_SETTINGS[0]["host"], port=DB_SETTINGS[0]["port"], db=0
+                    ),
+                    aioredis.Redis(
+                        host=DB_SETTINGS[1]["host"], port=DB_SETTINGS[1]["port"], db=0
+                    ),
                 )
             elif request.param == "StrictRedis":
                 return (
-                    aioredis.StrictRedis(host=DB_SETTINGS[0]["host"], port=DB_SETTINGS[0]["port"], db=0),
-                    aioredis.StrictRedis(host=DB_SETTINGS[1]["host"], port=DB_SETTINGS[1]["port"], db=0),
+                    aioredis.StrictRedis(
+                        host=DB_SETTINGS[0]["host"], port=DB_SETTINGS[0]["port"], db=0
+                    ),
+                    aioredis.StrictRedis(
+                        host=DB_SETTINGS[1]["host"], port=DB_SETTINGS[1]["port"], db=0
+                    ),
                 )
             else:
                 raise NotImplementedError()
@@ -125,10 +133,16 @@ def client_set(request, loop):  # noqa
             if request.param == "Redis":
                 return (
                     loop.run_until_complete(
-                        aioredis.create_redis(f"redis://{DB_SETTINGS[0]['host']}:{DB_SETTINGS[0]['port']}", db=0)
+                        aioredis.create_redis(
+                            f"redis://{DB_SETTINGS[0]['host']}:{DB_SETTINGS[0]['port']}",
+                            db=0,
+                        )
                     ),
                     loop.run_until_complete(
-                        aioredis.create_redis(f"redis://{DB_SETTINGS[1]['host']}:{DB_SETTINGS[1]['port']}", db=0)
+                        aioredis.create_redis(
+                            f"redis://{DB_SETTINGS[1]['host']}:{DB_SETTINGS[1]['port']}",
+                            db=0,
+                        )
                     ),
                 )
             elif request.param == "StrictRedis":
@@ -147,7 +161,9 @@ async def exercise_redis(client_1, client_2):
         await client_2.execute("CLIENT", "LIST")
 
 
-@pytest.mark.skipif(len(DB_SETTINGS) < 2, reason="Env not configured with multiple databases")
+@pytest.mark.skipif(
+    len(DB_SETTINGS) < 2, reason="Env not configured with multiple databases"
+)
 @override_application_settings(_enable_instance_settings)
 @validate_transaction_metrics(
     "test_multiple_dbs:test_multiple_datastores_enabled",
@@ -160,7 +176,9 @@ def test_multiple_datastores_enabled(client_set, loop):  # noqa
     loop.run_until_complete(exercise_redis(client_set[0], client_set[1]))
 
 
-@pytest.mark.skipif(len(DB_SETTINGS) < 2, reason="Env not configured with multiple databases")
+@pytest.mark.skipif(
+    len(DB_SETTINGS) < 2, reason="Env not configured with multiple databases"
+)
 @override_application_settings(_disable_instance_settings)
 @validate_transaction_metrics(
     "test_multiple_dbs:test_multiple_datastores_disabled",
@@ -173,7 +191,9 @@ def test_multiple_datastores_disabled(client_set, loop):  # noqa
     loop.run_until_complete(exercise_redis(client_set[0], client_set[1]))
 
 
-@pytest.mark.skipif(len(DB_SETTINGS) < 2, reason="Env not configured with multiple databases")
+@pytest.mark.skipif(
+    len(DB_SETTINGS) < 2, reason="Env not configured with multiple databases"
+)
 @validate_transaction_metrics(
     "test_multiple_dbs:test_concurrent_calls",
     scoped_metrics=_concurrent_scoped_metrics,
@@ -190,7 +210,11 @@ def test_concurrent_calls(client_set, loop):  # noqa
     import asyncio
 
     async def exercise_concurrent():
-        await asyncio.gather(*(client.set(f"key-{i}", i) for i, client in enumerate(client_set)))
-        await asyncio.gather(*(client.get(f"key-{i}") for i, client in enumerate(client_set)))
+        await asyncio.gather(
+            *(client.set(f"key-{i}", i) for i, client in enumerate(client_set))
+        )
+        await asyncio.gather(
+            *(client.get(f"key-{i}") for i, client in enumerate(client_set))
+        )
 
     loop.run_until_complete(exercise_concurrent())

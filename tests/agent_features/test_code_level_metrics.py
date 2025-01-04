@@ -50,7 +50,9 @@ if FILE_PATH.endswith(".pyc"):
 
 SQLITE_CONNECTION = sqlite3.Connection(":memory:")
 
-BUILTIN_ATTRS = {"code.filepath": "<builtin>", "code.lineno": None} if not is_pypy else {}
+BUILTIN_ATTRS = (
+    {"code.filepath": "<builtin>", "code.lineno": None} if not is_pypy else {}
+)
 
 
 def merge_dicts(A, B):
@@ -194,7 +196,9 @@ _TEST_METHODS = {
         merge_dicts(
             {
                 "code.function": "__enter__",
-                "code.namespace": "sqlite3.Connection" if not is_pypy else "_sqlite3.Connection",
+                "code.namespace": "sqlite3.Connection"
+                if not is_pypy
+                else "_sqlite3.Connection",
             },
             BUILTIN_ATTRS,
         ),
@@ -280,7 +284,10 @@ _TEST_TYPE_CONSTRUCTOR_METHODS = {
 
 @pytest.mark.parametrize(
     "func,args,agents",
-    [pytest.param(*args, id=id_) for id_, args in _TEST_TYPE_CONSTRUCTOR_METHODS.items()],
+    [
+        pytest.param(*args, id=id_)
+        for id_, args in _TEST_TYPE_CONSTRUCTOR_METHODS.items()
+    ],
 )
 def test_code_level_metrics_type_constructor_methods(func, args, agents, extract):
     @override_application_settings(

@@ -92,7 +92,11 @@ async def _exercise_db(multiple_connections):
     connection = multiple_connections[0]
     try:
         cursor = connection.cursor()
-        await maybe_await(cursor.execute("SELECT setting from pg_settings where name=%s", ("server_version",)))
+        await maybe_await(
+            cursor.execute(
+                "SELECT setting from pg_settings where name=%s", ("server_version",)
+            )
+        )
         await maybe_await(connection.commit())
     finally:
         await maybe_await(connection.close())
@@ -100,9 +104,13 @@ async def _exercise_db(multiple_connections):
     connection = multiple_connections[1]
     try:
         cursor = connection.cursor()
-        await maybe_await(cursor.execute(f"drop table if exists {DB_SETTINGS['table_name']}"))
         await maybe_await(
-            cursor.execute(f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)")
+            cursor.execute(f"drop table if exists {DB_SETTINGS['table_name']}")
+        )
+        await maybe_await(
+            cursor.execute(
+                f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)"
+            )
         )
         await maybe_await(connection.commit())
     finally:

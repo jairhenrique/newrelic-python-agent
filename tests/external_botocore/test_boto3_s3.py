@@ -15,7 +15,6 @@
 import uuid
 
 import boto3
-import botocore
 from moto import mock_aws
 from testing_support.fixtures import dt_enabled
 from testing_support.validators.validate_span_events import validate_span_events
@@ -75,7 +74,10 @@ _s3_rollup_metrics = [
 @validate_span_events(exact_agents={"http.url": EXPECTED_BUCKET_URL}, count=3)
 @validate_span_events(exact_agents={"http.url": EXPECTED_KEY_URL}, count=3)
 @validate_transaction_metrics(
-    "test_boto3_s3:test_s3", scoped_metrics=_s3_scoped_metrics, rollup_metrics=_s3_rollup_metrics, background_task=True
+    "test_boto3_s3:test_s3",
+    scoped_metrics=_s3_scoped_metrics,
+    rollup_metrics=_s3_rollup_metrics,
+    background_task=True,
 )
 @background_task()
 @mock_aws
@@ -88,11 +90,16 @@ def test_s3():
     )
 
     # Create bucket
-    resp = client.create_bucket(Bucket=TEST_BUCKET, CreateBucketConfiguration={"LocationConstraint": AWS_REGION_NAME})
+    resp = client.create_bucket(
+        Bucket=TEST_BUCKET,
+        CreateBucketConfiguration={"LocationConstraint": AWS_REGION_NAME},
+    )
     assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
 
     # Put object
-    resp = client.put_object(Bucket=TEST_BUCKET, Key="hello_world", Body=b"hello_world_content")
+    resp = client.put_object(
+        Bucket=TEST_BUCKET, Key="hello_world", Body=b"hello_world_content"
+    )
     assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
 
     # List bucket

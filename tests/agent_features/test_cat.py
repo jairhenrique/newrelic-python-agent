@@ -46,7 +46,10 @@ def target_wsgi_application(environ, start_response):
         response_headers = []
     else:
         output = b"hello world"
-        response_headers = [("Content-type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+        response_headers = [
+            ("Content-type", "text/html; charset=utf-8"),
+            ("Content-Length", str(len(output))),
+        ]
     start_response(status, response_headers)
 
     return [output]

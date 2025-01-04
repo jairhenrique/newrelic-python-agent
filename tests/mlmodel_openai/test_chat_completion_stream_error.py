@@ -243,10 +243,14 @@ expected_events_on_invalid_model_error = [
     rollup_metrics=[("Llm/completion/OpenAI/create", 1)],
     background_task=True,
 )
-@validate_custom_events(add_token_count_to_events(expected_events_on_invalid_model_error))
+@validate_custom_events(
+    add_token_count_to_events(expected_events_on_invalid_model_error)
+)
 @validate_custom_event_count(count=2)
 @background_task()
-def test_chat_completion_invalid_request_error_invalid_model_with_token_count(set_trace_info):
+def test_chat_completion_invalid_request_error_invalid_model_with_token_count(
+    set_trace_info,
+):
     with pytest.raises(openai.InvalidRequestError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -538,7 +542,9 @@ def test_chat_completion_invalid_request_error_no_model_async(loop, set_trace_in
 @validate_custom_events(events_sans_content(expected_events_on_no_model_error))
 @validate_custom_event_count(count=3)
 @background_task()
-def test_chat_completion_invalid_request_error_no_model_async_no_content(loop, set_trace_info):
+def test_chat_completion_invalid_request_error_no_model_async_no_content(
+    loop, set_trace_info
+):
     with pytest.raises(openai.InvalidRequestError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -578,10 +584,14 @@ def test_chat_completion_invalid_request_error_no_model_async_no_content(loop, s
     rollup_metrics=[("Llm/completion/OpenAI/acreate", 1)],
     background_task=True,
 )
-@validate_custom_events(add_token_count_to_events(expected_events_on_invalid_model_error))
+@validate_custom_events(
+    add_token_count_to_events(expected_events_on_invalid_model_error)
+)
 @validate_custom_event_count(count=2)
 @background_task()
-def test_chat_completion_invalid_request_error_invalid_model_with_token_count_async(loop, set_trace_info):
+def test_chat_completion_invalid_request_error_invalid_model_with_token_count_async(
+    loop, set_trace_info
+):
     with pytest.raises(openai.InvalidRequestError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -623,7 +633,9 @@ def test_chat_completion_invalid_request_error_invalid_model_with_token_count_as
 @validate_custom_events(expected_events_on_invalid_model_error)
 @validate_custom_event_count(count=2)
 @background_task()
-def test_chat_completion_invalid_request_error_invalid_model_async(loop, set_trace_info):
+def test_chat_completion_invalid_request_error_invalid_model_async(
+    loop, set_trace_info
+):
     with pytest.raises(openai.InvalidRequestError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")

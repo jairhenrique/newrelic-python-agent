@@ -19,7 +19,10 @@ import celery
 from newrelic.common.object_wrapper import _NRBoundFunctionWrapper
 
 
-FORGONE_TASK_METRICS = [("Function/_target_application.add", None), ("Function/_target_application.tsum", None)]
+FORGONE_TASK_METRICS = [
+    ("Function/_target_application.add", None),
+    ("Function/_target_application.tsum", None),
+]
 
 
 def test_task_wrapping_detection():
@@ -34,13 +37,14 @@ def test_task_wrapping_detection():
 
 
 def test_worker_optimizations_preserve_instrumentation(celery_worker_available):
-    is_instrumented = lambda: isinstance(celery.app.task.BaseTask.__call__, _NRBoundFunctionWrapper)
+    def is_instrumented():
+        return isinstance(celery.app.task.BaseTask.__call__, _NRBoundFunctionWrapper)
 
     celery.app.trace.reset_worker_optimizations()
     assert is_instrumented(), "Instrumentation not initially applied."
-    
+
     celery.app.trace.setup_worker_optimizations(celery_worker_available.app)
     assert is_instrumented(), "setup_worker_optimizations removed instrumentation."
-    
+
     celery.app.trace.reset_worker_optimizations()
     assert is_instrumented(), "reset_worker_optimizations removed instrumentation."

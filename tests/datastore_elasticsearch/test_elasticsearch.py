@@ -66,6 +66,7 @@ _base_rollup_metrics = [
 
 # Version support
 
+
 def is_importable(module_path):
     try:
         __import__(module_path)
@@ -76,7 +77,9 @@ def is_importable(module_path):
 
 _all_count = 14
 
-if is_importable("elasticsearch.client.cat") or is_importable("elasticsearch._sync.client.cat"):
+if is_importable("elasticsearch.client.cat") or is_importable(
+    "elasticsearch._sync.client.cat"
+):
     _base_scoped_metrics.append(("Datastore/operation/Elasticsearch/cat.health", 1))
     _base_rollup_metrics.append(("Datastore/operation/Elasticsearch/cat.health", 1))
     _all_count += 1
@@ -84,7 +87,9 @@ else:
     _base_scoped_metrics.append(("Datastore/operation/Elasticsearch/cat.health", None))
     _base_rollup_metrics.append(("Datastore/operation/Elasticsearch/cat.health", None))
 
-if is_importable("elasticsearch.client.nodes") or is_importable("elasticsearch._sync.client.nodes"):
+if is_importable("elasticsearch.client.nodes") or is_importable(
+    "elasticsearch._sync.client.nodes"
+):
     _base_scoped_metrics.append(("Datastore/operation/Elasticsearch/nodes.info", 1))
     _base_rollup_metrics.append(("Datastore/operation/Elasticsearch/nodes.info", 1))
     _all_count += 1
@@ -92,16 +97,28 @@ else:
     _base_scoped_metrics.append(("Datastore/operation/Elasticsearch/nodes.info", None))
     _base_rollup_metrics.append(("Datastore/operation/Elasticsearch/nodes.info", None))
 
-if hasattr(elasticsearch.client, "SnapshotClient") and hasattr(elasticsearch.client.SnapshotClient, "status"):
-    _base_scoped_metrics.append(("Datastore/operation/Elasticsearch/snapshot.status", 1))
-    _base_rollup_metrics.append(("Datastore/operation/Elasticsearch/snapshot.status", 1))
+if hasattr(elasticsearch.client, "SnapshotClient") and hasattr(
+    elasticsearch.client.SnapshotClient, "status"
+):
+    _base_scoped_metrics.append(
+        ("Datastore/operation/Elasticsearch/snapshot.status", 1)
+    )
+    _base_rollup_metrics.append(
+        ("Datastore/operation/Elasticsearch/snapshot.status", 1)
+    )
     _all_count += 1
 else:
-    _base_scoped_metrics.append(("Datastore/operation/Elasticsearch/snapshot.status", None))
-    _base_rollup_metrics.append(("Datastore/operation/Elasticsearch/snapshot.status", None))
+    _base_scoped_metrics.append(
+        ("Datastore/operation/Elasticsearch/snapshot.status", None)
+    )
+    _base_rollup_metrics.append(
+        ("Datastore/operation/Elasticsearch/snapshot.status", None)
+    )
 
 if hasattr(elasticsearch.client.IndicesClient, "status"):
-    _base_scoped_metrics.append(("Datastore/statement/Elasticsearch/_all/indices.status", 1))
+    _base_scoped_metrics.append(
+        ("Datastore/statement/Elasticsearch/_all/indices.status", 1)
+    )
     _base_rollup_metrics.extend(
         [
             ("Datastore/operation/Elasticsearch/indices.status", 1),
@@ -110,7 +127,9 @@ if hasattr(elasticsearch.client.IndicesClient, "status"):
     )
     _all_count += 1
 else:
-    _base_scoped_metrics.append(("Datastore/operation/Elasticsearch/indices.status", None))
+    _base_scoped_metrics.append(
+        ("Datastore/operation/Elasticsearch/indices.status", None)
+    )
     _base_rollup_metrics.extend(
         [
             ("Datastore/operation/Elasticsearch/indices.status", None),
@@ -148,14 +167,30 @@ _disable_rollup_metrics.append((_instance_metric_name, None))
 
 
 def _exercise_es_v7(es):
-    es.index(index="contacts", doc_type="person", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1)
     es.index(
-        index="contacts", doc_type="person", body={"name": "Jessica Coder", "age": 32, "title": "Programmer"}, id=2
+        index="contacts",
+        doc_type="person",
+        body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+        id=1,
     )
-    es.index(index="contacts", doc_type="person", body={"name": "Freddy Tester", "age": 29, "title": "Assistant"}, id=3)
+    es.index(
+        index="contacts",
+        doc_type="person",
+        body={"name": "Jessica Coder", "age": 32, "title": "Programmer"},
+        id=2,
+    )
+    es.index(
+        index="contacts",
+        doc_type="person",
+        body={"name": "Freddy Tester", "age": 29, "title": "Assistant"},
+        id=3,
+    )
     es.indices.refresh("contacts")
     es.index(
-        index="address", doc_type="employee", body={"name": "Sherlock", "address": "221B Baker Street, London"}, id=1
+        index="address",
+        doc_type="employee",
+        body={"name": "Sherlock", "address": "221B Baker Street, London"},
+        id=1,
     )
     es.index(
         index="address",
@@ -183,12 +218,32 @@ def _exercise_es_v7(es):
 
 
 def _exercise_es_v8(es):
-    es.index(index="contacts", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1)
-    es.index(index="contacts", body={"name": "Jessica Coder", "age": 32, "title": "Programmer"}, id=2)
-    es.index(index="contacts", body={"name": "Freddy Tester", "age": 29, "title": "Assistant"}, id=3)
+    es.index(
+        index="contacts",
+        body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+        id=1,
+    )
+    es.index(
+        index="contacts",
+        body={"name": "Jessica Coder", "age": 32, "title": "Programmer"},
+        id=2,
+    )
+    es.index(
+        index="contacts",
+        body={"name": "Freddy Tester", "age": 29, "title": "Assistant"},
+        id=3,
+    )
     es.indices.refresh(index="contacts")
-    es.index(index="address", body={"name": "Sherlock", "address": "221B Baker Street, London"}, id=1)
-    es.index(index="address", body={"name": "Bilbo", "address": "Bag End, Bagshot row, Hobbiton, Shire"}, id=2)
+    es.index(
+        index="address",
+        body={"name": "Sherlock", "address": "221B Baker Street, London"},
+        id=1,
+    )
+    es.index(
+        index="address",
+        body={"name": "Bilbo", "address": "Bag End, Bagshot row, Hobbiton, Shire"},
+        id=2,
+    )
     es.search(index="contacts", q="name:Joe")
     es.search(index="contacts", q="name:jessica")
     es.search(index="address", q="name:Sherlock")
@@ -212,6 +267,7 @@ _exercise_es = _exercise_es_v7 if ES_VERSION < (8, 0, 0) else _exercise_es_v8
 
 
 # Test
+
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(

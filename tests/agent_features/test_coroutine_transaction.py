@@ -39,7 +39,14 @@ else:
 settings = global_settings()
 
 
-def coroutine_test(event_loop, transaction, nr_enabled=True, does_hang=False, call_exit=False, runtime_error=False):
+def coroutine_test(
+    event_loop,
+    transaction,
+    nr_enabled=True,
+    does_hang=False,
+    call_exit=False,
+    runtime_error=False,
+):
     @transaction
     async def task():
         txn = current_transaction()
@@ -94,11 +101,21 @@ if native_coroutine_test:
         (True, True),
     ),
 )
-def test_async_coroutine_send(event_loop, num_coroutines, create_test_task, transaction, metric, call_exit, nr_enabled):
+def test_async_coroutine_send(
+    event_loop,
+    num_coroutines,
+    create_test_task,
+    transaction,
+    metric,
+    call_exit,
+    nr_enabled,
+):
     metrics = []
 
     tasks = [
-        create_test_task(event_loop, transaction, nr_enabled=nr_enabled, call_exit=call_exit)
+        create_test_task(
+            event_loop, transaction, nr_enabled=nr_enabled, call_exit=call_exit
+        )
         for _ in range(num_coroutines)
     ]
 
@@ -128,10 +145,15 @@ def test_async_coroutine_send(event_loop, num_coroutines, create_test_task, tran
         ),
     ],
 )
-def test_async_coroutine_send_disabled(event_loop, num_coroutines, create_test_task, transaction, metric):
+def test_async_coroutine_send_disabled(
+    event_loop, num_coroutines, create_test_task, transaction, metric
+):
     metrics = []
 
-    tasks = [create_test_task(event_loop, transaction, call_exit=True) for _ in range(num_coroutines)]
+    tasks = [
+        create_test_task(event_loop, transaction, call_exit=True)
+        for _ in range(num_coroutines)
+    ]
 
     @capture_transaction_metrics(metrics)
     def _test_async_coroutine_send():
@@ -156,7 +178,9 @@ def test_async_coroutine_send_disabled(event_loop, num_coroutines, create_test_t
     ],
 )
 @validate_transaction_errors([])
-def test_async_coroutine_throw_cancel(event_loop, num_coroutines, create_test_task, transaction, metric):
+def test_async_coroutine_throw_cancel(
+    event_loop, num_coroutines, create_test_task, transaction, metric
+):
     metrics = []
 
     tasks = [create_test_task(event_loop, transaction) for _ in range(num_coroutines)]
@@ -190,7 +214,9 @@ def test_async_coroutine_throw_cancel(event_loop, num_coroutines, create_test_ta
     ],
 )
 @validate_transaction_errors(["builtins:ValueError"])
-def test_async_coroutine_throw_error(event_loop, num_coroutines, create_test_task, transaction, metric):
+def test_async_coroutine_throw_error(
+    event_loop, num_coroutines, create_test_task, transaction, metric
+):
     metrics = []
 
     tasks = [create_test_task(event_loop, transaction) for _ in range(num_coroutines)]
@@ -226,7 +252,9 @@ def test_async_coroutine_throw_error(event_loop, num_coroutines, create_test_tas
     ],
 )
 @pytest.mark.parametrize("start_coroutines", (False, True))
-def test_async_coroutine_close(event_loop, num_coroutines, create_test_task, transaction, metric, start_coroutines):
+def test_async_coroutine_close(
+    event_loop, num_coroutines, create_test_task, transaction, metric, start_coroutines
+):
     metrics = []
 
     tasks = [create_test_task(event_loop, transaction) for _ in range(num_coroutines)]
@@ -266,10 +294,15 @@ def test_async_coroutine_close(event_loop, num_coroutines, create_test_task, tra
     ],
 )
 @validate_transaction_errors(["builtins:RuntimeError"])
-def test_async_coroutine_close_raises_error(event_loop, num_coroutines, create_test_task, transaction, metric):
+def test_async_coroutine_close_raises_error(
+    event_loop, num_coroutines, create_test_task, transaction, metric
+):
     metrics = []
 
-    tasks = [create_test_task(event_loop, transaction, runtime_error=True) for _ in range(num_coroutines)]
+    tasks = [
+        create_test_task(event_loop, transaction, runtime_error=True)
+        for _ in range(num_coroutines)
+    ]
 
     async def task_c():
         coros = [t() for t in tasks]
@@ -301,7 +334,11 @@ def test_async_coroutine_close_raises_error(event_loop, num_coroutines, create_t
             "OtherTransaction/Message/lib/dest_type/Named/%s",
             lambda name: (["lib", "dest_type", name], {}),
         ),
-        (background_task, "OtherTransaction/Function/%s", lambda name: ([], {"name": name})),
+        (
+            background_task,
+            "OtherTransaction/Function/%s",
+            lambda name: ([], {"name": name}),
+        ),
     ],
 )
 def test_deferred_async_background_task(event_loop, transaction, metric, arguments):
@@ -347,10 +384,16 @@ def test_deferred_async_background_task(event_loop, transaction, metric, argumen
             "OtherTransaction/Message/lib/dest_type/Named/%s",
             lambda name: (["lib", "dest_type", name], {}),
         ),
-        (background_task, "OtherTransaction/Function/%s", lambda name: ([], {"name": name})),
+        (
+            background_task,
+            "OtherTransaction/Function/%s",
+            lambda name: ([], {"name": name}),
+        ),
     ],
 )
-def test_child_transaction_when_parent_is_running(event_loop, transaction, metric, arguments):
+def test_child_transaction_when_parent_is_running(
+    event_loop, transaction, metric, arguments
+):
     deferred_metric = (metric % "deferred", "")
 
     args, kwargs = arguments("deferred")
@@ -388,7 +431,11 @@ def test_child_transaction_when_parent_is_running(event_loop, transaction, metri
             "OtherTransaction/Message/lib/dest_type/Named/%s",
             lambda name: (["lib", "dest_type", name], {}),
         ),
-        (background_task, "OtherTransaction/Function/%s", lambda name: ([], {"name": name})),
+        (
+            background_task,
+            "OtherTransaction/Function/%s",
+            lambda name: ([], {"name": name}),
+        ),
     ],
 )
 def test_nested_coroutine_inside_sync(event_loop, transaction, metric, arguments):
@@ -425,10 +472,16 @@ def test_nested_coroutine_inside_sync(event_loop, transaction, metric, arguments
             "OtherTransaction/Message/lib/dest_type/Named/%s",
             lambda name: (["lib", "dest_type", name], {}),
         ),
-        (background_task, "OtherTransaction/Function/%s", lambda name: ([], {"name": name})),
+        (
+            background_task,
+            "OtherTransaction/Function/%s",
+            lambda name: ([], {"name": name}),
+        ),
     ],
 )
-def test_nested_coroutine_task_already_active(event_loop, transaction, metric, arguments):
+def test_nested_coroutine_task_already_active(
+    event_loop, transaction, metric, arguments
+):
     deferred_metric = (metric % "deferred", "")
 
     args, kwargs = arguments("deferred")

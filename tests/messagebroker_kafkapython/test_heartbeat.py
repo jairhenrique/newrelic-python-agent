@@ -46,7 +46,9 @@ def test_successful_heartbeat_metrics_recorded(topic, get_consumer_record):
     ]
 )
 def test_fail_timeout_heartbeat_metrics_recorded():
-    heartbeat = kafka.coordinator.heartbeat.Heartbeat(session_timeout_ms=0, max_poll_interval_ms=0)
+    heartbeat = kafka.coordinator.heartbeat.Heartbeat(
+        session_timeout_ms=0, max_poll_interval_ms=0
+    )
 
     heartbeat.poll()
     heartbeat.sent_heartbeat()

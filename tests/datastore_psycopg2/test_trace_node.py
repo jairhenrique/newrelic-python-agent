@@ -75,7 +75,9 @@ def _exercise_db():
 
     try:
         cursor = connection.cursor()
-        cursor.execute("""SELECT setting from pg_settings where name=%s""", ("server_version",))
+        cursor.execute(
+            """SELECT setting from pg_settings where name=%s""", ("server_version",)
+        )
     finally:
         connection.close()
 
@@ -84,7 +86,9 @@ def _exercise_db():
 
 
 @override_application_settings(_enable_instance_settings)
-@validate_tt_collector_json(datastore_params=_enabled_required, datastore_forgone_params=_enabled_forgone)
+@validate_tt_collector_json(
+    datastore_params=_enabled_required, datastore_forgone_params=_enabled_forgone
+)
 @validate_tt_parenting(_tt_parenting)
 @background_task()
 def test_trace_node_datastore_params_enable_instance():
@@ -92,7 +96,9 @@ def test_trace_node_datastore_params_enable_instance():
 
 
 @override_application_settings(_disable_instance_settings)
-@validate_tt_collector_json(datastore_params=_disabled_required, datastore_forgone_params=_disabled_forgone)
+@validate_tt_collector_json(
+    datastore_params=_disabled_required, datastore_forgone_params=_disabled_forgone
+)
 @validate_tt_parenting(_tt_parenting)
 @background_task()
 def test_trace_node_datastore_params_disable_instance():

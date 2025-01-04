@@ -19,7 +19,9 @@ from newrelic.common.object_wrapper import transient_function_wrapper
 
 
 def validate_error_trace_collector_json():
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     def _validate_error_trace_collector_json(wrapped, instance, args, kwargs):
         try:
             result = wrapped(*args, **kwargs)
@@ -45,7 +47,12 @@ def validate_error_trace_collector_json():
         assert isinstance(err[3], str)  # exception name
         parameters = err[4]
 
-        parameter_fields = ["userAttributes", "stack_trace", "agentAttributes", "intrinsics"]
+        parameter_fields = [
+            "userAttributes",
+            "stack_trace",
+            "agentAttributes",
+            "intrinsics",
+        ]
 
         for field in parameter_fields:
             assert field in parameters

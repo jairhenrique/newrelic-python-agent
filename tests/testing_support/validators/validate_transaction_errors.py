@@ -28,7 +28,9 @@ def validate_transaction_errors(
     expected_errors = expected_errors or []
     captured_errors = []
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     @catch_background_exceptions
     def _capture_transaction_errors(wrapped, instance, args, kwargs):
         def _bind_params(transaction, *args, **kwargs):
@@ -58,16 +60,24 @@ def validate_transaction_errors(
         else:
             compare_to = sorted([e.type for e in captured])
 
-        assert expected == compare_to, f"expected={expected!r}, captured={compare_to!r}, errors={captured!r}"
+        assert (
+            expected == compare_to
+        ), f"expected={expected!r}, captured={compare_to!r}, errors={captured!r}"
 
         for e in captured:
             assert e.span_id
             for name, value in required_params:
-                assert name in e.custom_params, f"name={name!r}, params={e.custom_params!r}"
-                assert e.custom_params[name] == value, f"name={name!r}, value={value!r}, params={e.custom_params!r}"
+                assert (
+                    name in e.custom_params
+                ), f"name={name!r}, params={e.custom_params!r}"
+                assert (
+                    e.custom_params[name] == value
+                ), f"name={name!r}, value={value!r}, params={e.custom_params!r}"
 
             for name, value in forgone_params:
-                assert name not in e.custom_params, f"name={name!r}, params={e.custom_params!r}"
+                assert (
+                    name not in e.custom_params
+                ), f"name={name!r}, params={e.custom_params!r}"
 
             if e.type in expected_errors:
                 assert e.expected is True

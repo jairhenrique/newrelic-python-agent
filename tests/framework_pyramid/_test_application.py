@@ -88,14 +88,12 @@ except ImportError:
 else:
     service = cornice.Service(name="service", path="/service", description="Service")
 
-
     @service.get()
     def cornice_service_get_info(request):
         return {"Hello": "World"}
 
-
     @cornice.resource.resource(collection_path="/resource", path="/resource/{id}")
-    class Resource():
+    class Resource:
         def __init__(self, request, context=None):
             self.request = request
 
@@ -106,11 +104,9 @@ else:
         def get(self):
             return self.request.matchdict["id"]
 
-
     cornice_error = cornice.Service(
         name="cornice_error", path="/cornice_error", description="Error"
     )
-
 
     @cornice_error.get()
     def cornice_error_get_info(request):
@@ -120,7 +116,9 @@ else:
 # END CORNICE SECTION
 
 
-def target_application(with_tweens=False, tweens_explicit=False, handle_exceptions=False):
+def target_application(
+    with_tweens=False, tweens_explicit=False, handle_exceptions=False
+):
     settings = {}
     if with_tweens and tweens_explicit:
         settings["pyramid.tweens"] = [
@@ -129,7 +127,6 @@ def target_application(with_tweens=False, tweens_explicit=False, handle_exceptio
 
     config = Configurator(settings=settings)
     if cornice:
-
         # Use an execution policy which doesn't re-trigger the error handler
         def execution_policy(environ, router):
             with router.request_context(environ) as request:

@@ -50,7 +50,12 @@ from newrelic.core.config import global_settings
         ("/fake-coro", "_target_application:FakeCoroHandler.get", None, False),
         ("/coro-throw", "_target_application:CoroThrowHandler.get", None, False),
         ("/init", "_target_application:InitializeHandler.get", None, True),
-        ("/multi-trace", "_target_application:MultiTraceHandler.get", [("Function/trace", 2)], True),
+        (
+            "/multi-trace",
+            "_target_application:MultiTraceHandler.get",
+            [("Function/trace", 2)],
+            True,
+        ),
     ),
 )
 @override_application_settings({"attributes.include": ["request.*"]})
@@ -71,7 +76,11 @@ def test_server(app, uri, name, metrics, method_metric):
         rollup_metrics=metrics,
     )
     @validate_transaction_event_attributes(
-        required_params={"agent": ("response.headers.contentType",), "user": (), "intrinsic": ()},
+        required_params={
+            "agent": ("response.headers.contentType",),
+            "user": (),
+            "intrinsic": (),
+        },
         exact_attrs={
             "agent": {
                 "request.headers.contentType": "1234",
@@ -105,8 +114,18 @@ def test_server(app, uri, name, metrics, method_metric):
         ("/fake-coro", "_target_application:FakeCoroHandler.get", None, False),
         ("/coro-throw", "_target_application:CoroThrowHandler.get", None, False),
         ("/init", "_target_application:InitializeHandler.get", None, True),
-        ("/ensure-future", "_target_application:EnsureFutureHandler.get", [("Function/trace", None)], True),
-        ("/multi-trace", "_target_application:MultiTraceHandler.get", [("Function/trace", 2)], True),
+        (
+            "/ensure-future",
+            "_target_application:EnsureFutureHandler.get",
+            [("Function/trace", None)],
+            True,
+        ),
+        (
+            "/multi-trace",
+            "_target_application:MultiTraceHandler.get",
+            [("Function/trace", 2)],
+            True,
+        ),
     ),
 )
 def test_concurrent_inbound_requests(app, uri, name, metrics, method_metric):
@@ -159,7 +178,9 @@ def test_exceptions_are_recorded(app):
 )
 def test_unsupported_method(app, nr_enabled, ignore_status_codes):
     def _test():
-        response = app.fetch("/simple", method="TEAPOT", body=b"", allow_nonstandard_methods=True)
+        response = app.fetch(
+            "/simple", method="TEAPOT", body=b"", allow_nonstandard_methods=True
+        )
         assert response.code == 405
 
     if nr_enabled:
@@ -236,7 +257,9 @@ def test_web_socket(uri, name, app):
         def connect():
             return app.io_loop.run_sync(_connect)
 
-        @function_not_called("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+        @function_not_called(
+            "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+        )
         def call(call):
             async def _call():
                 await conn.write_message("test")
@@ -252,7 +275,13 @@ def test_web_socket(uri, name, app):
     _test()
 
 
-LOOP_TIME_METRICS = (("EventLoop/Wait/" "WebTransaction/Function/_target_application:BlockingHandler.get", 1),)
+LOOP_TIME_METRICS = (
+    (
+        "EventLoop/Wait/"
+        "WebTransaction/Function/_target_application:BlockingHandler.get",
+        1,
+    ),
+)
 
 
 @pytest.mark.parametrize("yield_before_finish", (True, False))

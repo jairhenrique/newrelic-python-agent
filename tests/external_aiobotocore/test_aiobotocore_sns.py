@@ -46,7 +46,6 @@ sns_metrics = [
 @background_task()
 def test_publish_to_sns(loop):
     async def _test():
-
         async with MotoService("sns", port=PORT):
             session = get_session()
 
@@ -57,7 +56,6 @@ def test_publish_to_sns(loop):
                 aws_access_key_id=AWS_ACCESS_KEY_ID,
                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             ) as client:
-
                 topic_arn = await client.create_topic(Name="some-topic")
                 topic_arn_name = topic_arn["TopicArn"]
 
@@ -65,9 +63,13 @@ def test_publish_to_sns(loop):
                 published_message = await client.publish(Message="my message", **kwargs)
                 assert "MessageId" in published_message
 
-                await client.subscribe(TopicArn=topic_arn_name, Protocol="sms", Endpoint="5555555555")
+                await client.subscribe(
+                    TopicArn=topic_arn_name, Protocol="sms", Endpoint="5555555555"
+                )
 
-                published_message = await client.publish(PhoneNumber="5555555555", Message="my msg")
+                published_message = await client.publish(
+                    PhoneNumber="5555555555", Message="my msg"
+                )
                 assert "MessageId" in published_message
 
     loop.run_until_complete(_test())

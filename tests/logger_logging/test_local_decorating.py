@@ -14,7 +14,6 @@
 
 import platform
 
-import pytest
 
 from testing_support.fixtures import reset_core_stats_engine
 from testing_support.validators.validate_log_event_count import validate_log_event_count
@@ -82,6 +81,8 @@ def test_local_log_decoration_dict_message(instrumented_logger):
     @background_task()
     def test():
         exercise_logging(instrumented_logger, {"message": "dict_message"})
-        assert instrumented_logger.caplog.records[0] == get_metadata_string("{'message': 'dict_message'}", True)
+        assert instrumented_logger.caplog.records[0] == get_metadata_string(
+            "{'message': 'dict_message'}", True
+        )
 
     test()

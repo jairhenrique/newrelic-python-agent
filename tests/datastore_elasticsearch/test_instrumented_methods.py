@@ -22,7 +22,8 @@ from testing_support.validators.validate_datastore_trace_inputs import (
 from newrelic.api.background_task import background_task
 
 RUN_IF_V8 = pytest.mark.skipif(
-    ES_VERSION < (8,), reason="Only run for v8+. We don't support all methods in previous versions."
+    ES_VERSION < (8,),
+    reason="Only run for v8+. We don't support all methods in previous versions.",
 )
 
 
@@ -30,10 +31,17 @@ RUN_IF_V8 = pytest.mark.skipif(
 def client(client):
     if ES_VERSION < (8, 0):
         client.index(
-            index="contacts", doc_type="person", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1
+            index="contacts",
+            doc_type="person",
+            body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+            id=1,
         )
     else:
-        client.index(index="contacts", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1)
+        client.index(
+            index="contacts",
+            body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+            id=1,
+        )
     return client
 
 
@@ -46,7 +54,10 @@ def client(client):
             None,
             "msearch",
             (),
-            {"searches": [{}, {"query": {"match": {"message": "this is a test"}}}], "index": "contacts"},
+            {
+                "searches": [{}, {"query": {"match": {"message": "this is a test"}}}],
+                "index": "contacts",
+            },
             "contacts",
             marks=RUN_IF_V8,
         ),
@@ -70,10 +81,14 @@ def client(client):
         ("ingest", "geo_ip_stats", (), {}, None),
     ],
 )
-def test_method_on_client_datastore_trace_inputs(client, sub_module, method, args, kwargs, expected_index):
+def test_method_on_client_datastore_trace_inputs(
+    client, sub_module, method, args, kwargs, expected_index
+):
     expected_operation = f"{sub_module}.{method}" if sub_module else method
 
-    @validate_datastore_trace_inputs(target=expected_index, operation=expected_operation)
+    @validate_datastore_trace_inputs(
+        target=expected_index, operation=expected_operation
+    )
     @background_task()
     def _test():
         if not sub_module:

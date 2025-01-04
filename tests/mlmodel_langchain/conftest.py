@@ -54,7 +54,9 @@ collector_agent_registration = collector_agent_registration_fixture(
 )
 
 
-OPENAI_AUDIT_LOG_FILE = os.path.join(os.path.realpath(os.path.dirname(__file__)), "openai_audit.log")
+OPENAI_AUDIT_LOG_FILE = os.path.join(
+    os.path.realpath(os.path.dirname(__file__)), "openai_audit.log"
+)
 OPENAI_AUDIT_LOG_CONTENTS = {}
 # Intercept outgoing requests and log to file for mocking
 RECORDED_HEADERS = set(["x-request-id", "content-type"])
@@ -75,7 +77,8 @@ def openai_clients(openai_version, MockExternalOpenAIServer):  # noqa: F811
                 api_key="NOT-A-REAL-SECRET",
             )
             embeddings = OpenAIEmbeddings(
-                openai_api_key="NOT-A-REAL-SECRET", openai_api_base=f"http://localhost:{server.port}"
+                openai_api_key="NOT-A-REAL-SECRET",
+                openai_api_base=f"http://localhost:{server.port}",
             )
             yield chat, embeddings
     else:
@@ -209,12 +212,16 @@ def generator_proxy(openai_version):
                             )
                         )
                         OPENAI_AUDIT_LOG_CONTENTS[prompt][0] = headers
-                        OPENAI_AUDIT_LOG_CONTENTS[prompt][2].append(return_val.to_dict_recursive())
+                        OPENAI_AUDIT_LOG_CONTENTS[prompt][2].append(
+                            return_val.to_dict_recursive()
+                        )
                     else:
                         if not getattr(return_val, "data", "").startswith("[DONE]"):
-                            OPENAI_AUDIT_LOG_CONTENTS[prompt][2].append(return_val.json())
+                            OPENAI_AUDIT_LOG_CONTENTS[prompt][2].append(
+                                return_val.json()
+                            )
                 return return_val
-            except Exception as e:
+            except Exception:
                 raise
 
         def close(self):

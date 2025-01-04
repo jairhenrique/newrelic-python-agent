@@ -692,7 +692,9 @@ chat_completion_recorded_events_error_in_langchain = [
 
 
 @reset_core_stats_engine()
-@validate_custom_events(events_with_context_attrs(chat_completion_recorded_events_list_response))
+@validate_custom_events(
+    events_with_context_attrs(chat_completion_recorded_events_list_response)
+)
 @validate_custom_event_count(count=7)
 @validate_transaction_metrics(
     name="test_chain:test_langchain_chain_list_response",
@@ -704,7 +706,9 @@ chat_completion_recorded_events_error_in_langchain = [
     background_task=True,
 )
 @background_task()
-def test_langchain_chain_list_response(set_trace_info, comma_separated_list_output_parser, chat_openai_client):
+def test_langchain_chain_list_response(
+    set_trace_info, comma_separated_list_output_parser, chat_openai_client
+):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
     add_custom_attribute("llm.foo", "bar")
@@ -842,7 +846,9 @@ def test_langchain_chain(
 
         runnable = create_function(json_schema, chat_openai_client, prompt)
 
-        output = getattr(runnable, call_function)(*call_function_args, **call_function_kwargs)
+        output = getattr(runnable, call_function)(
+            *call_function_args, **call_function_kwargs
+        )
 
         assert output
 
@@ -915,7 +921,9 @@ def test_langchain_chain_no_content(
 
         runnable = create_function(json_schema, chat_openai_client, prompt)
 
-        output = getattr(runnable, call_function)(*call_function_args, **call_function_kwargs)
+        output = getattr(runnable, call_function)(
+            *call_function_args, **call_function_kwargs
+        )
 
         assert output
 
@@ -1016,7 +1024,9 @@ def test_langchain_chain_error_in_openai(
 
         with pytest.raises(openai.AuthenticationError):
             with WithLlmCustomAttributes({"context": "attr"}):
-                getattr(runnable, call_function)(*call_function_args, **call_function_kwargs)
+                getattr(runnable, call_function)(
+                    *call_function_args, **call_function_kwargs
+                )
 
     _test()
 
@@ -1093,7 +1103,9 @@ def test_langchain_chain_error_in_langchain(
         runnable = create_function(json_schema, chat_openai_client, prompt)
 
         with pytest.raises(expected_error):
-            getattr(runnable, call_function)(*call_function_args, **call_function_kwargs)
+            getattr(runnable, call_function)(
+                *call_function_args, **call_function_kwargs
+            )
 
     _test()
 
@@ -1171,7 +1183,9 @@ def test_langchain_chain_error_in_langchain_no_content(
         runnable = create_function(json_schema, chat_openai_client, prompt)
 
         with pytest.raises(expected_error):
-            getattr(runnable, call_function)(*call_function_args, **call_function_kwargs)
+            getattr(runnable, call_function)(
+                *call_function_args, **call_function_kwargs
+            )
 
     _test()
 
@@ -1183,7 +1197,13 @@ def test_langchain_chain_error_in_langchain_no_content(
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
 def test_langchain_chain_outside_transaction(
-    set_trace_info, chat_openai_client, json_schema, prompt, create_function, call_function, input_
+    set_trace_info,
+    chat_openai_client,
+    json_schema,
+    prompt,
+    create_function,
+    call_function,
+    input_,
 ):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -1206,7 +1226,13 @@ def test_langchain_chain_outside_transaction(
 @validate_custom_event_count(count=0)
 @background_task()
 def test_langchain_chain_ai_monitoring_disabled(
-    set_trace_info, chat_openai_client, json_schema, prompt, create_function, call_function, input_
+    set_trace_info,
+    chat_openai_client,
+    json_schema,
+    prompt,
+    create_function,
+    call_function,
+    input_,
 ):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -1219,7 +1245,9 @@ def test_langchain_chain_ai_monitoring_disabled(
 
 
 @reset_core_stats_engine()
-@validate_custom_events(events_with_context_attrs(chat_completion_recorded_events_list_response))
+@validate_custom_events(
+    events_with_context_attrs(chat_completion_recorded_events_list_response)
+)
 @validate_custom_event_count(count=7)
 @validate_transaction_metrics(
     name="test_chain:test_async_langchain_chain_list_response",
@@ -1264,7 +1292,9 @@ def test_async_langchain_chain_list_response(
 
 @reset_core_stats_engine()
 @disabled_ai_monitoring_record_content_settings
-@validate_custom_events(events_sans_content(chat_completion_recorded_events_list_response))
+@validate_custom_events(
+    events_sans_content(chat_completion_recorded_events_list_response)
+)
 @validate_custom_event_count(count=7)
 @validate_transaction_metrics(
     name="test_chain:test_async_langchain_chain_list_response_no_content",
@@ -1421,7 +1451,11 @@ def test_async_langchain_chain(
 
         runnable = create_function(json_schema, chat_openai_client, prompt)
 
-        loop.run_until_complete(getattr(runnable, call_function)(*call_function_args, **call_function_kwargs))
+        loop.run_until_complete(
+            getattr(runnable, call_function)(
+                *call_function_args, **call_function_kwargs
+            )
+        )
 
     _test()
 
@@ -1521,7 +1555,11 @@ def test_async_langchain_chain_error_in_openai(
 
         with pytest.raises(openai.AuthenticationError):
             with WithLlmCustomAttributes({"context": "attr"}):
-                loop.run_until_complete(getattr(runnable, call_function)(*call_function_args, **call_function_kwargs))
+                loop.run_until_complete(
+                    getattr(runnable, call_function)(
+                        *call_function_args, **call_function_kwargs
+                    )
+                )
 
     _test()
 
@@ -1597,7 +1635,11 @@ def test_async_langchain_chain_error_in_langchain(
         runnable = create_function(json_schema, chat_openai_client, prompt)
 
         with pytest.raises(expected_error):
-            loop.run_until_complete(getattr(runnable, call_function)(*call_function_args, **call_function_kwargs))
+            loop.run_until_complete(
+                getattr(runnable, call_function)(
+                    *call_function_args, **call_function_kwargs
+                )
+            )
 
     _test()
 
@@ -1674,7 +1716,11 @@ def test_async_langchain_chain_error_in_langchain_no_content(
         runnable = create_function(json_schema, chat_openai_client, prompt)
 
         with pytest.raises(expected_error):
-            loop.run_until_complete(getattr(runnable, call_function)(*call_function_args, **call_function_kwargs))
+            loop.run_until_complete(
+                getattr(runnable, call_function)(
+                    *call_function_args, **call_function_kwargs
+                )
+            )
 
     _test()
 
@@ -1689,7 +1735,14 @@ def test_async_langchain_chain_error_in_langchain_no_content(
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
 def test_async_langchain_chain_outside_transaction(
-    set_trace_info, chat_openai_client, json_schema, prompt, create_function, call_function, input_, loop
+    set_trace_info,
+    chat_openai_client,
+    json_schema,
+    prompt,
+    create_function,
+    call_function,
+    input_,
+    loop,
 ):
     set_trace_info()
     add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -1787,12 +1840,17 @@ def test_multiple_async_langchain_chain(
 
             runnable = create_function(json_schema, chat_openai_client, prompt)
             with WithLlmCustomAttributes({"context": "attr"}):
-
                 call1 = asyncio.ensure_future(
-                    getattr(runnable, call_function)(*call_function_args, **call_function_kwargs), loop=loop
+                    getattr(runnable, call_function)(
+                        *call_function_args, **call_function_kwargs
+                    ),
+                    loop=loop,
                 )
                 call2 = asyncio.ensure_future(
-                    getattr(runnable, call_function)(*call_function_args, **call_function_kwargs), loop=loop
+                    getattr(runnable, call_function)(
+                        *call_function_args, **call_function_kwargs
+                    ),
+                    loop=loop,
                 )
                 loop.run_until_complete(asyncio.gather(call1, call2))
 
@@ -1812,17 +1870,23 @@ def test_multiple_async_langchain_chain(
     background_task=True,
 )
 @background_task()
-def test_retrieval_chains(set_trace_info, retrieval_chain_prompt, embedding_openai_client, chat_openai_client):
+def test_retrieval_chains(
+    set_trace_info, retrieval_chain_prompt, embedding_openai_client, chat_openai_client
+):
     set_trace_info()
     documents = [langchain_core.documents.Document(page_content="What is 2 + 4?")]
-    vectordb = FAISS.from_documents(documents=documents, embedding=embedding_openai_client)
+    vectordb = FAISS.from_documents(
+        documents=documents, embedding=embedding_openai_client
+    )
     retriever = vectordb.as_retriever()
     question_answer_chain = create_stuff_documents_chain(
         llm=chat_openai_client,
         prompt=retrieval_chain_prompt,
     )
 
-    rag_chain = langchain.chains.create_retrieval_chain(retriever, question_answer_chain)
+    rag_chain = langchain.chains.create_retrieval_chain(
+        retriever, question_answer_chain
+    )
     response = rag_chain.invoke({"input": "math"})
 
     assert response
@@ -1835,8 +1899,16 @@ def json_schema():
         "description": "Identifying information about a person.",
         "type": "object",
         "properties": {
-            "name": {"title": "Name", "description": "The person's name", "type": "string"},
-            "age": {"title": "Age", "description": "The person's age", "type": "integer"},
+            "name": {
+                "title": "Name",
+                "description": "The person's name",
+                "type": "string",
+            },
+            "age": {
+                "title": "Age",
+                "description": "The person's age",
+                "type": "integer",
+            },
             "fav_food": {
                 "title": "Fav Food",
                 "description": "The person's favorite food",

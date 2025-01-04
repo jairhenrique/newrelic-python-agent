@@ -56,7 +56,9 @@ collector_agent_registration = collector_agent_registration_fixture(
 
 
 # Bedrock Fixtures
-BEDROCK_AUDIT_LOG_FILE = os.path.join(os.path.realpath(os.path.dirname(__file__)), "bedrock_audit.log")
+BEDROCK_AUDIT_LOG_FILE = os.path.join(
+    os.path.realpath(os.path.dirname(__file__)), "bedrock_audit.log"
+)
 BEDROCK_AUDIT_LOG_CONTENTS = {}
 
 
@@ -101,7 +103,9 @@ def bedrock_server():
 
         # Apply function wrappers to record data
         wrap_function_wrapper(
-            "botocore.endpoint", "Endpoint._do_get_response", wrap_botocore_endpoint_Endpoint__do_get_response
+            "botocore.endpoint",
+            "Endpoint._do_get_response",
+            wrap_botocore_endpoint_Endpoint__do_get_response,
         )
         wrap_function_wrapper(
             "botocore.eventstream",
@@ -111,7 +115,9 @@ def bedrock_server():
         yield client  # Run tests
 
         # Write responses to audit log
-        bedrock_audit_log_contents = dict(sorted(BEDROCK_AUDIT_LOG_CONTENTS.items(), key=lambda i: (i[1][1], i[0])))
+        bedrock_audit_log_contents = dict(
+            sorted(BEDROCK_AUDIT_LOG_CONTENTS.items(), key=lambda i: (i[1][1], i[0]))
+        )
         with open(BEDROCK_AUDIT_LOG_FILE, "w") as audit_log_fp:
             json.dump(bedrock_audit_log_contents, fp=audit_log_fp, indent=4)
 
@@ -150,7 +156,8 @@ def wrap_botocore_endpoint_Endpoint__do_get_response(wrapped, instance, args, kw
     headers = dict(response.headers.items())
     headers = dict(
         filter(
-            lambda k: k[0].lower() in RECORDED_HEADERS or k[0].startswith("x-ratelimit"),
+            lambda k: k[0].lower() in RECORDED_HEADERS
+            or k[0].startswith("x-ratelimit"),
             headers.items(),
         )
     )
@@ -159,13 +166,23 @@ def wrap_botocore_endpoint_Endpoint__do_get_response(wrapped, instance, args, kw
     # Log response
     if response.raw.chunked:
         # Log response
-        BEDROCK_AUDIT_LOG_CONTENTS[prompt] = headers, status_code, []  # Append response data to audit log
+        BEDROCK_AUDIT_LOG_CONTENTS[prompt] = (
+            headers,
+            status_code,
+            [],
+        )  # Append response data to audit log
     else:
         # Clean up data
         response_content = response.content
         data = json.loads(response_content.decode("utf-8"))
-        result[0][1]["body"] = StreamingBody(io.BytesIO(response_content), len(response_content))
-        BEDROCK_AUDIT_LOG_CONTENTS[prompt] = headers, status_code, data  # Append response data to audit log
+        result[0][1]["body"] = StreamingBody(
+            io.BytesIO(response_content), len(response_content)
+        )
+        BEDROCK_AUDIT_LOG_CONTENTS[prompt] = (
+            headers,
+            status_code,
+            data,
+        )  # Append response data to audit log
     return result
 
 

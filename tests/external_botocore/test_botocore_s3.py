@@ -80,7 +80,10 @@ _s3_rollup_metrics = [
 def test_s3():
     session = botocore.session.get_session()
     client = session.create_client(
-        "s3", region_name=AWS_REGION, aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+        "s3",
+        region_name=AWS_REGION,
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
     )
 
     # Create bucket
@@ -88,7 +91,9 @@ def test_s3():
     assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
 
     # Put object
-    resp = client.put_object(Bucket=TEST_BUCKET, Key="hello_world", Body=b"hello_world_content")
+    resp = client.put_object(
+        Bucket=TEST_BUCKET, Key="hello_world", Body=b"hello_world_content"
+    )
     assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
 
     # List bucket

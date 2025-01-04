@@ -64,7 +64,10 @@ _test_execute_via_cursor_rollup_metrics = [
     ("Datastore/operation/Postgres/commit", 3),
     ("Datastore/operation/Postgres/rollback", 1),
     ("Datastore/operation/Postgres/other", 1),
-    (f"Datastore/instance/Postgres/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}", 13),
+    (
+        f"Datastore/instance/Postgres/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}",
+        13,
+    ),
     ("Function/postgresql.driver.dbapi20:connect", 1),
     ("Function/postgresql.driver.dbapi20:Connection.__enter__", 1),
     ("Function/postgresql.driver.dbapi20:Connection.__exit__", 1),
@@ -91,7 +94,9 @@ def test_execute_via_cursor():
 
         cursor.execute(f"""drop table if exists {DB_SETTINGS['table_name']}""")
 
-        cursor.execute(f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)")
+        cursor.execute(
+            f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)"
+        )
 
         cursor.executemany(
             f"insert into {DB_SETTINGS['table_name']} values (%s, %s, %s)",

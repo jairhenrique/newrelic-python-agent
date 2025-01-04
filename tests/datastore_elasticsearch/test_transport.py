@@ -42,10 +42,14 @@ IS_BELOW_V7 = ES_VERSION < (7,)
 
 RUN_IF_V8 = pytest.mark.skipif(IS_V7 or IS_BELOW_V7, reason="Only run for v8+")
 RUN_IF_V7 = pytest.mark.skipif(IS_V8 or IS_BELOW_V7, reason="Only run for v7")
-RUN_IF_BELOW_V7 = pytest.mark.skipif(not IS_BELOW_V7, reason="Only run for versions below v7")
+RUN_IF_BELOW_V7 = pytest.mark.skipif(
+    not IS_BELOW_V7, reason="Only run for versions below v7"
+)
 
 
-HOST = NodeConfig(scheme="http", host=ES_SETTINGS["host"], port=int(ES_SETTINGS["port"]))
+HOST = NodeConfig(
+    scheme="http", host=ES_SETTINGS["host"], port=int(ES_SETTINGS["port"])
+)
 
 METHOD = "/contacts/person/1"
 HEADERS = {"Content-Type": "application/json"}
@@ -59,8 +63,15 @@ if hasattr(BODY, "encode"):
 @pytest.mark.parametrize(
     "transport_kwargs, perform_request_kwargs",
     [
-        pytest.param({}, {"body": DATA}, id="DefaultTransport_below_v7", marks=RUN_IF_BELOW_V7),
-        pytest.param({}, {"headers": HEADERS, "body": DATA}, id="DefaultTransport_v7+", marks=RUN_IF_V7 or RUN_IF_V8),
+        pytest.param(
+            {}, {"body": DATA}, id="DefaultTransport_below_v7", marks=RUN_IF_BELOW_V7
+        ),
+        pytest.param(
+            {},
+            {"headers": HEADERS, "body": DATA},
+            id="DefaultTransport_v7+",
+            marks=RUN_IF_V7 or RUN_IF_V8,
+        ),
         pytest.param(
             {"connection_class": Urllib3HttpConnection},
             {"body": DATA},

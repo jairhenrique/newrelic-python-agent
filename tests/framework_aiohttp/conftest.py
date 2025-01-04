@@ -78,7 +78,9 @@ class SimpleAiohttpApp(AioHTTPTestCase):
         host = "127.0.0.1"
         server_kwargs = {}
         if self.server_cls:
-            test_server = self.server_cls(app_or_server, scheme=scheme, host=host, **server_kwargs)
+            test_server = self.server_cls(
+                app_or_server, scheme=scheme, host=host, **server_kwargs
+            )
             client_constructor_arg = test_server
 
         return _TestClient(client_constructor_arg)

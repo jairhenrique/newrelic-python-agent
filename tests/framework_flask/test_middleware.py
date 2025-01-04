@@ -55,7 +55,8 @@ _test_application_app_middleware_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_middleware:index_page", scoped_metrics=_test_application_app_middleware_scoped_metrics
+    "_test_middleware:index_page",
+    scoped_metrics=_test_application_app_middleware_scoped_metrics,
 )
 @validate_code_level_metrics("_test_middleware", "index_page")
 @validate_code_level_metrics("_test_middleware", "before_request")

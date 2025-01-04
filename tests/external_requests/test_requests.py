@@ -83,7 +83,10 @@ def test_http_request_get(server, metrics):
     _test()
 
 
-@pytest.mark.skipif(get_requests_version() < (0, 8), reason="Can't set verify=False for requests.get() in v0.7")
+@pytest.mark.skipif(
+    get_requests_version() < (0, 8),
+    reason="Can't set verify=False for requests.get() in v0.7",
+)
 def test_https_request_get(server, metrics):
     @validate_transaction_errors(errors=[])
     @validate_transaction_metrics(
@@ -102,7 +105,10 @@ def test_https_request_get(server, metrics):
     _test()
 
 
-@pytest.mark.skipif(get_requests_version() < (1, 0), reason="Session.send() doesn't exist for requests < v1.0.")
+@pytest.mark.skipif(
+    get_requests_version() < (1, 0),
+    reason="Session.send() doesn't exist for requests < v1.0.",
+)
 def test_http_session_send(server, metrics):
     @validate_transaction_errors(errors=[])
     @validate_transaction_metrics(
@@ -150,7 +156,9 @@ def test_none_url_get():
         pass
 
 
-_test_requests_wrong_datatype_url_scoped_metrics = [("External/unknown.url/requests/", 1)]
+_test_requests_wrong_datatype_url_scoped_metrics = [
+    ("External/unknown.url/requests/", 1)
+]
 
 _test_requests_wrong_datatype_url_rollup_metrics = [
     ("External/all", 1),
@@ -230,7 +238,9 @@ def test_requests_cross_process_response(server):
         background_task=True,
     )
     @insert_incoming_headers
-    @validate_external_node_params(params=_test_requests_cross_process_response_external_node_params)
+    @validate_external_node_params(
+        params=_test_requests_cross_process_response_external_node_params
+    )
     @background_task(name="test_requests:test_requests_cross_process_response")
     def _test():
         requests.get(f"http://localhost:{server.port}/")

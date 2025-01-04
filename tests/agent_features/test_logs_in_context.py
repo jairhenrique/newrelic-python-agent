@@ -62,14 +62,14 @@ def log_buffer_with_stack_trace(caplog):
     _logger.removeHandler(_handler)
 
 
-class NonPrintableObject():
+class NonPrintableObject:
     def __str__(self):
         raise RuntimeError("Unable to print object.")
 
     __repr__ = __str__
 
 
-class NonSerializableObject():
+class NonSerializableObject:
     def __str__(self):
         return f"<{self.__class__.__name__} object>"
 
@@ -236,7 +236,9 @@ def test_newrelic_logger_error_inside_transaction_no_stack_trace(log_buffer):
 
 
 @background_task()
-def test_newrelic_logger_error_inside_transaction_with_stack_trace(log_buffer_with_stack_trace):
+def test_newrelic_logger_error_inside_transaction_with_stack_trace(
+    log_buffer_with_stack_trace,
+):
     expected_stack_trace = ""
     try:
         raise ExceptionForTest
@@ -272,14 +274,9 @@ def test_newrelic_logger_error_inside_transaction_with_stack_trace(log_buffer_wi
         "process.name": "MainProcess",
         "error.class": "test_logs_in_context:ExceptionForTest",
         "error.message": "",
-        "error.expected": False
+        "error.expected": False,
     }
-    expected_extra_txn_keys = (
-        "trace.id",
-        "span.id",
-        "entity.guid",
-        "hostname"
-    )
+    expected_extra_txn_keys = ("trace.id", "span.id", "entity.guid", "hostname")
 
     for k, v in expected.items():
         assert message.pop(k) == v
@@ -330,7 +327,9 @@ def test_newrelic_logger_error_outside_transaction_no_stack_trace(log_buffer):
     assert set(message.keys()) == set(expected_extra_txn_keys)
 
 
-def test_newrelic_logger_error_outside_transaction_with_stack_trace(log_buffer_with_stack_trace):
+def test_newrelic_logger_error_outside_transaction_with_stack_trace(
+    log_buffer_with_stack_trace,
+):
     expected_stack_trace = ""
     try:
         raise ExceptionForTest

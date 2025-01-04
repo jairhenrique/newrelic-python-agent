@@ -215,7 +215,9 @@ def validate_transaction_event_payloads(payload_validators):
     def _wrapper(wrapped, instance, args, kwargs):
         payloads = []
 
-        @transient_function_wrapper("newrelic.core.agent_protocol", "AgentProtocol.send")
+        @transient_function_wrapper(
+            "newrelic.core.agent_protocol", "AgentProtocol.send"
+        )
         def send_request_wrapper(wrapped, instance, args, kwargs):
             def _bind_params(method, payload=(), *args, **kwargs):
                 return method, payload
@@ -326,7 +328,9 @@ def test_serverless_application_harvest():
         (False, True, 0),
     ],
 )
-def test_application_harvest_with_spans(distributed_tracing_enabled, span_events_enabled, spans_created):
+def test_application_harvest_with_spans(
+    distributed_tracing_enabled, span_events_enabled, spans_created
+):
     span_endpoints_called = []
     max_samples_stored = 10
 
@@ -346,7 +350,9 @@ def test_application_harvest_with_spans(distributed_tracing_enabled, span_events
         ]
     )
 
-    @validate_metric_payload(metrics=spans_required_metrics, endpoints_called=span_endpoints_called)
+    @validate_metric_payload(
+        metrics=spans_required_metrics, endpoints_called=span_endpoints_called
+    )
     @override_generic_settings(
         settings,
         {
@@ -364,7 +370,9 @@ def test_application_harvest_with_spans(distributed_tracing_enabled, span_events
         for _ in range(spans_created):
             app._stats_engine.span_events.add("event")
 
-        assert app._stats_engine.span_events.num_samples == (min(spans_created, max_samples_stored))
+        assert app._stats_engine.span_events.num_samples == (
+            min(spans_created, max_samples_stored)
+        )
         app.harvest()
         assert app._stats_engine.span_events.num_samples == 0
 
@@ -590,7 +598,15 @@ def test_reservoir_size_zeros(harvest_name, event_name):
     assert app._stats_engine.log_events.num_seen == 1
     assert app._stats_engine.span_events.num_seen == 1
 
-    stat_events = set(("transaction_events", "error_events", "custom_events", "log_events", "span_events"))
+    stat_events = set(
+        (
+            "transaction_events",
+            "error_events",
+            "custom_events",
+            "log_events",
+            "span_events",
+        )
+    )
 
     for stat_event in stat_events:
         event = getattr(app._stats_engine, stat_event)
@@ -615,7 +631,9 @@ def test_error_event_sampling_info(events_seen):
     endpoints_called = []
 
     @validate_error_event_sampling(
-        events_seen=events_seen, reservoir_size=reservoir_size, endpoints_called=endpoints_called
+        events_seen=events_seen,
+        reservoir_size=reservoir_size,
+        endpoints_called=endpoints_called,
     )
     @override_generic_settings(
         settings,
@@ -652,7 +670,9 @@ def test_error_event_sampling_info(events_seen):
         "serverless_mode.enabled": True,
     },
 )
-def test_serverless_mode_adaptive_sampling(time_to_next_reset, computed_count, computed_count_last, monkeypatch):
+def test_serverless_mode_adaptive_sampling(
+    time_to_next_reset, computed_count, computed_count_last, monkeypatch
+):
     # fix random.randrange to return 0
     monkeypatch.setattr(random, "randrange", lambda *args, **kwargs: 0)
 
@@ -807,7 +827,13 @@ def test_reset_synthetics_events():
 
 @pytest.mark.parametrize(
     "allowlist_event",
-    ("analytic_event_data", "custom_event_data", "log_event_data", "error_event_data", "span_event_data"),
+    (
+        "analytic_event_data",
+        "custom_event_data",
+        "log_event_data",
+        "error_event_data",
+        "span_event_data",
+    ),
 )
 @override_generic_settings(
     settings,
@@ -829,7 +855,9 @@ def test_flexible_events_harvested(allowlist_event):
     app._stats_engine.log_events.add(LogEventNode(1653609717, "WARNING", "A", {}))
     app._stats_engine.span_events.add("span event")
     app._stats_engine.record_custom_metric("CustomMetric/Int", 1)
-    app._stats_engine.record_dimensional_metric("DimensionalMetric/Int", 1, tags={"tag": "tag"})
+    app._stats_engine.record_dimensional_metric(
+        "DimensionalMetric/Int", 1, tags={"tag": "tag"}
+    )
 
     assert app._stats_engine.transaction_events.num_seen == 1
     assert app._stats_engine.error_events.num_seen == 1
@@ -837,7 +865,9 @@ def test_flexible_events_harvested(allowlist_event):
     assert app._stats_engine.log_events.num_seen == 1
     assert app._stats_engine.span_events.num_seen == 1
     assert app._stats_engine.record_custom_metric("CustomMetric/Int", 1)
-    assert app._stats_engine.record_dimensional_metric("DimensionalMetric/Int", 1, tags={"tag": "tag"})
+    assert app._stats_engine.record_dimensional_metric(
+        "DimensionalMetric/Int", 1, tags={"tag": "tag"}
+    )
 
     app.harvest(flexible=True)
 
@@ -857,13 +887,22 @@ def test_flexible_events_harvested(allowlist_event):
     assert app._stats_engine.span_events.num_seen == num_seen
 
     assert ("CustomMetric/Int", "") in app._stats_engine.stats_table
-    assert ("DimensionalMetric/Int", frozenset({("tag", "tag")})) in app._stats_engine.dimensional_stats_table
+    assert (
+        "DimensionalMetric/Int",
+        frozenset({("tag", "tag")}),
+    ) in app._stats_engine.dimensional_stats_table
     assert app._stats_engine.metrics_count() > 3
 
 
 @pytest.mark.parametrize(
     "allowlist_event",
-    ("analytic_event_data", "custom_event_data", "log_event_data", "error_event_data", "span_event_data"),
+    (
+        "analytic_event_data",
+        "custom_event_data",
+        "log_event_data",
+        "error_event_data",
+        "span_event_data",
+    ),
 )
 @override_generic_settings(
     settings,
@@ -970,7 +1009,9 @@ def test_flexible_harvest_rollback():
 )
 def test_get_agent_commands_returns_none():
     MISSING = object()
-    original_return_value = DeveloperModeClient.RESPONSES.get("get_agent_commands", MISSING)
+    original_return_value = DeveloperModeClient.RESPONSES.get(
+        "get_agent_commands", MISSING
+    )
     DeveloperModeClient.RESPONSES["get_agent_commands"] = None
 
     try:

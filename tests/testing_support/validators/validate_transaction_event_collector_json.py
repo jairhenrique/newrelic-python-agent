@@ -19,7 +19,9 @@ from newrelic.common.object_wrapper import transient_function_wrapper
 
 
 def validate_transaction_event_collector_json():
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     def _validate_transaction_event_collector_json(wrapped, instance, args, kwargs):
         try:
             result = wrapped(*args, **kwargs)
@@ -43,7 +45,6 @@ def validate_transaction_event_collector_json():
             events = decoded_json[1]
 
             for event in events:
-
                 # event is an array containing intrinsics, user-attributes,
                 # and agent-attributes
 

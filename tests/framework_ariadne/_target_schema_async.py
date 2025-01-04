@@ -26,7 +26,9 @@ from framework_graphql._target_schema_sync import books, magazines, libraries
 
 from testing_support.asgi_testing import AsgiTest
 
-schema_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "schema.graphql")
+schema_file = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "schema.graphql"
+)
 type_defs = load_schema_from_path(schema_file)
 
 storage = []

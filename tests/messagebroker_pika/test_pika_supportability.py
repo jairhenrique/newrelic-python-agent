@@ -31,7 +31,12 @@ class CustomPikaChannel(pika.channel.Channel):
             callback = self._on_getok_callback
             self._on_getok_callback = None
             # Use kwargs to pass values to callback
-            callback(channel=self, method_frame=method_frame.method, header_frame=header_frame.properties, body=body)
+            callback(
+                channel=self,
+                method_frame=method_frame.method,
+                header_frame=header_frame.properties,
+                body=body,
+            )
 
     def _on_deliver(self, method_frame, header_frame, body):
         consumer_tag = method_frame.method.consumer_tag
@@ -42,7 +47,10 @@ class CustomPikaChannel(pika.channel.Channel):
             return
 
         self._consumers[consumer_tag](
-            channel=self, method_frame=method_frame.method, header_frame=header_frame.properties, body=body
+            channel=self,
+            method_frame=method_frame.method,
+            header_frame=header_frame.properties,
+            body=body,
         )
 
 
@@ -51,7 +59,9 @@ class CustomPikaConnection(pika.SelectConnection):
         return CustomPikaChannel(self, channel_number, on_open_callback)
 
 
-_test_select_connection_supportability_metrics = [("Supportability/hooks/pika/kwargs_error", 1)]
+_test_select_connection_supportability_metrics = [
+    ("Supportability/hooks/pika/kwargs_error", 1)
+]
 
 
 @validate_transaction_metrics(
@@ -77,7 +87,8 @@ def test_select_connection_supportability_in_txn(producer):
         connection.channel(on_open_callback=on_open_channel)
 
     connection = CustomPikaConnection(
-        pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection
+        pika.ConnectionParameters(DB_SETTINGS["host"]),
+        on_open_callback=on_open_connection,
     )
 
     try:
@@ -113,7 +124,8 @@ def test_select_connection_supportability_outside_txn(producer):
         connection.channel(on_open_callback=on_open_channel)
 
     connection = CustomPikaConnection(
-        pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection
+        pika.ConnectionParameters(DB_SETTINGS["host"]),
+        on_open_callback=on_open_connection,
     )
 
     try:

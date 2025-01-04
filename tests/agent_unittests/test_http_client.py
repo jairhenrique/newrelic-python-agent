@@ -14,7 +14,6 @@
 
 import base64
 import json
-import os.path
 import ssl
 import zlib
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -178,7 +177,9 @@ def test_proxy_parsing(scheme, host, port, username, password, expected):
 
 @pytest.mark.parametrize("method", ("GET", "POST"))
 def test_http_no_payload(server, method):
-    with HttpClient("localhost", server.port, disable_certificate_validation=True) as client:
+    with HttpClient(
+        "localhost", server.port, disable_certificate_validation=True
+    ) as client:
         connection = client._connection_attr
         status, data = client.send_request(method=method, headers={"foo": "bar"})
 
@@ -215,7 +216,9 @@ def test_http_no_payload(server, method):
 def test_non_ok_response(client_cls, server):
     internal_metrics = CustomMetrics()
 
-    with client_cls("localhost", server.port, disable_certificate_validation=True) as client:
+    with client_cls(
+        "localhost", server.port, disable_certificate_validation=True
+    ) as client:
         with InternalTraceContext(internal_metrics):
             status, _ = client.send_request(method="PUT")
 
@@ -281,7 +284,9 @@ def test_http_payload_compression(server, client_cls, method, threshold):
         compression_threshold=threshold,
     ) as client:
         with InternalTraceContext(internal_metrics):
-            status, data = client.send_request(payload=payload, params={"method": "method1"})
+            status, data = client.send_request(
+                payload=payload, params={"method": "method1"}
+            )
 
     # Sending one additional request to valid metric aggregation for top level data usage supportability metrics
     with client_cls(
@@ -292,7 +297,9 @@ def test_http_payload_compression(server, client_cls, method, threshold):
         compression_threshold=threshold,
     ) as client:
         with InternalTraceContext(internal_metrics):
-            status, data = client.send_request(payload=payload, params={"method": "method2"})
+            status, data = client.send_request(
+                payload=payload, params={"method": "method2"}
+            )
 
     assert status == 200
     data = data.split(b"\n")
@@ -300,7 +307,9 @@ def test_http_payload_compression(server, client_cls, method, threshold):
     payload_byte_len = len(sent_payload)
     internal_metrics = dict(internal_metrics.metrics())
     if client_cls is ApplicationModeClient:
-        assert internal_metrics["Supportability/Python/Collector/method1/Output/Bytes"][:2] == [
+        assert internal_metrics["Supportability/Python/Collector/method1/Output/Bytes"][
+            :2
+        ] == [
             1,
             len(payload),
         ]
@@ -311,12 +320,26 @@ def test_http_payload_compression(server, client_cls, method, threshold):
 
         if threshold < 20:
             # Verify compression time is recorded
-            assert internal_metrics["Supportability/Python/Collector/method1/ZLIB/Compress"][0] == 1
-            assert internal_metrics["Supportability/Python/Collector/method1/ZLIB/Compress"][1] > 0
+            assert (
+                internal_metrics[
+                    "Supportability/Python/Collector/method1/ZLIB/Compress"
+                ][0]
+                == 1
+            )
+            assert (
+                internal_metrics[
+                    "Supportability/Python/Collector/method1/ZLIB/Compress"
+                ][1]
+                > 0
+            )
 
             # Verify the compressed payload length is recorded
-            assert internal_metrics["Supportability/Python/Collector/method1/ZLIB/Bytes"][:2] == [1, payload_byte_len]
-            assert internal_metrics["Supportability/Python/Collector/ZLIB/Bytes"][:2] == [2, payload_byte_len * 2]
+            assert internal_metrics[
+                "Supportability/Python/Collector/method1/ZLIB/Bytes"
+            ][:2] == [1, payload_byte_len]
+            assert internal_metrics["Supportability/Python/Collector/ZLIB/Bytes"][
+                :2
+            ] == [2, payload_byte_len * 2]
 
             assert len(internal_metrics) == 8
         else:
@@ -385,7 +408,9 @@ def test_default_cert_path(monkeypatch, system_certs_available):
         assert internal_metrics[cert_metric][-3:-1] == [1, 1]
 
 
-@pytest.mark.parametrize("auth", ((None, None), ("username", None), ("username", "password")))
+@pytest.mark.parametrize(
+    "auth", ((None, None), ("username", None), ("username", "password"))
+)
 def test_ssl_via_ssl_proxy(server, auth):
     proxy_user, proxy_pass = auth
     with HttpClient(
@@ -403,7 +428,9 @@ def test_ssl_via_ssl_proxy(server, auth):
     assert status == 200
     data = data.decode("utf-8")
     data = data.split("\n")
-    assert data[0].startswith("POST https://localhost:1/agent_listener/invoke_raw_method ")
+    assert data[0].startswith(
+        "POST https://localhost:1/agent_listener/invoke_raw_method "
+    )
 
     proxy_auth = None
     for header in data[1:-1]:
@@ -416,7 +443,9 @@ def test_ssl_via_ssl_proxy(server, auth):
         auth_expected = proxy_user
         if proxy_pass:
             auth_expected = f"{auth_expected}:{proxy_pass}"
-        auth_expected = f"Basic {base64.b64encode(auth_expected.encode('utf-8')).decode('utf-8')}"
+        auth_expected = (
+            f"Basic {base64.b64encode(auth_expected.encode('utf-8')).decode('utf-8')}"
+        )
         assert proxy_auth == auth_expected
     else:
         assert not proxy_auth
@@ -438,7 +467,9 @@ def test_non_ssl_via_ssl_proxy(server):
     assert status == 200
     data = data.decode("utf-8")
     data = data.split("\n")
-    assert data[0].startswith("POST http://localhost:1/agent_listener/invoke_raw_method ")
+    assert data[0].startswith(
+        "POST http://localhost:1/agent_listener/invoke_raw_method "
+    )
 
     assert server.httpd.connect_host is None
 
@@ -456,12 +487,16 @@ def test_non_ssl_via_non_ssl_proxy(insecure_server):
     assert status == 200
     data = data.decode("utf-8")
     data = data.split("\n")
-    assert data[0].startswith("POST http://localhost:1/agent_listener/invoke_raw_method ")
+    assert data[0].startswith(
+        "POST http://localhost:1/agent_listener/invoke_raw_method "
+    )
 
     assert insecure_server.httpd.connect_host is None
 
 
-@pytest.mark.parametrize("auth", ((None, None), ("username", None), ("username", "password")))
+@pytest.mark.parametrize(
+    "auth", ((None, None), ("username", None), ("username", "password"))
+)
 def test_ssl_via_non_ssl_proxy(insecure_server, auth):
     proxy_user, proxy_pass = auth
     with HttpClient(
@@ -485,7 +520,10 @@ def test_ssl_via_non_ssl_proxy(insecure_server, auth):
             if proxy_pass:
                 auth_expected = f"{auth_expected}:{proxy_pass}"
             auth_expected = f"Basic {base64.b64encode(auth_expected.encode('utf-8')).decode('utf-8')}"
-            assert insecure_server.httpd.connect_headers["proxy-authorization"] == auth_expected
+            assert (
+                insecure_server.httpd.connect_headers["proxy-authorization"]
+                == auth_expected
+            )
         else:
             assert "proxy-authorization" not in insecure_server.httpd.connect_headers
         assert insecure_server.httpd.connect_host == "localhost"
@@ -495,7 +533,9 @@ def test_ssl_via_non_ssl_proxy(insecure_server, auth):
 
 
 def test_max_payload_does_not_send(insecure_server):
-    with InsecureHttpClient("localhost", insecure_server.port, max_payload_size_in_bytes=0) as client:
+    with InsecureHttpClient(
+        "localhost", insecure_server.port, max_payload_size_in_bytes=0
+    ) as client:
         status, data = client.send_request(payload=b"*")
 
     assert status == 413
@@ -624,7 +664,14 @@ def test_audit_logging(server, insecure_server, client_cls, proxy_host, exceptio
             connection = "direct"
         assert internal_metrics == {
             "Supportability/Python/Collector/Failures": [1, 0, 0, 0, 0, 0],
-            f"Supportability/Python/Collector/Failures/{connection}": [1, 0, 0, 0, 0, 0],
+            f"Supportability/Python/Collector/Failures/{connection}": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ],
             f"Supportability/Python/Collector/Exception/{exc}": [1, 0, 0, 0, 0, 0],
         }
     else:

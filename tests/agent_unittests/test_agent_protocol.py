@@ -77,12 +77,16 @@ class HttpClientRecorder(DeveloperModeClient):
         headers=None,
         payload=None,
     ):
-        request = Request(method=method, path=path, params=params, headers=headers, payload=payload)
+        request = Request(
+            method=method, path=path, params=params, headers=headers, payload=payload
+        )
         self.SENT.append(request)
         if self.STATUS_CODE:
             return self.STATUS_CODE, b""
 
-        return super(HttpClientRecorder, self).send_request(method, path, params, headers, payload)
+        return super(HttpClientRecorder, self).send_request(
+            method, path, params, headers, payload
+        )
 
     def __enter__(self):
         HttpClientRecorder.STATE += 1
@@ -164,8 +168,12 @@ def override_system_info(monkeypatch):
     IP_ADDRESS = ["127.0.0.1"]
     monkeypatch.setattr(system_info, "gethostname", lambda *args, **kwargs: HOST)
     monkeypatch.setattr(system_info, "getips", lambda *args, **kwargs: IP_ADDRESS)
-    monkeypatch.setattr(system_info, "logical_processor_count", lambda *args, **kwargs: PROCESSOR_COUNT)
-    monkeypatch.setattr(system_info, "total_physical_memory", lambda *args, **kwargs: MEMORY)
+    monkeypatch.setattr(
+        system_info, "logical_processor_count", lambda *args, **kwargs: PROCESSOR_COUNT
+    )
+    monkeypatch.setattr(
+        system_info, "total_physical_memory", lambda *args, **kwargs: MEMORY
+    )
     monkeypatch.setattr(os, "getpid", lambda *args, **kwargs: PID)
 
 
@@ -250,7 +258,9 @@ def test_status_code_exceptions(status_code, expected_exc, log_level, caplog):
 
     internal_metrics = dict(internal_metrics.metrics())
     if status_code == 413:
-        assert internal_metrics["Supportability/Python/Collector/MaxPayloadSizeLimit/analytic_event_data"] == [
+        assert internal_metrics[
+            "Supportability/Python/Collector/MaxPayloadSizeLimit/analytic_event_data"
+        ] == [
             1,
             0,
             0,
@@ -259,7 +269,10 @@ def test_status_code_exceptions(status_code, expected_exc, log_level, caplog):
             0,
         ]
     else:
-        assert "Supportability/Python/Collector/MaxPayloadSizeLimit/analytic_event_data" not in internal_metrics
+        assert (
+            "Supportability/Python/Collector/MaxPayloadSizeLimit/analytic_event_data"
+            not in internal_metrics
+        )
 
     assert len(HttpClientRecorder.SENT) == 1
     request = HttpClientRecorder.SENT[0]
@@ -272,13 +285,17 @@ def test_status_code_exceptions(status_code, expected_exc, log_level, caplog):
 
 
 def test_protocol_http_error_causes_retry():
-    protocol = AgentProtocol(finalize_application_settings(), client_cls=HttpClientException)
+    protocol = AgentProtocol(
+        finalize_application_settings(), client_cls=HttpClientException
+    )
     with pytest.raises(RetryDataForRequest):
         protocol.send("analytic_event_data")
 
 
 def test_protocol_context_manager():
-    protocol = AgentProtocol(finalize_application_settings(), client_cls=HttpClientRecorder)
+    protocol = AgentProtocol(
+        finalize_application_settings(), client_cls=HttpClientRecorder
+    )
     with protocol:
         assert HttpClientRecorder.STATE == 1
 
@@ -286,7 +303,9 @@ def test_protocol_context_manager():
 
 
 def test_close_connection():
-    protocol = AgentProtocol(finalize_application_settings(), client_cls=HttpClientRecorder)
+    protocol = AgentProtocol(
+        finalize_application_settings(), client_cls=HttpClientRecorder
+    )
     protocol.close_connection()
     assert HttpClientRecorder.STATE == -1
 
@@ -316,10 +335,16 @@ def connect_payload_asserts(
     assert payload_data["pid"] == PID
     assert len(payload_data["security_settings"]) == 2
     assert payload_data["security_settings"]["capture_params"] == CAPTURE_PARAMS
-    assert payload_data["security_settings"]["transaction_tracer"] == {"record_sql": RECORD_SQL}
+    assert payload_data["security_settings"]["transaction_tracer"] == {
+        "record_sql": RECORD_SQL
+    }
     assert len(payload_data["settings"]) == 3
-    assert payload_data["settings"]["browser_monitoring.loader"] == (BROWSER_MONITORING_LOADER)
-    assert payload_data["settings"]["browser_monitoring.debug"] == (BROWSER_MONITORING_DEBUG)
+    assert payload_data["settings"]["browser_monitoring.loader"] == (
+        BROWSER_MONITORING_LOADER
+    )
+    assert payload_data["settings"]["browser_monitoring.debug"] == (
+        BROWSER_MONITORING_DEBUG
+    )
     assert payload_data["settings"]["ai_monitoring.enabled"] is False
 
     utilization_len = 5
@@ -332,7 +357,17 @@ def connect_payload_asserts(
     else:
         assert "ip_address" not in payload_data["utilization"]
 
-    utilization_len = utilization_len + any([with_aws, with_ecs, with_pcf, with_gcp, with_azure, with_docker, with_kubernetes])
+    utilization_len = utilization_len + any(
+        [
+            with_aws,
+            with_ecs,
+            with_pcf,
+            with_gcp,
+            with_azure,
+            with_docker,
+            with_kubernetes,
+        ]
+    )
     assert len(payload_data["utilization"]) == utilization_len
     assert payload_data["utilization"]["hostname"] == HOST
 
@@ -405,7 +440,16 @@ def connect_payload_asserts(
         (True, True, True, True, True, False, True, True),
     ],
 )
-def test_connect(with_aws, with_ecs, with_pcf, with_gcp, with_azure, with_docker, with_kubernetes, with_ip):
+def test_connect(
+    with_aws,
+    with_ecs,
+    with_pcf,
+    with_gcp,
+    with_azure,
+    with_docker,
+    with_kubernetes,
+    with_ip,
+):
     global AWS, AZURE, GCP, PCF, BOOT_ID, DOCKER, KUBERNETES, IP_ADDRESS
     if not with_aws:
         AWS = Exception
@@ -416,7 +460,7 @@ def test_connect(with_aws, with_ecs, with_pcf, with_gcp, with_azure, with_docker
     if not with_azure:
         AZURE = Exception
     if not with_ecs:
-        ECS = Exception
+        pass
     if not with_docker:
         DOCKER = Exception
     if not with_kubernetes:
@@ -536,7 +580,9 @@ def test_serverless_protocol_connect():
 
 def test_serverless_protocol_finalize(capsys):
     protocol = ServerlessModeProtocol(
-        finalize_application_settings({"aws_lambda_metadata": {"foo": "bar", "agent_version": "x"}})
+        finalize_application_settings(
+            {"aws_lambda_metadata": {"foo": "bar", "agent_version": "x"}}
+        )
     )
     response = protocol.send("metric_data", (1, 2, 3))
     assert response is None
@@ -580,7 +626,7 @@ def test_audit_logging():
 )
 def test_ca_bundle_path(monkeypatch, ca_bundle_path):
     # Pretend CA certificates are not available
-    class DefaultVerifyPaths():
+    class DefaultVerifyPaths:
         cafile = None
         capath = None
 
@@ -596,7 +642,9 @@ def test_ca_bundle_path(monkeypatch, ca_bundle_path):
 
 
 def test_max_payload_size_limit():
-    settings = finalize_application_settings({"max_payload_size_in_bytes": 0, "port": -1})
+    settings = finalize_application_settings(
+        {"max_payload_size_in_bytes": 0, "port": -1}
+    )
     protocol = AgentProtocol(settings, host="localhost")
     with pytest.raises(DiscardDataForRequest):
         protocol.send("metric_data")

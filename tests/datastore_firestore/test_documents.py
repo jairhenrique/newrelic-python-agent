@@ -38,7 +38,9 @@ def exercise_documents(collection):
         assert len(retrieved_coll) == 1
 
         usa_doc = collection.document("USA")
-        usa_doc.create({"capital": "Washington D.C.", "currency": "Dollar", "language": "English"})
+        usa_doc.create(
+            {"capital": "Washington D.C.", "currency": "Dollar", "language": "English"}
+        )
         usa_doc.update({"president": "Joe Biden"})
 
         collection.document("USA").delete()
@@ -67,7 +69,10 @@ def test_firestore_documents(exercise_documents, instance_info):
         ("Datastore/operation/Firestore/delete", 1),
         ("Datastore/all", 7),
         ("Datastore/allOther", 7),
-        (f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}", 7),
+        (
+            f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}",
+            7,
+        ),
     ]
 
     @validate_database_duration()
@@ -95,7 +100,9 @@ def test_firestore_documents_generators(collection, assert_trace_for_generator):
     assert_trace_for_generator(subcollection_doc.collections)
 
 
-def test_firestore_documents_trace_node_datastore_params(exercise_documents, instance_info):
+def test_firestore_documents_trace_node_datastore_params(
+    exercise_documents, instance_info
+):
     @validate_tt_collector_json(datastore_params=instance_info)
     @background_task()
     def _test():

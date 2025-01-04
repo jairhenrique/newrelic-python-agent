@@ -20,7 +20,9 @@ def validate_custom_parameters(required_params=None, forgone_params=None):
     required_params = required_params or []
     forgone_params = forgone_params or []
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     @catch_background_exceptions
     def _validate_custom_parameters(wrapped, instance, args, kwargs):
         def _bind_params(transaction, *args, **kwargs):
@@ -38,7 +40,9 @@ def validate_custom_parameters(required_params=None, forgone_params=None):
 
         for name, value in required_params:
             assert name in attrs, f"name={name!r}, params={attrs!r}"
-            assert attrs[name] == value, f"name={name!r}, value={value!r}, params={attrs!r}"
+            assert (
+                attrs[name] == value
+            ), f"name={name!r}, value={value!r}, params={attrs!r}"
 
         for name, value in forgone_params:
             assert name not in attrs, f"name={name!r}, params={attrs!r}"

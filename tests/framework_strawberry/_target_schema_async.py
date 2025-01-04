@@ -84,5 +84,7 @@ class Mutation:
     storage_add: str = strawberry.mutation(resolver=resolve_storage_add)
 
 
-target_schema = Schema(query=Query, mutation=Mutation, config=StrawberryConfig(auto_camel_case=False))
+target_schema = Schema(
+    query=Query, mutation=Mutation, config=StrawberryConfig(auto_camel_case=False)
+)
 target_asgi_application = AsgiTest(GraphQL(target_schema))

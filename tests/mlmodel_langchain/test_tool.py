@@ -169,7 +169,9 @@ def test_langchain_single_arg_tool_async(set_trace_info, single_arg_tool, loop):
 )
 @validate_attributes("agent", ["llm"])
 @background_task()
-def test_langchain_single_arg_tool_async_no_content(set_trace_info, single_arg_tool, loop):
+def test_langchain_single_arg_tool_async_no_content(
+    set_trace_info, single_arg_tool, loop
+):
     set_trace_info()
     loop.run_until_complete(single_arg_tool.arun({"query": "Python Agent"}))
 
@@ -298,7 +300,9 @@ def test_langchain_error_in_run(set_trace_info, multi_arg_tool):
         # Only one argument is provided while the tool expects two to create an error
         with WithLlmCustomAttributes({"context": "attr"}):
             multi_arg_tool.run(
-                {"first_num": 53}, tags=["test_tags", "python"], metadata={"test_run": True, "test": "langchain"}
+                {"first_num": 53},
+                tags=["test_tags", "python"],
+                metadata={"test_run": True, "test": "langchain"},
             )
 
 
@@ -330,7 +334,9 @@ def test_langchain_error_in_run_no_content(set_trace_info, multi_arg_tool):
         set_trace_info()
         # Only one argument is provided while the tool expects two to create an error
         multi_arg_tool.run(
-            {"first_num": 53}, tags=["test_tags", "python"], metadata={"test_run": True, "test": "langchain"}
+            {"first_num": 53},
+            tags=["test_tags", "python"],
+            metadata={"test_run": True, "test": "langchain"},
         )
 
 
@@ -363,7 +369,9 @@ def test_langchain_error_in_run_async(set_trace_info, multi_arg_tool, loop):
             # Only one argument is provided while the tool expects two to create an error
             loop.run_until_complete(
                 multi_arg_tool.arun(
-                    {"first_num": 53}, tags=["test_tags", "python"], metadata={"test_run": True, "test": "langchain"}
+                    {"first_num": 53},
+                    tags=["test_tags", "python"],
+                    metadata={"test_run": True, "test": "langchain"},
                 )
             )
 
@@ -397,7 +405,9 @@ def test_langchain_error_in_run_async_no_content(set_trace_info, multi_arg_tool,
         # Only one argument is provided while the tool expects two to create an error
         loop.run_until_complete(
             multi_arg_tool.arun(
-                {"first_num": 53}, tags=["test_tags", "python"], metadata={"test_run": True, "test": "langchain"}
+                {"first_num": 53},
+                tags=["test_tags", "python"],
+                metadata={"test_run": True, "test": "langchain"},
             )
         )
 
@@ -406,7 +416,9 @@ def test_langchain_error_in_run_async_no_content(set_trace_info, multi_arg_tool,
 @validate_custom_event_count(count=0)
 def test_langchain_tool_outside_txn(single_arg_tool):
     single_arg_tool.run(
-        {"query": "Python Agent"}, tags=["test_tags", "python"], metadata={"test_run": True, "test": "langchain"}
+        {"query": "Python Agent"},
+        tags=["test_tags", "python"],
+        metadata={"test_run": True, "test": "langchain"},
     )
 
 
@@ -415,7 +427,9 @@ def test_langchain_tool_outside_txn(single_arg_tool):
 def test_langchain_tool_outside_txn_async(single_arg_tool, loop):
     loop.run_until_complete(
         single_arg_tool.arun(
-            {"query": "Python Agent"}, tags=["test_tags", "python"], metadata={"test_run": True, "test": "langchain"}
+            {"query": "Python Agent"},
+            tags=["test_tags", "python"],
+            metadata={"test_run": True, "test": "langchain"},
         )
     )
 
@@ -424,10 +438,14 @@ def test_langchain_tool_outside_txn_async(single_arg_tool, loop):
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
 @background_task()
-def test_langchain_tool_disabled_ai_monitoring_events_sync(set_trace_info, single_arg_tool):
+def test_langchain_tool_disabled_ai_monitoring_events_sync(
+    set_trace_info, single_arg_tool
+):
     set_trace_info()
     single_arg_tool.run(
-        {"query": "Python Agent"}, tags=["test_tags", "python"], metadata={"test_run": True, "test": "langchain"}
+        {"query": "Python Agent"},
+        tags=["test_tags", "python"],
+        metadata={"test_run": True, "test": "langchain"},
     )
 
 
@@ -435,16 +453,22 @@ def test_langchain_tool_disabled_ai_monitoring_events_sync(set_trace_info, singl
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
 @background_task()
-def test_langchain_tool_disabled_ai_monitoring_events_async(set_trace_info, single_arg_tool, loop):
+def test_langchain_tool_disabled_ai_monitoring_events_async(
+    set_trace_info, single_arg_tool, loop
+):
     set_trace_info()
     loop.run_until_complete(
         single_arg_tool.arun(
-            {"query": "Python Agent"}, tags=["test_tags", "python"], metadata={"test_run": True, "test": "langchain"}
+            {"query": "Python Agent"},
+            tags=["test_tags", "python"],
+            metadata={"test_run": True, "test": "langchain"},
         )
     )
 
 
-def test_langchain_multiple_async_calls(set_trace_info, single_arg_tool, multi_arg_tool, loop):
+def test_langchain_multiple_async_calls(
+    set_trace_info, single_arg_tool, multi_arg_tool, loop
+):
     call1 = single_arg_tool_recorded_events.copy()
     call1[0][1]["run_id"] = "b1883d9d-10d6-4b67-a911-f72849704e92"
     call2 = multi_arg_tool_recorded_events.copy()

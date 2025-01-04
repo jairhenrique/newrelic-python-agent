@@ -65,7 +65,9 @@ def record_span_batch(request, context):
         for span in span_batch.spans:
             # Handle injecting status codes.
             status_code = span.intrinsics.get("status_code", None)
-            status_code = status_code and getattr(grpc.StatusCode, status_code.string_value)
+            status_code = status_code and getattr(
+                grpc.StatusCode, status_code.string_value
+            )
             if status_code is grpc.StatusCode.OK:
                 return
             elif status_code:

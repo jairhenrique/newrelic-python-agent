@@ -113,14 +113,20 @@ IGNORED_METHODS |= VALKEY_MODULES
 @pytest.mark.parametrize("client", (valkey_client, strict_valkey_client))
 def test_uninstrumented_methods(client):
     methods = {m for m in dir(client) if not m[0] == "_"}
-    is_wrapped = lambda m: hasattr(getattr(client, m), "__wrapped__")
+
+    def is_wrapped(m):
+        return hasattr(getattr(client, m), "__wrapped__")
+
     uninstrumented = {m for m in methods - IGNORED_METHODS if not is_wrapped(m)}
 
     for module in VALKEY_MODULES:
         if hasattr(client, module):
             module_client = getattr(client, module)()
             module_methods = {m for m in dir(module_client) if not m[0] == "_"}
-            is_wrapped = lambda m: hasattr(getattr(module_client, m), "__wrapped__")
+
+            def is_wrapped(m):
+                return hasattr(getattr(module_client, m), "__wrapped__")
+
             uninstrumented |= {
                 m for m in module_methods - IGNORED_METHODS if not is_wrapped(m)
             }

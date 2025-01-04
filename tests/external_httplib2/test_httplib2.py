@@ -28,7 +28,9 @@ from testing_support.validators.validate_cross_process_headers import (
 from testing_support.validators.validate_external_node_params import (
     validate_external_node_params,
 )
-from testing_support.validators.validate_transaction_metrics import validate_transaction_metrics
+from testing_support.validators.validate_transaction_metrics import (
+    validate_transaction_metrics,
+)
 
 from newrelic.api.background_task import background_task
 
@@ -156,7 +158,9 @@ def test_httplib2_cross_process_response(server):
         background_task=True,
     )
     @insert_incoming_headers
-    @validate_external_node_params(params=_test_httplib2_cross_process_response_external_node_params)
+    @validate_external_node_params(
+        params=_test_httplib2_cross_process_response_external_node_params
+    )
     @background_task(name="test_httplib2:test_httplib2_cross_process_response")
     def _test():
         connection = httplib2.HTTPConnectionWithTimeout("localhost", server.port)

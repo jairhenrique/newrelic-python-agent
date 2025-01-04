@@ -19,7 +19,9 @@ from testing_support.fixtures import core_application_stats_engine
 from newrelic.common.object_wrapper import function_wrapper
 
 
-def validate_non_transaction_error_event(required_intrinsics=None, num_errors=1, required_user=None, forgone_user=None):
+def validate_non_transaction_error_event(
+    required_intrinsics=None, num_errors=1, required_user=None, forgone_user=None
+):
     """Validate error event data for a single error occurring outside of a
     transaction.
     """
@@ -29,18 +31,15 @@ def validate_non_transaction_error_event(required_intrinsics=None, num_errors=1,
 
     @function_wrapper
     def _validate_non_transaction_error_event(wrapped, instace, args, kwargs):
-
         try:
             result = wrapped(*args, **kwargs)
         except:
             raise
         else:
-
             stats = core_application_stats_engine(None)
 
             assert stats.error_events.num_seen == num_errors
             for event in stats.error_events:
-
                 assert len(event) == 3  # [intrinsic, user, agent attributes]
 
                 intrinsics = event[0]
@@ -52,8 +51,13 @@ def validate_non_transaction_error_event(required_intrinsics=None, num_errors=1,
                 assert intrinsics["type"] == "TransactionError"
                 assert intrinsics["transactionName"] is None
                 assert intrinsics["error.class"] == required_intrinsics["error.class"]
-                assert intrinsics["error.message"].startswith(required_intrinsics["error.message"])
-                assert intrinsics["error.expected"] == required_intrinsics["error.expected"]
+                assert intrinsics["error.message"].startswith(
+                    required_intrinsics["error.message"]
+                )
+                assert (
+                    intrinsics["error.expected"]
+                    == required_intrinsics["error.expected"]
+                )
                 now = time()
                 assert isinstance(intrinsics["timestamp"], int)
                 assert intrinsics["timestamp"] <= 1000.0 * now
@@ -61,7 +65,9 @@ def validate_non_transaction_error_event(required_intrinsics=None, num_errors=1,
                 user_params = event[1]
                 for name, value in required_user.items():
                     assert name in user_params, f"name={name!r}, params={user_params!r}"
-                    assert user_params[name] == value, f"name={name!r}, value={value!r}, params={user_params!r}"
+                    assert (
+                        user_params[name] == value
+                    ), f"name={name!r}, value={value!r}, params={user_params!r}"
 
                 for param in forgone_user:
                     assert param not in user_params

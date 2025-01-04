@@ -26,7 +26,9 @@ from newrelic.api.background_task import background_task
         "KernelRidge",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(kernel_ridge_model_name, run_kernel_ridge_model):
+def test_model_methods_wrapped_in_function_trace(
+    kernel_ridge_model_name, run_kernel_ridge_model
+):
     expected_scoped_metrics = {
         "KernelRidge": [
             ("Function/MLModel/Sklearn/Named/KernelRidge.fit", 1),

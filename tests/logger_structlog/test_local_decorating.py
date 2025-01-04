@@ -18,7 +18,9 @@ from newrelic.api.application import application_settings
 from newrelic.api.background_task import background_task
 from testing_support.fixtures import reset_core_stats_engine
 from testing_support.validators.validate_log_event_count import validate_log_event_count
-from testing_support.validators.validate_log_event_count_outside_transaction import validate_log_event_count_outside_transaction
+from testing_support.validators.validate_log_event_count_outside_transaction import (
+    validate_log_event_count_outside_transaction,
+)
 
 
 def get_metadata_string(log_message, is_txn):
@@ -34,21 +36,25 @@ def get_metadata_string(log_message, is_txn):
 
 
 @reset_core_stats_engine()
-def test_local_log_decoration_inside_transaction(exercise_logging_single_line, structlog_caplog):
+def test_local_log_decoration_inside_transaction(
+    exercise_logging_single_line, structlog_caplog
+):
     @validate_log_event_count(1)
     @background_task()
     def test():
         exercise_logging_single_line()
-        assert get_metadata_string('A', True) in structlog_caplog.caplog[0]
+        assert get_metadata_string("A", True) in structlog_caplog.caplog[0]
 
     test()
 
 
 @reset_core_stats_engine()
-def test_local_log_decoration_outside_transaction(exercise_logging_single_line, structlog_caplog):
+def test_local_log_decoration_outside_transaction(
+    exercise_logging_single_line, structlog_caplog
+):
     @validate_log_event_count_outside_transaction(1)
     def test():
         exercise_logging_single_line()
-        assert get_metadata_string('A', False) in structlog_caplog.caplog[0]
+        assert get_metadata_string("A", False) in structlog_caplog.caplog[0]
 
     test()

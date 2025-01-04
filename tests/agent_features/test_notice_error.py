@@ -76,7 +76,9 @@ def test_notice_error_no_exc_info():
 _test_notice_error_custom_params = [(_runtime_error_name, "one")]
 
 
-@validate_transaction_errors(errors=_test_notice_error_custom_params, required_params=[("key", "value")])
+@validate_transaction_errors(
+    errors=_test_notice_error_custom_params, required_params=[("key", "value")]
+)
 @background_task()
 def test_notice_error_custom_params():
     try:
@@ -85,7 +87,10 @@ def test_notice_error_custom_params():
         notice_error(sys.exc_info(), attributes={"key": "value"})
 
 
-_test_notice_error_multiple_different_type = [(_runtime_error_name, "one"), (_type_error_name, "two")]
+_test_notice_error_multiple_different_type = [
+    (_runtime_error_name, "one"),
+    (_type_error_name, "two"),
+]
 
 
 @validate_transaction_errors(errors=_test_notice_error_multiple_different_type)
@@ -102,7 +107,10 @@ def test_notice_error_multiple_different_type():
         notice_error()
 
 
-_test_notice_error_multiple_same_type = [(_runtime_error_name, "one"), (_runtime_error_name, "two")]
+_test_notice_error_multiple_same_type = [
+    (_runtime_error_name, "one"),
+    (_runtime_error_name, "two"),
+]
 
 
 @validate_transaction_errors(errors=_test_notice_error_multiple_same_type)
@@ -151,7 +159,9 @@ _test_application_exception_custom_params = [(_runtime_error_name, "one")]
 
 
 @reset_core_stats_engine()
-@validate_application_errors(errors=_test_application_exception_custom_params, required_params=[("key", "value")])
+@validate_application_errors(
+    errors=_test_application_exception_custom_params, required_params=[("key", "value")]
+)
 def test_application_exception_custom_params():
     try:
         raise RuntimeError("one")
@@ -160,7 +170,10 @@ def test_application_exception_custom_params():
         notice_error(attributes={"key": "value"}, application=application_instance)
 
 
-_test_application_exception_multiple = [(_runtime_error_name, "one"), (_runtime_error_name, "one")]
+_test_application_exception_multiple = [
+    (_runtime_error_name, "one"),
+    (_runtime_error_name, "one"),
+]
 
 
 @reset_core_stats_engine()
@@ -227,7 +240,9 @@ def test_notice_error_strip_message_disabled_outside_transaction():
     assert my_error.message == ErrorOne.message
 
 
-_test_notice_error_strip_message_enabled = [(_runtime_error_name, STRIP_EXCEPTION_MESSAGE)]
+_test_notice_error_strip_message_enabled = [
+    (_runtime_error_name, STRIP_EXCEPTION_MESSAGE)
+]
 
 _strip_message_enabled_settings = {
     "strip_exception_messages.enabled": True,
@@ -270,7 +285,9 @@ def test_notice_error_strip_message_enabled_outside_transaction():
     assert my_error.message == STRIP_EXCEPTION_MESSAGE
 
 
-_test_notice_error_strip_message_in_allowlist = [(_runtime_error_name, "original error message")]
+_test_notice_error_strip_message_in_allowlist = [
+    (_runtime_error_name, "original error message")
+]
 
 _strip_message_in_allowlist_settings = {
     "strip_exception_messages.enabled": True,
@@ -321,7 +338,9 @@ def test_notice_error_strip_message_in_allowlist_outside_transaction():
     assert my_error.message == ErrorThree.message
 
 
-_test_notice_error_strip_message_not_in_allowlist = [(_runtime_error_name, STRIP_EXCEPTION_MESSAGE)]
+_test_notice_error_strip_message_not_in_allowlist = [
+    (_runtime_error_name, STRIP_EXCEPTION_MESSAGE)
+]
 
 _strip_message_not_in_allowlist_settings = {
     "strip_exception_messages.enabled": True,
@@ -355,7 +374,9 @@ _strip_message_not_in_allowlist_settings_outside_transaction = {
 }
 
 
-@override_application_settings(_strip_message_not_in_allowlist_settings_outside_transaction)
+@override_application_settings(
+    _strip_message_not_in_allowlist_settings_outside_transaction
+)
 def test_notice_error_strip_message_not_in_allowlist_outside_transaction():
     settings = application_settings()
     assert settings.strip_exception_messages.enabled
@@ -390,14 +411,18 @@ _num_errors_app = 26
 _error_event_limit = 25
 
 
-@override_application_settings({"agent_limits.errors_per_transaction": _errors_per_transaction_limit})
+@override_application_settings(
+    {"agent_limits.errors_per_transaction": _errors_per_transaction_limit}
+)
 @validate_transaction_error_trace_count(_errors_per_transaction_limit)
 @background_task()
 def test_transaction_error_trace_limit():
     _raise_errors(_num_errors_transaction)
 
 
-@override_application_settings({"agent_limits.errors_per_harvest": _errors_per_harvest_limit})
+@override_application_settings(
+    {"agent_limits.errors_per_harvest": _errors_per_harvest_limit}
+)
 @reset_core_stats_engine()
 @validate_application_error_trace_count(_errors_per_harvest_limit)
 def test_application_error_trace_limit():

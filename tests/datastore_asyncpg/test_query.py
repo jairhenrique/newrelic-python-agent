@@ -62,7 +62,9 @@ def conn(event_loop):
     scoped_metrics=((f"{PG_PREFIX}select", 1),),
     rollup_metrics=(("Datastore/all", 1),),
 )
-@validate_tt_collector_json(datastore_params={"port_path_or_id": str(DB_SETTINGS["port"])})
+@validate_tt_collector_json(
+    datastore_params={"port_path_or_id": str(DB_SETTINGS["port"])}
+)
 @background_task(name="test_single")
 @pytest.mark.parametrize("method", ("execute",))
 def test_single(event_loop, method, conn):
@@ -104,12 +106,16 @@ def test_prepare(event_loop, conn):
 def table(event_loop, conn):
     table_name = f"table_{os.getpid()}"
 
-    event_loop.run_until_complete(conn.execute(f"""create table {table_name} (a integer, b real, c text)"""))
+    event_loop.run_until_complete(
+        conn.execute(f"""create table {table_name} (a integer, b real, c text)""")
+    )
 
     return table_name
 
 
-@pytest.mark.skipif(ASYNCPG_VERSION < (0, 11), reason="Copy wasn't implemented before 0.11")
+@pytest.mark.skipif(
+    ASYNCPG_VERSION < (0, 11), reason="Copy wasn't implemented before 0.11"
+)
 @validate_transaction_metrics(
     "test_copy",
     background_task=True,
@@ -210,7 +216,9 @@ def test_cursor(event_loop, conn):
 def test_unix_socket_connect(event_loop):
     assert ASYNCPG_VERSION is not None
     with pytest.raises(OSError):
-        event_loop.run_until_complete(asyncpg.connect("postgres://?host=/.s.PGSQL.THIS_FILE_BETTER_NOT_EXIST"))
+        event_loop.run_until_complete(
+            asyncpg.connect("postgres://?host=/.s.PGSQL.THIS_FILE_BETTER_NOT_EXIST")
+        )
 
 
 @pytest.mark.skipif(

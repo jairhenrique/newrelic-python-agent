@@ -63,14 +63,28 @@ BASE_FORGONE_ATTRS = ["request.parameters.hello"]
     "uri,metric_name,error,status",
     [
         ("/error?hello=world", "_target_application:error", "builtins:ValueError", 500),
-        ("/non_500_error?hello=world", "_target_application:non_500_error", "aiohttp.web_exceptions:HTTPGone", 410),
+        (
+            "/non_500_error?hello=world",
+            "_target_application:non_500_error",
+            "aiohttp.web_exceptions:HTTPGone",
+            410,
+        ),
         ("/raise_404?hello=world", "_target_application:raise_404", None, 404),
-        ("/raise_403?hello=world", "_target_application:raise_403", "aiohttp.web_exceptions:HTTPForbidden", 403),
+        (
+            "/raise_403?hello=world",
+            "_target_application:raise_403",
+            "aiohttp.web_exceptions:HTTPForbidden",
+            403,
+        ),
     ],
 )
-def test_error_exception(method, uri, metric_name, error, status, nr_enabled, aiohttp_app):
+def test_error_exception(
+    method, uri, metric_name, error, status, nr_enabled, aiohttp_app
+):
     async def fetch():
-        resp = await aiohttp_app.client.request(method, uri, headers={"content-type": "text/plain"})
+        resp = await aiohttp_app.client.request(
+            method, uri, headers={"content-type": "text/plain"}
+        )
         assert resp.status == status
 
     required_attrs = list(BASE_REQUIRED_ATTRS)
@@ -150,7 +164,9 @@ def test_error_exception(method, uri, metric_name, error, status, nr_enabled, ai
 )
 def test_simultaneous_requests(method, uri, metric_name, nr_enabled, aiohttp_app):
     async def fetch():
-        resp = await aiohttp_app.client.request(method, uri, headers={"content-type": "text/plain"})
+        resp = await aiohttp_app.client.request(
+            method, uri, headers={"content-type": "text/plain"}
+        )
         assert resp.status == 200
         text = await resp.text()
         assert "Hello Aiohttp!" in text
@@ -271,7 +287,9 @@ def test_aborted_connection_creates_transaction(aiohttp_app):
 
 
 def test_work_after_request_not_recorded(aiohttp_app):
-    resp = aiohttp_app.loop.run_until_complete(aiohttp_app.client.request("GET", "/background"))
+    resp = aiohttp_app.loop.run_until_complete(
+        aiohttp_app.client.request("GET", "/background")
+    )
     assert resp.status == 200
 
     async def timeout():

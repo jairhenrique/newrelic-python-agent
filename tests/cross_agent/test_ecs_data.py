@@ -12,19 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 
 import pytest
-from fixtures.ecs_container_id.ecs_mock_server import (
-    bad_response_mock_server,
-    mock_server,
-)
 from test_pcf_utilization_data import Environ
 
 import newrelic.common.utilization as u
 
 
-@pytest.mark.parametrize("env_key", ["ECS_CONTAINER_METADATA_URI_V4", "ECS_CONTAINER_METADATA_URI"])
+@pytest.mark.parametrize(
+    "env_key", ["ECS_CONTAINER_METADATA_URI_V4", "ECS_CONTAINER_METADATA_URI"]
+)
 def test_ecs_docker_container_id(env_key, mock_server):
     mock_endpoint = f"http://localhost:{int(mock_server.port)}"
     env_dict = {env_key: mock_endpoint}
@@ -36,7 +33,11 @@ def test_ecs_docker_container_id(env_key, mock_server):
 
 
 @pytest.mark.parametrize(
-    "env_dict", [{"ECS_CONTAINER_METADATA_URI_V4": "http:/invalid-uri"}, {"ECS_CONTAINER_METADATA_URI_V4": None}]
+    "env_dict",
+    [
+        {"ECS_CONTAINER_METADATA_URI_V4": "http:/invalid-uri"},
+        {"ECS_CONTAINER_METADATA_URI_V4": None},
+    ],
 )
 def test_ecs_docker_container_id_bad_uri(env_dict, mock_server):
     with Environ(env_dict):

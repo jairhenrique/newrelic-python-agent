@@ -50,7 +50,10 @@ sanic_app = AsgiTest(sanic_app)
 def sanic_execute(query, middleware=None):
     set_middlware(middleware, sanic_middleware)
     response = sanic_app.make_request(
-        "POST", "/graphql", body=json.dumps({"query": query}), headers={"Content-Type": "application/json"}
+        "POST",
+        "/graphql",
+        body=json.dumps({"query": query}),
+        headers={"Content-Type": "application/json"},
     )
     body = json.loads(response.body.decode("utf-8"))
 
@@ -72,7 +75,10 @@ target_application["Sanic"] = sanic_execute
 
 flask_app = Flask("FlaskGraphQL")
 flask_middleware = []
-flask_app.add_url_rule("/graphql", view_func=FlaskView.as_view("graphql", schema=schema, middleware=flask_middleware))
+flask_app.add_url_rule(
+    "/graphql",
+    view_func=FlaskView.as_view("graphql", schema=schema, middleware=flask_middleware),
+)
 flask_app = webtest.TestApp(flask_app)
 
 
@@ -97,5 +103,6 @@ def flask_execute(query, middleware=None):
         assert "errors" not in body or not body["errors"]
 
     return response
+
 
 target_application["Flask"] = flask_execute

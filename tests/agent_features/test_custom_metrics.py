@@ -37,7 +37,9 @@ def test_custom_metric_inside_transaction():
 
 
 @reset_core_stats_engine()
-@validate_custom_metrics_outside_transaction([("CustomMetric/OutsideTransaction/Count", 1)])
+@validate_custom_metrics_outside_transaction(
+    [("CustomMetric/OutsideTransaction/Count", 1)]
+)
 @background_task()
 def test_custom_metric_outside_transaction_with_app():
     app = application()
@@ -55,8 +57,12 @@ def test_custom_metrics_inside_transaction():
 
 
 @reset_core_stats_engine()
-@validate_custom_metrics_outside_transaction([("CustomMetrics/OutsideTransaction/Count", 1)])
+@validate_custom_metrics_outside_transaction(
+    [("CustomMetrics/OutsideTransaction/Count", 1)]
+)
 @background_task()
 def test_custom_metrics_outside_transaction_with_app():
     app = application()
-    record_custom_metrics([("CustomMetrics/OutsideTransaction/Count", 1)], application=app)
+    record_custom_metrics(
+        [("CustomMetrics/OutsideTransaction/Count", 1)], application=app
+    )

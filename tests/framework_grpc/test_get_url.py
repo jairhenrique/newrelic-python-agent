@@ -20,9 +20,17 @@ from newrelic.hooks.framework_grpc import _get_uri_method
 
 _test_get_url_unary_unary = [
     ("localhost:1234", "/sample/method", "grpc://localhost:1234/sample/method"),
-    ("localhost:1234", "method/without/leading/slash", "grpc://localhost:1234/method/without/leading/slash"),
+    (
+        "localhost:1234",
+        "method/without/leading/slash",
+        "grpc://localhost:1234/method/without/leading/slash",
+    ),
     ("localhost", "/no/port", "grpc://localhost/no/port"),
-    ("newrelic-otel-productcatalogservice", "/no/port", "grpc://newrelic-otel-productcatalogservice/no/port"),
+    (
+        "newrelic-otel-productcatalogservice",
+        "/no/port",
+        "grpc://newrelic-otel-productcatalogservice/no/port",
+    ),
 ]
 
 _test_channel_types = [

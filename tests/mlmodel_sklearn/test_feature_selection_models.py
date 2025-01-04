@@ -33,7 +33,9 @@ SKLEARN_VERSION = get_package_version_tuple("sklearn")
         "SelectFromModel",
     ],
 )
-def test_below_v1_0_model_methods_wrapped_in_function_trace(feature_selection_model_name, run_feature_selection_model):
+def test_below_v1_0_model_methods_wrapped_in_function_trace(
+    feature_selection_model_name, run_feature_selection_model
+):
     expected_scoped_metrics = {
         "VarianceThreshold": [
             ("Function/MLModel/Sklearn/Named/VarianceThreshold.fit", 1),
@@ -73,7 +75,9 @@ def test_below_v1_0_model_methods_wrapped_in_function_trace(feature_selection_mo
         "SequentialFeatureSelector",
     ],
 )
-def test_above_v1_0_model_methods_wrapped_in_function_trace(feature_selection_model_name, run_feature_selection_model):
+def test_above_v1_0_model_methods_wrapped_in_function_trace(
+    feature_selection_model_name, run_feature_selection_model
+):
     expected_scoped_metrics = {
         "SequentialFeatureSelector": [
             ("Function/MLModel/Sklearn/Named/SequentialFeatureSelector.fit", 1),
@@ -101,10 +105,17 @@ def run_feature_selection_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         kwargs = {}
-        if feature_selection_model_name in ["RFE", "SequentialFeatureSelector", "SelectFromModel", "RFECV"]:
+        if feature_selection_model_name in [
+            "RFE",
+            "SequentialFeatureSelector",
+            "SelectFromModel",
+            "RFECV",
+        ]:
             # This is an example of a model that has all the available attributes
             # We could have choosen any estimator that has predict, score,
             # predict_log_proba, and predict_proba

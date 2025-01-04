@@ -18,7 +18,9 @@ from testing_support.db_settings import redis_settings
 
 DB_SETTINGS = redis_settings()[0]
 
-strict_redis_client = aredis.StrictRedis(host=DB_SETTINGS['host'], port=DB_SETTINGS['port'], db=0)
+strict_redis_client = aredis.StrictRedis(
+    host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0
+)
 
 
 IGNORED_METHODS = {
@@ -40,9 +42,13 @@ IGNORED_METHODS = {
     "transaction",
 }
 
+
 def test_uninstrumented_methods():
     methods = {m for m in dir(strict_redis_client) if not m[0] == "_"}
-    is_wrapped = lambda m: hasattr(getattr(strict_redis_client, m), "__wrapped__")
+
+    def is_wrapped(m):
+        return hasattr(getattr(strict_redis_client, m), "__wrapped__")
+
     uninstrumented = {m for m in methods - IGNORED_METHODS if not is_wrapped(m)}
 
     assert not uninstrumented, f"Uninstrumented methods: {sorted(uninstrumented)}"

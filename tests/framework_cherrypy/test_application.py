@@ -30,7 +30,7 @@ from testing_support.validators.validate_transaction_errors import (
 CHERRYPY_VERSION = tuple(int(v) for v in cherrypy.__version__.split("."))
 
 
-class Application():
+class Application:
     @cherrypy.expose
     def index(self):
         return "INDEX RESPONSE"
@@ -138,8 +138,12 @@ def test_application_upload_files():
 
 @validate_transaction_errors(errors=[])
 def test_application_encode_multipart():
-    content_type, body = test_application.encode_multipart(params=[("field", "value")], files=[("files", __file__)])
-    test_application.request("/encode_multipart", method="POST", content_type=content_type, body=body)
+    content_type, body = test_application.encode_multipart(
+        params=[("field", "value")], files=[("files", __file__)]
+    )
+    test_application.request(
+        "/encode_multipart", method="POST", content_type=content_type, body=body
+    )
 
 
 _test_html_insertion_settings = {

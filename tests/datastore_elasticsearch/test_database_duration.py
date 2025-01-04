@@ -23,21 +23,44 @@ from newrelic.api.background_task import background_task
 from conftest import ES_VERSION
 
 
-
-
 def _exercise_es_v7(es):
-    es.index(index="contacts", doc_type="person", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1)
     es.index(
-        index="contacts", doc_type="person", body={"name": "Jessica Coder", "age": 32, "title": "Programmer"}, id=2
+        index="contacts",
+        doc_type="person",
+        body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+        id=1,
     )
-    es.index(index="contacts", doc_type="person", body={"name": "Freddy Tester", "age": 29, "title": "Assistant"}, id=3)
+    es.index(
+        index="contacts",
+        doc_type="person",
+        body={"name": "Jessica Coder", "age": 32, "title": "Programmer"},
+        id=2,
+    )
+    es.index(
+        index="contacts",
+        doc_type="person",
+        body={"name": "Freddy Tester", "age": 29, "title": "Assistant"},
+        id=3,
+    )
     es.indices.refresh("contacts")
 
 
 def _exercise_es_v8(es):
-    es.index(index="contacts", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1)
-    es.index(index="contacts", body={"name": "Jessica Coder", "age": 32, "title": "Programmer"}, id=2)
-    es.index(index="contacts", body={"name": "Freddy Tester", "age": 29, "title": "Assistant"}, id=3)
+    es.index(
+        index="contacts",
+        body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+        id=1,
+    )
+    es.index(
+        index="contacts",
+        body={"name": "Jessica Coder", "age": 32, "title": "Programmer"},
+        id=2,
+    )
+    es.index(
+        index="contacts",
+        body={"name": "Freddy Tester", "age": 29, "title": "Assistant"},
+        id=3,
+    )
     es.indices.refresh(index="contacts")
 
 
@@ -53,7 +76,6 @@ def test_elasticsearch_database_duration(client):
 @validate_database_duration()
 @background_task()
 def test_elasticsearch_and_sqlite_database_duration(client):
-
     # Make Elasticsearch queries
 
     _exercise_es(client)

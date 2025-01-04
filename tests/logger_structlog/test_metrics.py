@@ -14,8 +14,12 @@
 
 from newrelic.api.background_task import background_task
 from testing_support.fixtures import reset_core_stats_engine
-from testing_support.validators.validate_transaction_metrics import validate_transaction_metrics
-from testing_support.validators.validate_custom_metrics_outside_transaction import validate_custom_metrics_outside_transaction
+from testing_support.validators.validate_transaction_metrics import (
+    validate_transaction_metrics,
+)
+from testing_support.validators.validate_custom_metrics_outside_transaction import (
+    validate_custom_metrics_outside_transaction,
+)
 
 
 _test_logging_unscoped_metrics = [
@@ -57,7 +61,9 @@ _test_logging_unscoped_filtering_metrics = [
 
 
 @reset_core_stats_engine()
-def test_filtering_logging_metrics_inside_transaction(exercise_filtering_logging_multiple_lines):
+def test_filtering_logging_metrics_inside_transaction(
+    exercise_filtering_logging_multiple_lines,
+):
     @validate_transaction_metrics(
         "test_metrics:test_filtering_logging_metrics_inside_transaction.<locals>.test",
         custom_metrics=_test_logging_unscoped_filtering_metrics,

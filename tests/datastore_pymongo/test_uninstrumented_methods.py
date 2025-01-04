@@ -54,6 +54,8 @@ def test_sync_collection_uninstrumented_methods(client_cls):
     collection = client["test"]["test"]
     methods = {m for m in dir(collection) if not m[0] == "_"} - IGNORED_METHODS
 
-    is_wrapped = lambda m: hasattr(getattr(collection, m), "__wrapped__")
+    def is_wrapped(m):
+        return hasattr(getattr(collection, m), "__wrapped__")
+
     uninstrumented = {m for m in methods if not is_wrapped(m)}
     assert not uninstrumented, f"Uninstrumented methods: {sorted(uninstrumented)}"

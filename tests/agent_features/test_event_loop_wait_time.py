@@ -74,7 +74,9 @@ async def wait_for_loop(ready, done, times=1):
         (False, False),
     ),
 )
-def test_record_event_loop_wait(event_loop, blocking_transaction_active, event_loop_visibility_enabled):
+def test_record_event_loop_wait(
+    event_loop, blocking_transaction_active, event_loop_visibility_enabled
+):
     # import asyncio
 
     metric_count = 2 if event_loop_visibility_enabled else None

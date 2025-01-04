@@ -20,16 +20,18 @@ from newrelic.common.object_wrapper import (
 )
 from testing_support.fixtures import catch_background_exceptions
 
+
 def validate_time_metrics_outside_transaction(time_metrics=None, index=-1):
     time_metrics = time_metrics or []
 
     @function_wrapper
     def _validate_wrapper(wrapped, instance, args, kwargs):
-
         record_time_metric_called = []
         recorded_metrics = []
 
-        @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_time_metric")
+        @transient_function_wrapper(
+            "newrelic.core.stats_engine", "StatsEngine.record_time_metric"
+        )
         @catch_background_exceptions
         def _validate_transaction_metrics(wrapped, instance, args, kwargs):
             record_time_metric_called.append(True)

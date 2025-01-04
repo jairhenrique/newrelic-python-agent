@@ -64,7 +64,9 @@ def test_class_based_view():
 @skip_if_not_async_handler_support
 @validate_code_level_metrics("_test_views_async.TestAsyncView", "dispatch_request")
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("_test_views_async:test_async_view", scoped_metrics=scoped_metrics)
+@validate_transaction_metrics(
+    "_test_views_async:test_async_view", scoped_metrics=scoped_metrics
+)
 def test_class_based_async_view():
     application = target_application()
     response = application.get("/async_view")
@@ -73,7 +75,9 @@ def test_class_based_async_view():
 
 @validate_code_level_metrics("_test_views.TestMethodView", "get")
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("_test_views:test_methodview", scoped_metrics=scoped_metrics)
+@validate_transaction_metrics(
+    "_test_views:test_methodview", scoped_metrics=scoped_metrics
+)
 def test_get_method_view():
     application = target_application()
     response = application.get("/methodview")
@@ -82,7 +86,9 @@ def test_get_method_view():
 
 @validate_code_level_metrics("_test_views.TestMethodView", "post")
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("_test_views:test_methodview", scoped_metrics=scoped_metrics)
+@validate_transaction_metrics(
+    "_test_views:test_methodview", scoped_metrics=scoped_metrics
+)
 def test_post_method_view():
     application = target_application()
     response = application.post("/methodview")
@@ -92,7 +98,9 @@ def test_post_method_view():
 @skip_if_not_async_handler_support
 @validate_code_level_metrics("_test_views_async.TestAsyncMethodView", "get")
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("_test_views_async:test_async_methodview", scoped_metrics=scoped_metrics)
+@validate_transaction_metrics(
+    "_test_views_async:test_async_methodview", scoped_metrics=scoped_metrics
+)
 def test_get_method_async_view():
     application = target_application()
     response = application.get("/async_methodview")

@@ -40,7 +40,9 @@ def test_dt_trace_all_args():
         pass
 
 
-@validate_datastore_trace_inputs(operation=None, target=None, host=None, port_path_or_id=None, database_name=None)
+@validate_datastore_trace_inputs(
+    operation=None, target=None, host=None, port_path_or_id=None, database_name=None
+)
 @background_task()
 def test_dt_trace_empty():
     with DatastoreTrace(product=None, target=None, operation=None):

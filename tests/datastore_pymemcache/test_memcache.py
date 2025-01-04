@@ -29,8 +29,12 @@ MEMCACHED_HOST = DB_SETTINGS["host"]
 MEMCACHED_PORT = DB_SETTINGS["port"]
 MEMCACHED_NAMESPACE = DB_SETTINGS["namespace"]
 MEMCACHED_ADDR = (MEMCACHED_HOST, int(MEMCACHED_PORT))
-INSTANCE_METRIC_HOST = system_info.gethostname() if MEMCACHED_HOST == "127.0.0.1" else MEMCACHED_HOST
-INSTANCE_METRIC_NAME = f"Datastore/instance/Memcached/{INSTANCE_METRIC_HOST}/{MEMCACHED_PORT}"
+INSTANCE_METRIC_HOST = (
+    system_info.gethostname() if MEMCACHED_HOST == "127.0.0.1" else MEMCACHED_HOST
+)
+INSTANCE_METRIC_NAME = (
+    f"Datastore/instance/Memcached/{INSTANCE_METRIC_HOST}/{MEMCACHED_PORT}"
+)
 
 
 _test_bt_set_get_delete_scoped_metrics = [

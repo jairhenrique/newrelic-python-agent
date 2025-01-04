@@ -71,7 +71,6 @@ def test_aiobotocore_sqs(loop):
                 aws_access_key_id=AWS_ACCESS_KEY_ID,
                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             ) as client:
-
                 response = await client.create_queue(QueueName=TEST_QUEUE)
 
                 queue_url = response["QueueUrl"]
@@ -100,7 +99,9 @@ def test_aiobotocore_sqs(loop):
                     {"Id": "2", "MessageBody": "message 2"},
                     {"Id": "3", "MessageBody": "message 3"},
                 ]
-                resp = await client.send_message_batch(QueueUrl=queue_url, Entries=messages)
+                resp = await client.send_message_batch(
+                    QueueUrl=queue_url, Entries=messages
+                )
                 assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
 
                 # Purge queue

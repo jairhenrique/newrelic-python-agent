@@ -15,7 +15,6 @@
 import uuid
 
 import boto3
-import botocore
 from moto import mock_aws
 from testing_support.fixtures import dt_enabled
 from testing_support.validators.validate_span_events import validate_span_events
@@ -76,9 +75,14 @@ def test_s3_context_propagation():
     )
 
     # Create bucket
-    resp = client.create_bucket(Bucket=TEST_BUCKET, CreateBucketConfiguration={"LocationConstraint": AWS_REGION_NAME})
+    resp = client.create_bucket(
+        Bucket=TEST_BUCKET,
+        CreateBucketConfiguration={"LocationConstraint": AWS_REGION_NAME},
+    )
     assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
 
     # Upload file
-    client.upload_file(Filename="_test_file.txt", Bucket=TEST_BUCKET, Key="_test_file.txt")
+    client.upload_file(
+        Filename="_test_file.txt", Bucket=TEST_BUCKET, Key="_test_file.txt"
+    )
     # No return value to check for this function currently

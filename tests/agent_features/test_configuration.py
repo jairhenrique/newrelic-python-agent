@@ -44,7 +44,9 @@ from newrelic.core.config import (
     global_settings_dump,
 )
 
-SKIP_IF_NOT_PY311 = pytest.mark.skipif(sys.version_info < (3, 11), reason="TOML not in the standard library.")
+SKIP_IF_NOT_PY311 = pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="TOML not in the standard library."
+)
 
 
 @pytest.fixture(scope="function")
@@ -439,8 +441,14 @@ translate_settings_tests = [
         TSetting("analytics_events.capture_attributes", False, True),
         TSetting("transaction_events.attributes.enabled", True, True),
     ),
-    (TSetting("analytics_events.enabled", True, True), TSetting("transaction_events.enabled", False, True)),
-    (TSetting("analytics_events.enabled", False, True), TSetting("transaction_events.enabled", True, True)),
+    (
+        TSetting("analytics_events.enabled", True, True),
+        TSetting("transaction_events.enabled", False, True),
+    ),
+    (
+        TSetting("analytics_events.enabled", False, True),
+        TSetting("transaction_events.enabled", True, True),
+    ),
     (
         TSetting("analytics_events.max_samples_stored", 1200, 1200),
         TSetting("event_harvest_config.harvest_limits.analytic_event_data", 9999, 1200),
@@ -635,7 +643,10 @@ app_name = Python Agent Test (agent_features)
 
 
 def test_initialize_raises_if_config_does_not_match_previous():
-    error_message = "Configuration has already been done against " "differing configuration file or environment.*"
+    error_message = (
+        "Configuration has already been done against "
+        "differing configuration file or environment.*"
+    )
     with pytest.raises(ConfigurationError, match=error_message):
         with tempfile.NamedTemporaryFile() as f:
             f.write(newrelic_ini_contents)
@@ -756,13 +767,23 @@ def test_initialize_no_config_file_feature_flag(feature_flag, expect_warning, lo
 @pytest.mark.parametrize(
     "setting_name,setting_value,expect_error",
     (
-        ("transaction_tracer.function_trace", [callable_name(function_to_trace)], False),
-        ("transaction_tracer.generator_trace", [callable_name(function_to_trace)], False),
+        (
+            "transaction_tracer.function_trace",
+            [callable_name(function_to_trace)],
+            False,
+        ),
+        (
+            "transaction_tracer.generator_trace",
+            [callable_name(function_to_trace)],
+            False,
+        ),
         ("transaction_tracer.function_trace", ["no_exist"], True),
         ("transaction_tracer.generator_trace", ["no_exist"], True),
     ),
 )
-def test_initialize_config_file_with_traces(setting_name, setting_value, expect_error, logger):
+def test_initialize_config_file_with_traces(
+    setting_name, setting_value, expect_error, logger
+):
     settings = global_settings()
     apply_config_setting(settings, setting_name, setting_value)
     _reset_configuration_done()
@@ -1061,7 +1082,9 @@ def test_toml_parse_production():
 
 
 @pytest.mark.parametrize(
-    "pathtype", [str, lambda s: s.encode("utf-8"), pathlib.Path], ids=["str", "bytes", "pathlib.Path"]
+    "pathtype",
+    [str, lambda s: s.encode("utf-8"), pathlib.Path],
+    ids=["str", "bytes", "pathlib.Path"],
 )
 def test_config_file_path_types_ini(pathtype):
     settings = global_settings()
@@ -1080,7 +1103,9 @@ def test_config_file_path_types_ini(pathtype):
 
 
 @pytest.mark.parametrize(
-    "pathtype", [str, lambda s: s.encode("utf-8"), pathlib.Path], ids=["str", "bytes", "pathlib.Path"]
+    "pathtype",
+    [str, lambda s: s.encode("utf-8"), pathlib.Path],
+    ids=["str", "bytes", "pathlib.Path"],
 )
 @SKIP_IF_NOT_PY311
 def test_config_file_path_types_toml(pathtype):

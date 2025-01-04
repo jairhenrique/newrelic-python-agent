@@ -96,7 +96,9 @@ def structlog_caplog(StructLogCapLog):
 def logger(structlog_caplog):
     import structlog
 
-    structlog.configure(processors=[], logger_factory=lambda *args, **kwargs: structlog_caplog)
+    structlog.configure(
+        processors=[], logger_factory=lambda *args, **kwargs: structlog_caplog
+    )
     _logger = structlog.get_logger()
     return _logger
 
@@ -105,7 +107,10 @@ def logger(structlog_caplog):
 def filtering_logger(structlog_caplog):
     import structlog
 
-    structlog.configure(processors=[drop_event_processor], logger_factory=lambda *args, **kwargs: structlog_caplog)
+    structlog.configure(
+        processors=[drop_event_processor],
+        logger_factory=lambda *args, **kwargs: structlog_caplog,
+    )
     _filtering_logger = structlog.get_logger()
     return _filtering_logger
 
@@ -129,7 +134,9 @@ def exercise_logging_multiple_lines(set_trace_ids, logger, structlog_caplog):
 
 
 @pytest.fixture
-def exercise_filtering_logging_multiple_lines(set_trace_ids, filtering_logger, structlog_caplog):
+def exercise_filtering_logging_multiple_lines(
+    set_trace_ids, filtering_logger, structlog_caplog
+):
     def _exercise():
         set_trace_ids()
 

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-""" The purpose of these tests is to confirm that using a non-standard
+"""The purpose of these tests is to confirm that using a non-standard
 connection pool that does not have a `connection_kwargs` attribute
 will not result in an error.
 """
@@ -30,7 +30,7 @@ from newrelic.api.background_task import background_task
 DB_SETTINGS = redis_settings()[0]
 
 
-class FakeConnectionPool():
+class FakeConnectionPool:
     """Connection Pool without connection_kwargs attribute."""
 
     def __init__(self, connection):

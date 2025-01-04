@@ -18,7 +18,10 @@ VALID_HTTP_VERSIONS = frozenset((None, 1, 2, 3))
 INVALID_HTTP_INPUT_WARNING = "Invalid HTTP version. Expected an integer (1, 2, or 3) or None for no specific version."
 INVALID_HTTP_VERSION_USED_WARNING = "Incorrect HTTP version used: {}"
 
-def make_request(host, port, path="", method="GET", body=None, http_version=None, timeout=10):
+
+def make_request(
+    host, port, path="", method="GET", body=None, http_version=None, timeout=10
+):
     assert http_version in VALID_HTTP_VERSIONS, INVALID_HTTP_INPUT_WARNING
 
     # Disable other HTTP connection types
@@ -41,16 +44,25 @@ def make_request(host, port, path="", method="GET", body=None, http_version=None
             session.quic_cache_layer[(host, port)] = ("", port)
 
         # Send Request
-        response = session.request(method.upper(), f"https://{host}:{port}{path}", data=body, timeout=timeout)
+        response = session.request(
+            method.upper(), f"https://{host}:{port}{path}", data=body, timeout=timeout
+        )
         response.ok  # Ensure response is completed
         response.raise_for_status()  # Check response status code
 
         # Check HTTP version used was correct
         if http_version == 1:
-            assert response.http_version in {10, 11}, INVALID_HTTP_VERSION_USED_WARNING.format(response.http_version)
+            assert response.http_version in {
+                10,
+                11,
+            }, INVALID_HTTP_VERSION_USED_WARNING.format(response.http_version)
         elif http_version == 2:
-            assert response.http_version == 20, INVALID_HTTP_VERSION_USED_WARNING.format(response.http_version)
+            assert (
+                response.http_version == 20
+            ), INVALID_HTTP_VERSION_USED_WARNING.format(response.http_version)
         elif http_version == 3:
-            assert response.http_version == 30, INVALID_HTTP_VERSION_USED_WARNING.format(response.http_version)
+            assert (
+                response.http_version == 30
+            ), INVALID_HTTP_VERSION_USED_WARNING.format(response.http_version)
 
         return response

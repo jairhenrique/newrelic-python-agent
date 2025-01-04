@@ -19,14 +19,19 @@ from newrelic.common.object_wrapper import (
 )
 from testing_support.fixtures import check_event_attributes
 
-def validate_transaction_event_attributes(required_params=None, forgone_params=None, exact_attrs=None, index=-1):
+
+def validate_transaction_event_attributes(
+    required_params=None, forgone_params=None, exact_attrs=None, index=-1
+):
     required_params = required_params or {}
     forgone_params = forgone_params or {}
     exact_attrs = exact_attrs or {}
 
     captured_events = []
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     def _capture_transaction_events(wrapped, instance, args, kwargs):
         try:
             result = wrapped(*args, **kwargs)

@@ -22,7 +22,6 @@ from newrelic.api.background_task import background_task
 
 @background_task()
 def test_as_string_1(connection):
-
     # All of these are similar to those described in the doctests in
     # psycopg/lib/sql.py
 
@@ -41,7 +40,8 @@ def test_as_string_2(connection):
 @background_task()
 def test_as_string_3(connection):
     query = sql.SQL("select {0} from {1}").format(
-        sql.SQL(", ").join([sql.Identifier("foo"), sql.Identifier("bar")]), sql.Identifier("table")
+        sql.SQL(", ").join([sql.Identifier("foo"), sql.Identifier("bar")]),
+        sql.Identifier("table"),
     )
     result = query.as_string(connection)
     assert result == 'select "foo", "bar" from "table"'
@@ -96,7 +96,8 @@ def test_as_string_8(connection):
 def test_as_string_9(connection):
     names = ["foo", "bar", "baz"]
     q1 = sql.SQL("insert into table ({0}) values ({1})").format(
-        sql.SQL(", ").join(map(sql.Identifier, names)), sql.SQL(", ").join(sql.Placeholder() * len(names))
+        sql.SQL(", ").join(map(sql.Identifier, names)),
+        sql.SQL(", ").join(sql.Placeholder() * len(names)),
     )
     result = q1.as_string(connection)
     assert result == 'insert into table ("foo", "bar", "baz") values (%s, %s, %s)'
@@ -106,7 +107,11 @@ def test_as_string_9(connection):
 def test_as_string_10(connection):
     names = ["foo", "bar", "baz"]
     q2 = sql.SQL("insert into table ({0}) values ({1})").format(
-        sql.SQL(", ").join(map(sql.Identifier, names)), sql.SQL(", ").join(map(sql.Placeholder, names))
+        sql.SQL(", ").join(map(sql.Identifier, names)),
+        sql.SQL(", ").join(map(sql.Placeholder, names)),
     )
     result = q2.as_string(connection)
-    assert result == 'insert into table ("foo", "bar", "baz") ' "values (%(foo)s, %(bar)s, %(baz)s)"
+    assert (
+        result == 'insert into table ("foo", "bar", "baz") '
+        "values (%(foo)s, %(bar)s, %(baz)s)"
+    )

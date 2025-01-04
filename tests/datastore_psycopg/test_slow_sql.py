@@ -46,7 +46,13 @@ _disabled_forgone = set(["host", "port_path_or_id", "database_name"])
 _distributed_tracing_required_params = set(["guid", "traceId", "priority", "sampled"])
 _distributed_tracing_forgone_params = set(["traceId", "priority", "sampled"])
 _distributed_tracing_payload_received_params = set(
-    ["parent.type", "parent.app", "parent.account", "parent.transportType", "parent.transportDuration"]
+    [
+        "parent.type",
+        "parent.app",
+        "parent.account",
+        "parent.transportType",
+        "parent.transportDuration",
+    ]
 )
 
 _transaction_guid = "1234567890"
@@ -59,7 +65,11 @@ _distributed_tracing_exact_params = {"guid": _transaction_guid}
 async def _exercise_db(connection):
     try:
         cursor = connection.cursor()
-        await maybe_await(cursor.execute("SELECT setting from pg_settings where name=%s", ("server_version",)))
+        await maybe_await(
+            cursor.execute(
+                "SELECT setting from pg_settings where name=%s", ("server_version",)
+            )
+        )
     finally:
         await maybe_await(connection.close())
 
@@ -76,8 +86,9 @@ async def _exercise_db(connection):
         (False, False),
     ],
 )
-def test_slow_sql_json(loop, connection, instance_enabled, distributed_tracing_enabled, payload_received):
-
+def test_slow_sql_json(
+    loop, connection, instance_enabled, distributed_tracing_enabled, payload_received
+):
     exact_params = None
 
     if instance_enabled:
@@ -104,7 +115,9 @@ def test_slow_sql_json(loop, connection, instance_enabled, distributed_tracing_e
 
     @override_application_settings(settings)
     @validate_slow_sql_collector_json(
-        required_params=required_params, forgone_params=forgone_params, exact_params=exact_params
+        required_params=required_params,
+        forgone_params=forgone_params,
+        exact_params=exact_params,
     )
     @background_task()
     def _test():
@@ -114,7 +127,6 @@ def test_slow_sql_json(loop, connection, instance_enabled, distributed_tracing_e
         loop.run_until_complete(_exercise_db(connection))
 
         if payload_received:
-
             payload = {
                 "v": [0, 1],
                 "d": {

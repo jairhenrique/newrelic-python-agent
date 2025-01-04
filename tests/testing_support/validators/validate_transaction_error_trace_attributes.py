@@ -18,7 +18,9 @@ from testing_support.fixtures import check_error_attributes
 from newrelic.common.object_wrapper import transient_function_wrapper
 
 
-def validate_transaction_error_trace_attributes(required_params=None, forgone_params=None, exact_attrs=None):
+def validate_transaction_error_trace_attributes(
+    required_params=None, forgone_params=None, exact_attrs=None
+):
     """Check the error trace for attributes, expect only one error to be
     present in the transaction.
     """
@@ -26,14 +28,15 @@ def validate_transaction_error_trace_attributes(required_params=None, forgone_pa
     forgone_params = forgone_params or {}
     exact_attrs = exact_attrs or {}
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     def _validate_transaction_error_trace(wrapped, instance, args, kwargs):
         try:
             result = wrapped(*args, **kwargs)
         except:
             raise
         else:
-
             error_data = instance.error_data()
 
             # there should be only one error
@@ -41,7 +44,11 @@ def validate_transaction_error_trace_attributes(required_params=None, forgone_pa
             traced_error = error_data[0]
 
             check_error_attributes(
-                traced_error.parameters, required_params, forgone_params, exact_attrs, is_transaction=True
+                traced_error.parameters,
+                required_params,
+                forgone_params,
+                exact_attrs,
+                is_transaction=True,
             )
 
         return result

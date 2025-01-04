@@ -40,7 +40,11 @@ _disable_instance_settings = {
 async def _exercise_db(connection):
     try:
         cursor = connection.cursor()
-        await maybe_await(cursor.execute("SELECT setting from pg_settings where name=%s", ("server_version",)))
+        await maybe_await(
+            cursor.execute(
+                "SELECT setting from pg_settings where name=%s", ("server_version",)
+            )
+        )
 
         # No target
         await maybe_await(cursor.execute("SELECT 1"))

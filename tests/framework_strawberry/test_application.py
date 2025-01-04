@@ -24,7 +24,10 @@ from newrelic.common.package_version_utils import get_package_version
 STRAWBERRY_VERSION = get_package_version("strawberry-graphql")
 
 
-@pytest.fixture(scope="session", params=["sync-sync", "async-sync", "async-async", "asgi-sync", "asgi-async"])
+@pytest.fixture(
+    scope="session",
+    params=["sync-sync", "async-sync", "async-async", "asgi-sync", "asgi-async"],
+)
 def target_application(request):
     from ._target_application import target_application
 
@@ -34,21 +37,32 @@ def target_application(request):
     schema_type = request.param.split("-")[1]
 
     assert STRAWBERRY_VERSION is not None
-    return "Strawberry", STRAWBERRY_VERSION, target_application, not is_asgi, schema_type, 0
+    return (
+        "Strawberry",
+        STRAWBERRY_VERSION,
+        target_application,
+        not is_asgi,
+        schema_type,
+        0,
+    )
 
 
 @pytest.mark.parametrize("capture_introspection_setting", (True, False))
 def test_introspection_transactions(target_application, capture_introspection_setting):
-    framework, version, target_application, is_bg, schema_type, extra_spans = target_application
+    framework, version, target_application, is_bg, schema_type, extra_spans = (
+        target_application
+    )
 
     txn_ct = 1 if capture_introspection_setting else 0
 
     @override_application_settings(
-        {"instrumentation.graphql.capture_introspection_queries": capture_introspection_setting}
+        {
+            "instrumentation.graphql.capture_introspection_queries": capture_introspection_setting
+        }
     )
     @validate_transaction_count(txn_ct)
     @background_task()
     def _test():
-        response = target_application("{ __schema { types { name } } }")
+        target_application("{ __schema { types { name } } }")
 
     _test()

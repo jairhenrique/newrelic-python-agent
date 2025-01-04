@@ -47,4 +47,6 @@ app = webtest.TestApp(fully_featured_app)
 @override_application_settings({"attributes.include": ["*"]})
 @dt_enabled
 def test_wsgi_attributes():
-    app.post_json("/", {"foo": "bar"}, extra_environ={"n_errors": "1", "err_message": "oops"})
+    app.post_json(
+        "/", {"foo": "bar"}, extra_environ={"n_errors": "1", "err_message": "oops"}
+    )

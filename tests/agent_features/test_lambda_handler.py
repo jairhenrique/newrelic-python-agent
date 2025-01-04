@@ -92,7 +92,7 @@ firehose_event = {
 }
 
 
-class Context():
+class Context:
     aws_request_id = "cookies"
     invoked_function_arn = "arn"
     function_name = "cats"
@@ -116,9 +116,15 @@ def test_lambda_transaction_attributes(is_cold, monkeypatch):
 
     # otherwise, then we need to make sure that we don't see it at all
     else:
-        _forgone_params = {"agent": ["aws.lambda.coldStart"], "user": [], "intrinsic": []}
+        _forgone_params = {
+            "agent": ["aws.lambda.coldStart"],
+            "user": [],
+            "intrinsic": [],
+        }
 
-    @validate_transaction_trace_attributes(required_params=_expected, forgone_params=_forgone_params)
+    @validate_transaction_trace_attributes(
+        required_params=_expected, forgone_params=_forgone_params
+    )
     @validate_transaction_event_attributes(
         required_params=_expected, forgone_params=_forgone_params, exact_attrs=_exact
     )
@@ -263,7 +269,9 @@ def test_lambda_no_status_code_response():
 
 # The lambda_hander has been deprecated for 3+ years
 @pytest.mark.skip(reason="The lambda_handler has been deprecated")
-@pytest.mark.parametrize("event,arn", ((empty_event, None), (firehose_event, "arn:aws:kinesis:EXAMPLE")))
+@pytest.mark.parametrize(
+    "event,arn", ((empty_event, None), (firehose_event, "arn:aws:kinesis:EXAMPLE"))
+)
 def test_lambda_event_source_arn_attribute(event, arn):
     if arn is None:
         _exact = None
@@ -286,8 +294,12 @@ def test_lambda_event_source_arn_attribute(event, arn):
         }
         _forgone = None
 
-    @validate_transaction_trace_attributes(required_params=_expected, forgone_params=_forgone)
-    @validate_transaction_event_attributes(required_params=_expected, forgone_params=_forgone, exact_attrs=_exact)
+    @validate_transaction_trace_attributes(
+        required_params=_expected, forgone_params=_forgone
+    )
+    @validate_transaction_event_attributes(
+        required_params=_expected, forgone_params=_forgone, exact_attrs=_exact
+    )
     @override_application_settings(_override_settings)
     def _test():
         handler(event, Context)

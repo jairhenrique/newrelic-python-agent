@@ -35,7 +35,9 @@ from newrelic.common.encoding_utils import DistributedTracePayload
 from newrelic.common.object_wrapper import transient_function_wrapper
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-JSON_DIR = os.path.normpath(os.path.join(CURRENT_DIR, "fixtures", "distributed_tracing"))
+JSON_DIR = os.path.normpath(
+    os.path.join(CURRENT_DIR, "fixtures", "distributed_tracing")
+)
 
 _parameters_list = [
     "account_id",
@@ -72,7 +74,9 @@ def load_tests():
 
 
 def override_compute_sampled(override):
-    @transient_function_wrapper("newrelic.core.adaptive_sampler", "AdaptiveSampler.compute_sampled")
+    @transient_function_wrapper(
+        "newrelic.core.adaptive_sampler", "AdaptiveSampler.compute_sampled"
+    )
     def _override_compute_sampled(wrapped, instance, args, kwargs):
         if override:
             return True
@@ -110,7 +114,10 @@ def assert_payload(payload, payload_assertions, major_version, minor_version):
 def target_wsgi_application(environ, start_response):
     status = "200 OK"
     output = b"hello world"
-    response_headers = [("Content-type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
 
     txn = current_transaction()
     txn.set_transaction_name(test_settings["test_name"])
@@ -126,14 +133,21 @@ def target_wsgi_application(environ, start_response):
 
     extra_inbound_payloads = test_settings["extra_inbound_payloads"]
     for payload, expected_result in extra_inbound_payloads:
-        result = txn.accept_distributed_trace_payload(payload, test_settings["transport_type"])
+        result = txn.accept_distributed_trace_payload(
+            payload, test_settings["transport_type"]
+        )
         assert result is expected_result
 
     outbound_payloads = test_settings["outbound_payloads"]
     if outbound_payloads:
         for payload_assertions in outbound_payloads:
             payload = txn._create_distributed_trace_payload()
-            assert_payload(payload, payload_assertions, test_settings["major_version"], test_settings["minor_version"])
+            assert_payload(
+                payload,
+                payload_assertions,
+                test_settings["major_version"],
+                test_settings["minor_version"],
+            )
 
     start_response(status, response_headers)
     return [output]
@@ -160,7 +174,6 @@ def test_distributed_tracing(
     trusted_account_key,
     web_transaction,
 ):
-
     extra_inbound_payloads = []
     if transport_type != "HTTP":
         # Since wsgi_application calls accept_distributed_trace_payload
@@ -199,11 +212,23 @@ def test_distributed_tracing(
     common_exact = intrinsics["common"].get("exact", {})
 
     txn_intrinsics = intrinsics.get("Transaction", {})
-    txn_event_required = {"agent": [], "user": [], "intrinsic": txn_intrinsics.get("expected", [])}
+    txn_event_required = {
+        "agent": [],
+        "user": [],
+        "intrinsic": txn_intrinsics.get("expected", []),
+    }
     txn_event_required["intrinsic"].extend(common_required)
-    txn_event_forgone = {"agent": [], "user": [], "intrinsic": txn_intrinsics.get("unexpected", [])}
+    txn_event_forgone = {
+        "agent": [],
+        "user": [],
+        "intrinsic": txn_intrinsics.get("unexpected", []),
+    }
     txn_event_forgone["intrinsic"].extend(common_forgone)
-    txn_event_exact = {"agent": {}, "user": {}, "intrinsic": txn_intrinsics.get("exact", {})}
+    txn_event_exact = {
+        "agent": {},
+        "user": {},
+        "intrinsic": txn_intrinsics.get("exact", {}),
+    }
     txn_event_exact["intrinsic"].update(common_exact)
 
     headers = {}
@@ -211,8 +236,12 @@ def test_distributed_tracing(
         payload = DistributedTracePayload(inbound_payloads[0])
         headers["newrelic"] = payload.http_safe()
 
-    @validate_transaction_metrics(test_name, rollup_metrics=expected_metrics, background_task=not web_transaction)
-    @validate_transaction_event_attributes(txn_event_required, txn_event_forgone, txn_event_exact)
+    @validate_transaction_metrics(
+        test_name, rollup_metrics=expected_metrics, background_task=not web_transaction
+    )
+    @validate_transaction_event_attributes(
+        txn_event_required, txn_event_forgone, txn_event_exact
+    )
     @validate_attributes("intrinsic", common_required, common_forgone)
     @override_compute_sampled(force_sampled_true)
     @override_application_settings(override_settings)
@@ -230,7 +259,9 @@ def test_distributed_tracing(
         span_exact.update(common_exact)
 
         _test = validate_span_events(
-            exact_intrinsics=span_exact, expected_intrinsics=span_expected, unexpected_intrinsics=span_unexpected
+            exact_intrinsics=span_exact,
+            expected_intrinsics=span_expected,
+            unexpected_intrinsics=span_unexpected,
         )(_test)
     elif not span_events_enabled:
         _test = validate_span_events(count=0)(_test)
@@ -239,6 +270,8 @@ def test_distributed_tracing(
         error_event_required = {"agent": [], "user": [], "intrinsic": common_required}
         error_event_forgone = {"agent": [], "user": [], "intrinsic": common_forgone}
         error_event_exact = {"agent": {}, "user": {}, "intrinsic": common_exact}
-        _test = validate_error_event_attributes(error_event_required, error_event_forgone, error_event_exact)(_test)
+        _test = validate_error_event_attributes(
+            error_event_required, error_event_forgone, error_event_exact
+        )(_test)
 
     _test()

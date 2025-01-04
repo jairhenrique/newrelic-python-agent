@@ -173,7 +173,10 @@ def test_port_included(server):
 
     @validate_transaction_errors(errors=[])
     @validate_transaction_metrics(
-        "test_urllib3:test_port_included", scoped_metrics=scoped, rollup_metrics=rollup, background_task=True
+        "test_urllib3:test_port_included",
+        scoped_metrics=scoped,
+        rollup_metrics=rollup,
+        background_task=True,
     )
     @background_task(name="test_urllib3:test_port_included")
     def _test():
@@ -187,7 +190,8 @@ def test_port_included(server):
 # HTTPConnection class. Previously the httplib/http.client HTTPConnection class
 # was used. We test httplib in a different test directory so we skip this test.
 @pytest.mark.skipif(
-    get_package_version_tuple("urllib3") < (1, 8), reason="urllib3.connection.HTTPConnection added in 1.8"
+    get_package_version_tuple("urllib3") < (1, 8),
+    reason="urllib3.connection.HTTPConnection added in 1.8",
 )
 def test_HTTPConnection_port_included(server):
     scoped = [(f"External/localhost:{server.port}/urllib3/", 1)]
@@ -270,7 +274,9 @@ def test_urlopen_cross_process_response(server):
         background_task=True,
     )
     @insert_incoming_headers
-    @validate_external_node_params(params=_test_urlopen_cross_process_response_external_node_params)
+    @validate_external_node_params(
+        params=_test_urlopen_cross_process_response_external_node_params
+    )
     @background_task(name="test_urllib3:test_urlopen_cross_process_response")
     def _test():
         pool = urllib3.HTTPConnectionPool(f"localhost:{server.port}")

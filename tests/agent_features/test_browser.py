@@ -46,7 +46,10 @@ def target_wsgi_application_manual_rum(environ, start_response):
 
     output = (text % get_browser_timing_header()).encode("UTF-8")
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     return [output]
@@ -185,13 +188,18 @@ def target_wsgi_application_yield_single_no_head(environ, start_response):
 
     output = b"<html><body><p>RESPONSE</p></body></html>"
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     yield output
 
 
-target_application_yield_single_no_head = webtest.TestApp(target_wsgi_application_yield_single_no_head)
+target_application_yield_single_no_head = webtest.TestApp(
+    target_wsgi_application_yield_single_no_head
+)
 
 _test_html_insertion_yield_single_no_head_settings = {
     "browser_monitoring.enabled": True,
@@ -220,14 +228,19 @@ def target_wsgi_application_yield_multi_no_head(environ, start_response):
 
     output = [b"<html>", b"<body><p>RESPONSE</p></body></html>"]
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(b"".join(output))))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(b"".join(output)))),
+    ]
     start_response(status, response_headers)
 
     for data in output:
         yield data
 
 
-target_application_yield_multi_no_head = webtest.TestApp(target_wsgi_application_yield_multi_no_head)
+target_application_yield_multi_no_head = webtest.TestApp(
+    target_wsgi_application_yield_multi_no_head
+)
 
 _test_html_insertion_yield_multi_no_head_settings = {
     "browser_monitoring.enabled": True,
@@ -266,7 +279,9 @@ def target_wsgi_application_unnamed_attachment_header(environ, start_response):
     yield output
 
 
-target_application_unnamed_attachment_header = webtest.TestApp(target_wsgi_application_unnamed_attachment_header)
+target_application_unnamed_attachment_header = webtest.TestApp(
+    target_wsgi_application_unnamed_attachment_header
+)
 
 _test_html_insertion_unnamed_attachment_header_settings = {
     "browser_monitoring.enabled": True,
@@ -306,7 +321,9 @@ def target_wsgi_application_named_attachment_header(environ, start_response):
     yield output
 
 
-target_application_named_attachment_header = webtest.TestApp(target_wsgi_application_named_attachment_header)
+target_application_named_attachment_header = webtest.TestApp(
+    target_wsgi_application_named_attachment_header
+)
 
 _test_html_insertion_named_attachment_header_settings = {
     "browser_monitoring.enabled": True,
@@ -346,7 +363,9 @@ def target_wsgi_application_inline_attachment_header(environ, start_response):
     yield output
 
 
-target_application_inline_attachment_header = webtest.TestApp(target_wsgi_application_inline_attachment_header)
+target_application_inline_attachment_header = webtest.TestApp(
+    target_wsgi_application_inline_attachment_header
+)
 
 _test_html_insertion_inline_attachment_header_settings = {
     "browser_monitoring.enabled": True,
@@ -374,7 +393,10 @@ def test_html_insertion_inline_attachment_header():
 def target_wsgi_application_empty_list(environ, start_response):
     status = "200 OK"
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", "0")]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", "0"),
+    ]
     start_response(status, response_headers)
 
     return []
@@ -409,13 +431,18 @@ def test_html_insertion_empty_list():
 def target_wsgi_application_single_empty_string(environ, start_response):
     status = "200 OK"
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", "0")]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", "0"),
+    ]
     start_response(status, response_headers)
 
     return [""]
 
 
-target_application_single_empty_string = webtest.TestApp(target_wsgi_application_single_empty_string)
+target_application_single_empty_string = webtest.TestApp(
+    target_wsgi_application_single_empty_string
+)
 
 _test_html_insertion_single_empty_string_settings = {
     "browser_monitoring.enabled": True,
@@ -444,13 +471,18 @@ def test_html_insertion_single_empty_string():
 def target_wsgi_application_multiple_empty_string(environ, start_response):
     status = "200 OK"
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", "0")]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", "0"),
+    ]
     start_response(status, response_headers)
 
     return ["", ""]
 
 
-target_application_multiple_empty_string = webtest.TestApp(target_wsgi_application_multiple_empty_string)
+target_application_multiple_empty_string = webtest.TestApp(
+    target_wsgi_application_multiple_empty_string
+)
 
 _test_html_insertion_multiple_empty_string_settings = {
     "browser_monitoring.enabled": True,
@@ -481,13 +513,18 @@ def target_wsgi_application_single_large_prelude(environ, start_response):
 
     output = [64 * 1024 * b" " + b"<body></body>"]
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(b"".join(output))))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(b"".join(output)))),
+    ]
     start_response(status, response_headers)
 
     return output
 
 
-target_application_single_large_prelude = webtest.TestApp(target_wsgi_application_single_large_prelude)
+target_application_single_large_prelude = webtest.TestApp(
+    target_wsgi_application_single_large_prelude
+)
 
 _test_html_insertion_single_large_prelude_settings = {
     "browser_monitoring.enabled": True,
@@ -520,13 +557,18 @@ def target_wsgi_application_multi_large_prelude(environ, start_response):
 
     output = [32 * 1024 * b" ", 32 * 1024 * b" ", b"<body></body>"]
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(b"".join(output))))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(b"".join(output)))),
+    ]
     start_response(status, response_headers)
 
     return output
 
 
-target_application_multi_large_prelude = webtest.TestApp(target_wsgi_application_multi_large_prelude)
+target_application_multi_large_prelude = webtest.TestApp(
+    target_wsgi_application_multi_large_prelude
+)
 
 _test_html_insertion_multi_large_prelude_settings = {
     "browser_monitoring.enabled": True,
@@ -565,13 +607,18 @@ def target_wsgi_application_yield_before_start(environ, start_response):
 
     output = b"<html><body><p>RESPONSE</p></body></html>"
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     yield output
 
 
-target_application_yield_before_start = webtest.TestApp(target_wsgi_application_yield_before_start, lint=False)
+target_application_yield_before_start = webtest.TestApp(
+    target_wsgi_application_yield_before_start, lint=False
+)
 
 _test_html_insertion_yield_before_start_settings = {
     "browser_monitoring.enabled": True,
@@ -595,7 +642,10 @@ def test_html_insertion_yield_before_start():
 def target_wsgi_application_start_yield_start(environ, start_response):
     output = b"<html><body><p>RESPONSE</p></body></html>"
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
 
     start_response("200 OK", response_headers)
 
@@ -609,7 +659,9 @@ def target_wsgi_application_start_yield_start(environ, start_response):
     yield output
 
 
-target_application_start_yield_start = webtest.TestApp(target_wsgi_application_start_yield_start)
+target_application_start_yield_start = webtest.TestApp(
+    target_wsgi_application_start_yield_start
+)
 
 _test_html_insertion_start_yield_start_settings = {
     "browser_monitoring.enabled": True,
@@ -636,14 +688,19 @@ def test_html_insertion_start_yield_start():
 def target_wsgi_application_invalid_content_length(environ, start_response):
     output = b"<html><body><p>RESPONSE</p></body></html>"
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", "XXX")]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", "XXX"),
+    ]
 
     start_response("200 OK", response_headers)
 
     yield output
 
 
-target_application_invalid_content_length = webtest.TestApp(target_wsgi_application_invalid_content_length)
+target_application_invalid_content_length = webtest.TestApp(
+    target_wsgi_application_invalid_content_length
+)
 
 _test_html_insertion_invalid_content_length_settings = {
     "browser_monitoring.enabled": True,
@@ -683,7 +740,9 @@ def target_wsgi_application_content_encoding(environ, start_response):
     yield output
 
 
-target_application_content_encoding = webtest.TestApp(target_wsgi_application_content_encoding)
+target_application_content_encoding = webtest.TestApp(
+    target_wsgi_application_content_encoding
+)
 
 _test_html_insertion_content_encoding_settings = {
     "browser_monitoring.enabled": True,
@@ -720,7 +779,9 @@ def target_wsgi_application_no_content_type(environ, start_response):
     yield output
 
 
-target_application_no_content_type = webtest.TestApp(target_wsgi_application_no_content_type, lint=False)
+target_application_no_content_type = webtest.TestApp(
+    target_wsgi_application_no_content_type, lint=False
+)
 
 _test_html_insertion_no_content_type_settings = {
     "browser_monitoring.enabled": True,
@@ -743,7 +804,10 @@ def test_html_insertion_no_content_type():
 def target_wsgi_application_plain_text(environ, start_response):
     output = b"RESPONSE"
 
-    response_headers = [("Content-Type", "text/plain"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/plain"),
+        ("Content-Length", str(len(output))),
+    ]
 
     start_response("200 OK", response_headers)
 
@@ -773,7 +837,10 @@ def test_html_insertion_plain_text():
 def target_wsgi_application_write_callback(environ, start_response):
     output = b"<html><body><p>RESPONSE</p></body></html>"
 
-    response_headers = [("Content-Type", "text/html"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html"),
+        ("Content-Length", str(len(output))),
+    ]
 
     write = start_response("200 OK", response_headers)
 
@@ -782,7 +849,9 @@ def target_wsgi_application_write_callback(environ, start_response):
     return []
 
 
-target_application_write_callback = webtest.TestApp(target_wsgi_application_write_callback)
+target_application_write_callback = webtest.TestApp(
+    target_wsgi_application_write_callback
+)
 
 _test_html_insertion_write_callback_settings = {
     "browser_monitoring.enabled": True,
@@ -805,7 +874,10 @@ def test_html_insertion_write_callback():
 def target_wsgi_application_yield_before_write(environ, start_response):
     output = [b"<html>", b"<body><p>RESPONSE</p></body></html>"]
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(b"".join(output))))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(b"".join(output)))),
+    ]
 
     write = start_response("200 OK", response_headers)
 
@@ -817,7 +889,9 @@ def target_wsgi_application_yield_before_write(environ, start_response):
     write(output.pop(0))
 
 
-target_application_yield_before_write = webtest.TestApp(target_wsgi_application_yield_before_write)
+target_application_yield_before_write = webtest.TestApp(
+    target_wsgi_application_yield_before_write
+)
 
 _test_html_insertion_yield_before_write_settings = {
     "browser_monitoring.enabled": True,
@@ -844,7 +918,10 @@ def test_html_insertion_yield_before_write():
 def target_wsgi_application_write_before_yield(environ, start_response):
     output = [b"<html>", b"<body><p>RESPONSE</p></body></html>"]
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(b"".join(output))))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(b"".join(output)))),
+    ]
 
     write = start_response("200 OK", response_headers)
 
@@ -853,7 +930,9 @@ def target_wsgi_application_write_before_yield(environ, start_response):
     yield output.pop(0)
 
 
-target_application_write_before_yield = webtest.TestApp(target_wsgi_application_write_before_yield)
+target_application_write_before_yield = webtest.TestApp(
+    target_wsgi_application_write_before_yield
+)
 
 _test_html_insertion_write_before_yield_settings = {
     "browser_monitoring.enabled": True,
@@ -880,7 +959,10 @@ def test_html_insertion_write_before_yield():
 def target_wsgi_application_param_on_close(environ, start_response):
     output = b"<html><body><p>RESPONSE</p></body></html>"
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
 
     start_response("200 OK", response_headers)
 
@@ -891,7 +973,9 @@ def target_wsgi_application_param_on_close(environ, start_response):
         add_custom_attribute("key", "value")
 
 
-target_application_param_on_close = webtest.TestApp(target_wsgi_application_param_on_close)
+target_application_param_on_close = webtest.TestApp(
+    target_wsgi_application_param_on_close
+)
 
 _test_html_insertion_param_on_close_settings = {
     "browser_monitoring.enabled": True,
@@ -912,7 +996,10 @@ def test_html_insertion_param_on_close():
 def target_wsgi_application_param_on_error(environ, start_response):
     output = b"<html><body><p>RESPONSE</p></body></html>"
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
 
     start_response("200 OK", response_headers)
 
@@ -925,7 +1012,9 @@ def target_wsgi_application_param_on_error(environ, start_response):
         add_custom_attribute("key", "value")
 
 
-target_application_param_on_error = webtest.TestApp(target_wsgi_application_param_on_error)
+target_application_param_on_error = webtest.TestApp(
+    target_wsgi_application_param_on_error
+)
 
 _test_html_insertion_param_on_error_settings = {
     "browser_monitoring.enabled": True,
@@ -939,7 +1028,7 @@ _test_html_insertion_param_on_error_settings = {
 @validate_custom_parameters(required_params=[("key", "value")])
 def test_html_insertion_param_on_error():
     try:
-        response = target_application_param_on_error.get("/", status=500)
+        target_application_param_on_error.get("/", status=500)
 
     except RuntimeError:
         pass
@@ -953,13 +1042,18 @@ def target_wsgi_application_disable_autorum_via_api(environ, start_response):
 
     disable_browser_autorum()
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     yield output
 
 
-target_application_disable_autorum_via_api = webtest.TestApp(target_wsgi_application_disable_autorum_via_api)
+target_application_disable_autorum_via_api = webtest.TestApp(
+    target_wsgi_application_disable_autorum_via_api
+)
 
 _test_html_insertion_disable_autorum_via_api_settings = {
     "browser_monitoring.enabled": True,
@@ -993,13 +1087,18 @@ def target_wsgi_application_manual_rum_insertion(environ, start_response):
 
     assert header == ""
 
-    response_headers = [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     yield output
 
 
-target_application_manual_rum_insertion = webtest.TestApp(target_wsgi_application_manual_rum_insertion)
+target_application_manual_rum_insertion = webtest.TestApp(
+    target_wsgi_application_manual_rum_insertion
+)
 
 _test_html_insertion_manual_rum_insertion_settings = {
     "browser_monitoring.enabled": True,
@@ -1027,17 +1126,27 @@ _test_get_browser_timing_snippet_with_nonces = {
     "browser_monitoring.auto_instrument": False,
     "js_agent_loader": "<!-- NREUM HEADER -->",
 }
-_test_get_browser_timing_snippet_with_nonces_rum_info_re = re.compile(r"NREUM\.info={[^}]*}")
+_test_get_browser_timing_snippet_with_nonces_rum_info_re = re.compile(
+    r"NREUM\.info={[^}]*}"
+)
 
 
 @override_application_settings(_test_get_browser_timing_snippet_with_nonces)
 @web_transaction(
-    scheme="http", host="127.0.0.1", port=80, request_method="GET", request_path="/", query_string=None, headers={}
+    scheme="http",
+    host="127.0.0.1",
+    port=80,
+    request_method="GET",
+    request_path="/",
+    query_string=None,
+    headers={},
 )
 def test_get_browser_timing_snippet_with_nonces():
     header = get_browser_timing_header("NONCE")
 
-    header = _test_get_browser_timing_snippet_with_nonces_rum_info_re.sub("NREUM.info={}", header)
+    header = _test_get_browser_timing_snippet_with_nonces_rum_info_re.sub(
+        "NREUM.info={}", header
+    )
     assert (
         header
         == '<script type="text/javascript" nonce="NONCE">window.NREUM||(NREUM={});NREUM.info={};\n<!-- NREUM HEADER --></script>'
@@ -1046,12 +1155,20 @@ def test_get_browser_timing_snippet_with_nonces():
 
 @override_application_settings(_test_get_browser_timing_snippet_with_nonces)
 @web_transaction(
-    scheme="http", host="127.0.0.1", port=80, request_method="GET", request_path="/", query_string=None, headers={}
+    scheme="http",
+    host="127.0.0.1",
+    port=80,
+    request_method="GET",
+    request_path="/",
+    query_string=None,
+    headers={},
 )
 def test_get_browser_timing_snippet_without_nonces():
     header = get_browser_timing_header()
 
-    header = _test_get_browser_timing_snippet_with_nonces_rum_info_re.sub("NREUM.info={}", header)
+    header = _test_get_browser_timing_snippet_with_nonces_rum_info_re.sub(
+        "NREUM.info={}", header
+    )
     assert (
         header
         == '<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={};\n<!-- NREUM HEADER --></script>'

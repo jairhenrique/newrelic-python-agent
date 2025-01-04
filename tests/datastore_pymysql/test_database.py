@@ -47,7 +47,9 @@ def execute_db_calls_with_cursor(cursor):
     for row in cursor:
         pass
 
-    cursor.execute(f"update {TABLE_NAME} set a=%s, b=%s, c=%s where a=%s", (4, 4.0, "4.0", 1))
+    cursor.execute(
+        f"update {TABLE_NAME} set a=%s, b=%s, c=%s where a=%s", (4, 4.0, "4.0", 1)
+    )
 
     cursor.execute(f"""delete from {TABLE_NAME} where a=2""")
     cursor.execute(f"""drop procedure if exists {PROCEDURE_NAME}""")

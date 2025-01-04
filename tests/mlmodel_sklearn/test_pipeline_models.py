@@ -33,7 +33,9 @@ SKLEARN_VERSION = get_package_version_tuple("sklearn")
         "FeatureUnion",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(pipeline_model_name, run_pipeline_model):
+def test_model_methods_wrapped_in_function_trace(
+    pipeline_model_name, run_pipeline_model
+):
     expected_scoped_metrics = {
         "Pipeline": [
             ("Function/MLModel/Sklearn/Named/Pipeline.fit", 1),
@@ -67,12 +69,19 @@ def run_pipeline_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         if pipeline_model_name == "Pipeline":
             kwargs = {"steps": [("scaler", StandardScaler()), ("svc", SVC())]}
         else:
-            kwargs = {"transformer_list": [("scaler", StandardScaler()), ("svd", TruncatedSVD(n_components=2))]}
+            kwargs = {
+                "transformer_list": [
+                    ("scaler", StandardScaler()),
+                    ("svd", TruncatedSVD(n_components=2)),
+                ]
+            }
         clf = getattr(sklearn.pipeline, pipeline_model_name)(**kwargs)
 
         model = clf.fit(x_train, y_train)

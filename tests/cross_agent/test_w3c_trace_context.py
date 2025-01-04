@@ -36,7 +36,9 @@ from newrelic.common.encoding_utils import W3CTraceState
 from newrelic.common.object_wrapper import transient_function_wrapper
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-JSON_DIR = os.path.normpath(os.path.join(CURRENT_DIR, "fixtures", "distributed_tracing"))
+JSON_DIR = os.path.normpath(
+    os.path.join(CURRENT_DIR, "fixtures", "distributed_tracing")
+)
 
 _parameters_list = (
     "test_name",
@@ -169,7 +171,9 @@ test_application = webtest.TestApp(target_wsgi_application)
 
 
 def override_compute_sampled(override):
-    @transient_function_wrapper("newrelic.core.adaptive_sampler", "AdaptiveSampler.compute_sampled")
+    @transient_function_wrapper(
+        "newrelic.core.adaptive_sampler", "AdaptiveSampler.compute_sampled"
+    )
     def _override_compute_sampled(wrapped, instance, args, kwargs):
         if override:
             return True
@@ -205,11 +209,23 @@ def test_trace_context(
     common_exact = common.get("exact", {})
 
     txn_intrinsics = intrinsics.get("Transaction", {})
-    txn_event_required = {"agent": [], "user": [], "intrinsic": txn_intrinsics.get("expected", [])}
+    txn_event_required = {
+        "agent": [],
+        "user": [],
+        "intrinsic": txn_intrinsics.get("expected", []),
+    }
     txn_event_required["intrinsic"].extend(common_required)
-    txn_event_forgone = {"agent": [], "user": [], "intrinsic": txn_intrinsics.get("unexpected", [])}
+    txn_event_forgone = {
+        "agent": [],
+        "user": [],
+        "intrinsic": txn_intrinsics.get("unexpected", []),
+    }
     txn_event_forgone["intrinsic"].extend(common_forgone)
-    txn_event_exact = {"agent": {}, "user": {}, "intrinsic": txn_intrinsics.get("exact", {})}
+    txn_event_exact = {
+        "agent": {},
+        "user": {},
+        "intrinsic": txn_intrinsics.get("exact", {}),
+    }
     txn_event_exact["intrinsic"].update(common_exact)
 
     override_settings = {
@@ -232,9 +248,14 @@ def test_trace_context(
         inbound_headers = None
 
     @validate_transaction_metrics(
-        test_name, group="Uri", rollup_metrics=expected_metrics, background_task=not web_transaction
+        test_name,
+        group="Uri",
+        rollup_metrics=expected_metrics,
+        background_task=not web_transaction,
     )
-    @validate_transaction_event_attributes(txn_event_required, txn_event_forgone, txn_event_exact)
+    @validate_transaction_event_attributes(
+        txn_event_required, txn_event_forgone, txn_event_exact
+    )
     @validate_attributes("intrinsic", common_required, common_forgone)
     @override_application_settings(override_settings)
     @override_compute_sampled(force_sampled_true)
@@ -255,7 +276,9 @@ def test_trace_context(
         span_exact.update(common_exact)
 
         _test = validate_span_events(
-            exact_intrinsics=span_exact, expected_intrinsics=span_expected, unexpected_intrinsics=span_unexpected
+            exact_intrinsics=span_exact,
+            expected_intrinsics=span_expected,
+            unexpected_intrinsics=span_unexpected,
         )(_test)
     elif not span_events_enabled:
         _test = validate_span_events(count=0)(_test)

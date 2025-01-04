@@ -47,7 +47,11 @@ METRICS = (
 
 # Test for presence of framework and dispatcher info based on whether framework is specified
 @validate_transaction_metrics(
-    name="test", custom_metrics=[("Python/Framework/framework/v1", 1), ("Python/Dispatcher/dispatcher/v1.0.0", 1)]
+    name="test",
+    custom_metrics=[
+        ("Python/Framework/framework/v1", 1),
+        ("Python/Dispatcher/dispatcher/v1.0.0", 1),
+    ],
 )
 def test_dispatcher_and_framework_metrics():
     inner_wsgi_decorator = wsgi_application(
@@ -61,7 +65,11 @@ def test_dispatcher_and_framework_metrics():
 
 # Test for presence of framework and dispatcher info under existing transaction
 @validate_transaction_metrics(
-    name="test", custom_metrics=[("Python/Framework/framework/v1", 1), ("Python/Dispatcher/dispatcher/v1.0.0", 1)]
+    name="test",
+    custom_metrics=[
+        ("Python/Framework/framework/v1", 1),
+        ("Python/Dispatcher/dispatcher/v1.0.0", 1),
+    ],
 )
 def test_double_wrapped_dispatcher_and_framework_metrics():
     inner_wsgi_decorator = wsgi_application(

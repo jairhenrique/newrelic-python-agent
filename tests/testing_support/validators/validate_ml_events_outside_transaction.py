@@ -26,11 +26,12 @@ from newrelic.common.object_wrapper import function_wrapper, transient_function_
 def validate_ml_events_outside_transaction(events):
     @function_wrapper
     def _validate_wrapper(wrapped, instance, args, kwargs):
-
         record_called = []
         recorded_events = []
 
-        @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_ml_event")
+        @transient_function_wrapper(
+            "newrelic.core.stats_engine", "StatsEngine.record_ml_event"
+        )
         @catch_background_exceptions
         def _validate_ml_events_outside_transaction(wrapped, instance, args, kwargs):
             record_called.append(True)
@@ -57,7 +58,9 @@ def validate_ml_events_outside_transaction(events):
             for captured in events:
                 if _check_event_attributes(expected, captured, mismatches):
                     matching_ml_events += 1
-            assert matching_ml_events == 1, _event_details(matching_ml_events, events, mismatches)
+            assert matching_ml_events == 1, _event_details(
+                matching_ml_events, events, mismatches
+            )
 
         return val
 

@@ -192,7 +192,9 @@ class WebNestedHandler(WebSocketHandler):
         super(WebNestedHandler, self).on_message(message)
 
 
-class CustomApplication(tornado.httputil.HTTPServerConnectionDelegate, tornado.httputil.HTTPMessageDelegate):
+class CustomApplication(
+    tornado.httputil.HTTPServerConnectionDelegate, tornado.httputil.HTTPMessageDelegate
+):
     def start_request(self, server_conn, http_conn):
         self.server_conn = server_conn
         self.http_conn = http_conn
@@ -251,7 +253,11 @@ def make_app(custom=False):
         (r"/html-insertion", HTMLInsertionHandler),
         (r"/bad-get-status", BadGetStatusHandler),
         (r"/force-cat-response/(\S+)/(\S+)/(\S+)", ProcessCatHeadersHandler),
-        (r"/304-cat-response/(\S+)/(\S+)", ProcessCatHeadersHandler, {"response_code": 304}),
+        (
+            r"/304-cat-response/(\S+)/(\S+)",
+            ProcessCatHeadersHandler,
+            {"response_code": 304},
+        ),
         (r"/echo-headers", EchoHeaderHandler),
         (r"/native-simple", NativeSimpleHandler),
         (r"/multi-trace", MultiTraceHandler),

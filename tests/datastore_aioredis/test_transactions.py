@@ -40,17 +40,21 @@ def test_pipelines_no_harm(client, in_transaction, loop, key):
 def exercise_transaction_sync(key):
     def _run(pipe):
         pipe.set(key, 1)
+
     return _run
 
 
 def exercise_transaction_async(key):
     async def _run(pipe):
         await pipe.set(key, 1)
+
     return _run
 
 
 @SKIPIF_AIOREDIS_V1
-@pytest.mark.parametrize("exercise", (exercise_transaction_sync, exercise_transaction_async))
+@pytest.mark.parametrize(
+    "exercise", (exercise_transaction_sync, exercise_transaction_async)
+)
 @background_task()
 def test_transactions_no_harm(client, loop, key, exercise):
     status = loop.run_until_complete(client.transaction(exercise(key)))

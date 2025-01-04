@@ -74,7 +74,9 @@ else:
     ]
 
 
-OPENAI_AUDIT_LOG_FILE = os.path.join(os.path.realpath(os.path.dirname(__file__)), "openai_audit.log")
+OPENAI_AUDIT_LOG_FILE = os.path.join(
+    os.path.realpath(os.path.dirname(__file__)), "openai_audit.log"
+)
 OPENAI_AUDIT_LOG_CONTENTS = {}
 # Intercept outgoing requests and log to file for mocking
 RECORDED_HEADERS = set(["x-request-id", "content-type"])
@@ -157,9 +159,15 @@ def openai_server(
     if _environ_as_bool("NEW_RELIC_TESTING_RECORD_OPENAI_RESPONSES", False):
         if openai_version < (1, 0):
             # Apply function wrappers to record data
-            wrap_function_wrapper("openai.api_requestor", "APIRequestor.request", wrap_openai_api_requestor_request)
             wrap_function_wrapper(
-                "openai.api_requestor", "APIRequestor._interpret_response", wrap_openai_api_requestor_interpret_response
+                "openai.api_requestor",
+                "APIRequestor.request",
+                wrap_openai_api_requestor_request,
+            )
+            wrap_function_wrapper(
+                "openai.api_requestor",
+                "APIRequestor._interpret_response",
+                wrap_openai_api_requestor_interpret_response,
             )
             wrap_function_wrapper(
                 "openai.api_resources.abstract.engine_api_resource",
@@ -169,7 +177,9 @@ def openai_server(
             yield  # Run tests
         else:
             # Apply function wrappers to record data
-            wrap_function_wrapper("httpx._client", "Client.send", wrap_httpx_client_send)
+            wrap_function_wrapper(
+                "httpx._client", "Client.send", wrap_httpx_client_send
+            )
             wrap_function_wrapper(
                 "openai._streaming",
                 "Stream._iter_events",
@@ -213,12 +223,20 @@ def wrap_httpx_client_send(extract_shortened_prompt):  # noqa: F811
             )
         )
         if stream:
-            OPENAI_AUDIT_LOG_CONTENTS[prompt] = [headers, response.status_code, []]  # Append response data to log
+            OPENAI_AUDIT_LOG_CONTENTS[prompt] = [
+                headers,
+                response.status_code,
+                [],
+            ]  # Append response data to log
             if prompt == "error":
                 OPENAI_AUDIT_LOG_CONTENTS[prompt][2] = json.loads(response.read())
         else:
             body = json.loads(response.content.decode("utf-8"))
-            OPENAI_AUDIT_LOG_CONTENTS[prompt] = headers, response.status_code, body  # Append response data to log
+            OPENAI_AUDIT_LOG_CONTENTS[prompt] = (
+                headers,
+                response.status_code,
+                body,
+            )  # Append response data to log
         return response
 
     return _wrap_httpx_client_send
@@ -239,7 +257,11 @@ def wrap_openai_api_requestor_interpret_response():
 
         if rcode >= 400 or rcode < 200:
             rbody = json.loads(rbody)
-            OPENAI_AUDIT_LOG_CONTENTS["error"] = headers, rcode, rbody  # Append response data to audit log
+            OPENAI_AUDIT_LOG_CONTENTS["error"] = (
+                headers,
+                rcode,
+                rbody,
+            )  # Append response data to audit log
         return wrapped(*args, **kwargs)
 
     return _wrap_openai_api_requestor_interpret_response
@@ -322,12 +344,16 @@ def generator_proxy(openai_version):
                             )
                         )
                         OPENAI_AUDIT_LOG_CONTENTS[prompt][0] = headers
-                        OPENAI_AUDIT_LOG_CONTENTS[prompt][2].append(return_val.to_dict_recursive())
+                        OPENAI_AUDIT_LOG_CONTENTS[prompt][2].append(
+                            return_val.to_dict_recursive()
+                        )
                     else:
                         if not getattr(return_val, "data", "").startswith("[DONE]"):
-                            OPENAI_AUDIT_LOG_CONTENTS[prompt][2].append(return_val.json())
+                            OPENAI_AUDIT_LOG_CONTENTS[prompt][2].append(
+                                return_val.json()
+                            )
                 return return_val
-            except Exception as e:
+            except Exception:
                 raise
 
         def close(self):

@@ -154,7 +154,9 @@ def test_async_client(httpx, async_client, mock_server, loop, method):
     global CAT_RESPONSE_CODE
     CAT_RESPONSE_CODE = 200
 
-    responses = loop.run_until_complete(exercise_async_client(mock_server, async_client, method))
+    responses = loop.run_until_complete(
+        exercise_async_client(mock_server, async_client, method)
+    )
     assert all(response.status_code == 200 for response in responses)
 
 
@@ -166,7 +168,9 @@ def test_async_client(httpx, async_client, mock_server, loop, method):
         (False, False),
     ),
 )
-def test_sync_cross_process_request(httpx, sync_client, mock_server, distributed_tracing, span_events):
+def test_sync_cross_process_request(
+    httpx, sync_client, mock_server, distributed_tracing, span_events
+):
     global CAT_RESPONSE_CODE
     CAT_RESPONSE_CODE = 200
 
@@ -204,7 +208,9 @@ def test_sync_cross_process_request(httpx, sync_client, mock_server, distributed
 @validate_transaction_errors(errors=[])
 @background_task(name="test_async_cross_process_request")
 @validate_cross_process_headers
-def test_async_cross_process_request(httpx, async_client, mock_server, loop, distributed_tracing, span_events):
+def test_async_cross_process_request(
+    httpx, async_client, mock_server, loop, distributed_tracing, span_events
+):
     global CAT_RESPONSE_CODE
     CAT_RESPONSE_CODE = 200
 
@@ -243,7 +249,9 @@ def test_sync_cross_process_override_headers(httpx, sync_client, mock_server, lo
     transaction = current_transaction()
 
     with sync_client:
-        response = sync_client.get(f"http://localhost:{mock_server.port}", headers={"newrelic": "1234"})
+        response = sync_client.get(
+            f"http://localhost:{mock_server.port}", headers={"newrelic": "1234"}
+        )
 
     transaction._test_request_headers = response.request.headers
 
@@ -265,7 +273,9 @@ def test_async_cross_process_override_headers(httpx, async_client, mock_server, 
 
     async def _test():
         async with async_client:
-            response = await async_client.get(f"http://localhost:{mock_server.port}", headers={"newrelic": "1234"})
+            response = await async_client.get(
+                f"http://localhost:{mock_server.port}", headers={"newrelic": "1234"}
+            )
 
         return response
 
@@ -277,7 +287,9 @@ def test_async_cross_process_override_headers(httpx, async_client, mock_server, 
 
 @pytest.mark.parametrize("cat_enabled", [True, False])
 @pytest.mark.parametrize("response_code", [200, 500])
-def test_sync_client_cat_response_processing(cat_enabled, response_code, sync_client, mock_server, httpx):
+def test_sync_client_cat_response_processing(
+    cat_enabled, response_code, sync_client, mock_server, httpx
+):
     global CAT_RESPONSE_CODE
     CAT_RESPONSE_CODE = response_code
 
@@ -308,14 +320,16 @@ def test_sync_client_cat_response_processing(cat_enabled, response_code, sync_cl
     @background_task(name="test_sync_client_cat_response_processing")
     def _test():
         with sync_client:
-            response = sync_client.get(f"http://localhost:{mock_server.port}")
+            sync_client.get(f"http://localhost:{mock_server.port}")
 
     _test()
 
 
 @pytest.mark.parametrize("cat_enabled", [True, False])
 @pytest.mark.parametrize("response_code", [200, 500])
-def test_async_client_cat_response_processing(cat_enabled, response_code, httpx, async_client, mock_server, loop):
+def test_async_client_cat_response_processing(
+    cat_enabled, response_code, httpx, async_client, mock_server, loop
+):
     global CAT_RESPONSE_CODE
     CAT_RESPONSE_CODE = response_code
 
@@ -347,11 +361,13 @@ def test_async_client_cat_response_processing(cat_enabled, response_code, httpx,
     def _test():
         async def coro():
             async with async_client:
-                response = await async_client.get(f"http://localhost:{mock_server.port}")
+                response = await async_client.get(
+                    f"http://localhost:{mock_server.port}"
+                )
 
             return response
 
-        response = loop.run_until_complete(coro())
+        loop.run_until_complete(coro())
 
     _test()
 
@@ -402,7 +418,9 @@ def test_sync_client_event_hook_exception(httpx, mock_server):
         make_request(client, exc_expected=False)
 
 
-@override_application_settings({"distributed_tracing.enabled": True, "span_events.enabled": True})
+@override_application_settings(
+    {"distributed_tracing.enabled": True, "span_events.enabled": True}
+)
 def test_async_client_event_hook_exception(httpx, mock_server, loop):
     global CAT_RESPONSE_CODE
     CAT_RESPONSE_CODE = 500
@@ -431,7 +449,9 @@ def test_async_client_event_hook_exception(httpx, mock_server, loop):
         loop.run_until_complete(coro())
 
     def _test():
-        with httpx.AsyncClient(event_hooks={"response": [exception_event_hook]}) as client:
+        with httpx.AsyncClient(
+            event_hooks={"response": [exception_event_hook]}
+        ) as client:
             # Test client init
             make_request(client)
 
@@ -450,6 +470,7 @@ def test_async_client_event_hook_exception(httpx, mock_server, loop):
             # Don't crash if response isn't specified
             client.event_hooks = {"request": [empty_hook]}
             make_request(client, exc_expected=False)
+
 
 @override_generic_settings(
     global_settings(),
@@ -519,7 +540,9 @@ def test_invalid_import_order_client(monkeypatch, httpx, mock_server, loop, clie
     monkeypatch.undo()
 
     if is_async:
-        responses = loop.run_until_complete(exercise_async_client(mock_server, client, "get"))
+        responses = loop.run_until_complete(
+            exercise_async_client(mock_server, client, "get")
+        )
         assert all(response.status_code == 200 for response in responses)
     else:
         response = exercise_sync_client(mock_server, client, "get")
@@ -557,6 +580,10 @@ def test_async_client_http2(httpx, real_server, loop):
 
     client = httpx.AsyncClient(http1=False, http2=True, verify=False)
 
-    responses = loop.run_until_complete(exercise_async_client(real_server, client, "get", protocol="https"))
+    responses = loop.run_until_complete(
+        exercise_async_client(real_server, client, "get", protocol="https")
+    )
     assert all(response.status_code == 200 for response in responses)
-    assert all(response.http_version in {"HTTP/2", "HTTP/2.0"} for response in responses)
+    assert all(
+        response.http_version in {"HTTP/2", "HTTP/2.0"} for response in responses
+    )

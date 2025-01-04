@@ -149,9 +149,18 @@ def test_env_var_default_port(monkeypatch):
         ((("postgresql://localhost:5433",), {}), ("localhost", "5433", "default")),
         ((("postgresql://localhost/mydb",), {}), ("localhost", "5432", "mydb")),
         ((("postgresql://user@localhost",), {}), ("localhost", "5432", "default")),
-        ((("postgresql://user:secret@localhost",), {}), ("localhost", "5432", "default")),
-        ((("postgresql://[2001:db8::1234]/database",), {}), ("2001:db8::1234", "5432", "database")),
-        ((("postgresql://[2001:db8::1234]:2222/database",), {}), ("2001:db8::1234", "2222", "database")),
+        (
+            (("postgresql://user:secret@localhost",), {}),
+            ("localhost", "5432", "default"),
+        ),
+        (
+            (("postgresql://[2001:db8::1234]/database",), {}),
+            ("2001:db8::1234", "5432", "database"),
+        ),
+        (
+            (("postgresql://[2001:db8::1234]:2222/database",), {}),
+            ("2001:db8::1234", "2222", "database"),
+        ),
         (
             (("postgresql:///dbname?host=/var/lib/postgresql",), {}),
             ("localhost", "/var/lib/postgresql/.s.PGSQL.5432", "dbname"),
@@ -160,17 +169,29 @@ def test_env_var_default_port(monkeypatch):
             (("postgresql://%2Fvar%2Flib%2Fpostgresql/dbname",), {}),
             ("localhost", "/var/lib/postgresql/.s.PGSQL.5432", "dbname"),
         ),
-        ((("postgresql://other@localhost/otherdb?c=10&a=myapp",), {}), ("localhost", "5432", "otherdb")),
+        (
+            (("postgresql://other@localhost/otherdb?c=10&a=myapp",), {}),
+            ("localhost", "5432", "otherdb"),
+        ),
         ((("postgresql:///",), {}), ("localhost", "default", "default")),
         ((("postgresql:///dbname?host=foo",), {}), ("foo", "5432", "dbname")),
         ((("postgresql:///dbname?port=1234",), {}), ("localhost", "default", "dbname")),
         ((("postgresql:///dbname?host=foo&port=1234",), {}), ("foo", "1234", "dbname")),
         ((("postgres:///dbname?host=foo&port=1234",), {}), ("foo", "1234", "dbname")),
         ((("postgres://localhost:5444/blah?host=::1",), {}), ("::1", "5444", "blah")),
-        ((("postgresql:///dbname?host=foo&port=1234&host=bar",), {}), ("bar", "1234", "dbname")),
-        ((("postgresql://%2Ftmp:1234",), {}), ("localhost", "/tmp/.s.PGSQL.1234", "default")),
+        (
+            (("postgresql:///dbname?host=foo&port=1234&host=bar",), {}),
+            ("bar", "1234", "dbname"),
+        ),
+        (
+            (("postgresql://%2Ftmp:1234",), {}),
+            ("localhost", "/tmp/.s.PGSQL.1234", "default"),
+        ),
         ((("postgresql:///foo?dbname=bar",), {}), ("localhost", "default", "bar")),
-        ((("postgresql://example.com/foo?hostaddr=1.2.3.4&host=bar",), {}), ("1.2.3.4", "5432", "foo")),
+        (
+            (("postgresql://example.com/foo?hostaddr=1.2.3.4&host=bar",), {}),
+            ("1.2.3.4", "5432", "foo"),
+        ),
     ],
 )
 def test_uri(connect_params, expected):
@@ -181,9 +202,15 @@ def test_uri(connect_params, expected):
 @pytest.mark.parametrize(
     "connect_params,expected",
     [
-        ((("postgresql://user:password@/?dbname=bar",), {}), ("localhost", "default", "bar")),
+        (
+            (("postgresql://user:password@/?dbname=bar",), {}),
+            ("localhost", "default", "bar"),
+        ),
         ((("postgresql://user:pass@host/?dbname=bar",), {}), ("host", "5432", "bar")),
-        ((("postgresql://user:password@@/?dbname=bar",), {}), ("localhost", "default", "bar")),
+        (
+            (("postgresql://user:password@@/?dbname=bar",), {}),
+            ("localhost", "default", "bar"),
+        ),
         ((("postgresql://@",), {}), ("localhost", "default", "default")),
         ((("postgresql://@@localhost",), {}), ("localhost", "5432", "default")),
     ],

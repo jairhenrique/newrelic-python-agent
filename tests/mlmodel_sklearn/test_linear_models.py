@@ -239,7 +239,9 @@ def test_model_methods_wrapped_in_function_trace(linear_model_name, run_linear_m
         "SGDOneClassSVM",
     ],
 )
-def test_above_v1_1_model_methods_wrapped_in_function_trace(linear_model_name, run_linear_model):
+def test_above_v1_1_model_methods_wrapped_in_function_trace(
+    linear_model_name, run_linear_model
+):
     expected_scoped_metrics = {
         "PoissonRegressor": [
             ("Function/MLModel/Sklearn/Named/PoissonRegressor.fit", 1),
@@ -298,7 +300,9 @@ def run_linear_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         if linear_model_name == "GammaRegressor":
             x_train = [[1, 2], [2, 3], [3, 4], [4, 3]]

@@ -114,22 +114,28 @@ storage = []
 def resolve_library(self, info, index):
     return libraries[index]
 
+
 def resolve_storage(self, info):
     return [storage.pop()]
+
 
 def resolve_search(self, info, contains):
     search_books = [b for b in books if contains in b.name]
     search_magazines = [m for m in magazines if contains in m.name]
     return search_books + search_magazines
 
+
 def resolve_hello(self, info):
     return "Hello!"
+
 
 def resolve_echo(self, info, echo):
     return echo
 
+
 def resolve_error(self, info):
     raise RuntimeError("Runtime Error!")
+
 
 def resolve_storage_add(self, info, string):
     storage.append(string)

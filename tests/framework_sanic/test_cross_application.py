@@ -43,7 +43,11 @@ DT_METRICS = [
     ("Supportability/DistributedTrace/AcceptPayload/Success", None),
     ("Supportability/TraceContext/TraceParent/Accept/Success", 1),
 ]
-BASE_ATTRS = ["response.status", "response.headers.contentType", "response.headers.contentLength"]
+BASE_ATTRS = [
+    "response.status",
+    "response.headers.contentType",
+    "response.headers.contentLength",
+]
 
 
 def raw_headers(response):
@@ -117,8 +121,15 @@ _custom_settings = {
     ],
 )
 @pytest.mark.parametrize("url,metric_name", _cat_response_header_urls_to_test)
-def test_cat_response_headers(app, inbound_payload, expected_intrinsics, forgone_intrinsics, cat_id, url, metric_name):
-
+def test_cat_response_headers(
+    app,
+    inbound_payload,
+    expected_intrinsics,
+    forgone_intrinsics,
+    cat_id,
+    url,
+    metric_name,
+):
     _base_metrics = [
         (f"Function/{metric_name}", 1),
     ]
@@ -159,6 +170,8 @@ def test_cat_response_custom_header(app):
     cat_headers = make_cross_agent_headers(inbound_payload, ENCODING_KEY, cat_id)
 
     response = app.fetch(
-        "get", f"/custom-header/X-NewRelic-App-Data/{custom_header_value}", headers=dict(cat_headers)
+        "get",
+        f"/custom-header/X-NewRelic-App-Data/{custom_header_value}",
+        headers=dict(cat_headers),
     )
     assert custom_header_value in raw_headers(response), raw_headers(response)

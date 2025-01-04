@@ -33,7 +33,9 @@ from newrelic.api.background_task import background_task
         "OAS",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(covariance_model_name, run_covariance_model):
+def test_model_methods_wrapped_in_function_trace(
+    covariance_model_name, run_covariance_model
+):
     expected_scoped_metrics = {
         "EllipticEnvelope": [
             ("Function/MLModel/Sklearn/Named/EllipticEnvelope.fit", 1),
@@ -85,7 +87,9 @@ def run_covariance_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         kwargs = {}
         if covariance_model_name in ["EllipticEnvelope", "MinCovDet"]:

@@ -89,7 +89,7 @@ def test_basic(target_application):
         rollup_metrics=_graphql_base_rollup_metrics + FRAMEWORK_METRICS,
     )
     def _test():
-        response = target_application("{ hello }")
+        target_application("{ hello }")
 
     _test()
 
@@ -206,7 +206,7 @@ def test_middleware(target_application):
     )
     @validate_span_events(count=span_count[framework])
     def _test():
-        response = target_application("{ hello }", middleware=[example_middleware])
+        target_application("{ hello }", middleware=[example_middleware])
 
     _test()
 
@@ -225,7 +225,10 @@ def test_exception_in_middleware(target_application):
     _test_exception_rollup_metrics = [
         ("Errors/all", 1),
         ("Errors/allWeb", 1),
-        ("Errors/WebTransaction/GraphQL/component_graphqlserver.test_graphql:error_middleware", 1),
+        (
+            "Errors/WebTransaction/GraphQL/component_graphqlserver.test_graphql:error_middleware",
+            1,
+        ),
     ] + _test_exception_scoped_metrics
 
     # Attributes
@@ -251,7 +254,7 @@ def test_exception_in_middleware(target_application):
     @validate_span_events(exact_agents=_expected_exception_resolver_attributes)
     @validate_transaction_errors(errors=_test_runtime_error)
     def _test():
-        response = target_application(query, middleware=[error_middleware])
+        target_application(query, middleware=[error_middleware])
 
     _test()
 
@@ -298,7 +301,7 @@ def test_exception_in_resolver(target_application, field):
     @validate_span_events(exact_agents=_expected_exception_resolver_attributes)
     @validate_transaction_errors(errors=_test_runtime_error)
     def _test():
-        response = target_application(query)
+        target_application(query)
 
     _test()
 
@@ -352,7 +355,7 @@ def test_exception_in_validation(target_application, is_graphql_2, query, exc_cl
     @validate_span_events(exact_agents=_expected_exception_operation_attributes)
     @validate_transaction_errors(errors=[exc_class])
     def _test():
-        response = target_application(query)
+        target_application(query)
 
     _test()
 
@@ -381,7 +384,9 @@ def test_operation_metrics_and_attrs(target_application):
     @validate_span_events(count=span_count[framework])
     @validate_span_events(exact_agents=operation_attrs)
     def _test():
-        response = target_application("query MyQuery { library(index: 0) { branch, book { id, name } } }")
+        target_application(
+            "query MyQuery { library(index: 0) { branch, book { id, name } } }"
+        )
 
     _test()
 
@@ -445,7 +450,7 @@ def test_query_obfuscation(target_application, query, obfuscated):
 
     @validate_span_events(exact_agents=graphql_attrs)
     def _test():
-        response = target_application(query)
+        target_application(query)
 
     _test()
 
@@ -502,7 +507,7 @@ def test_deepest_unique_path(target_application, query, expected_path):
         "GraphQL",
     )
     def _test():
-        response = target_application(query)
+        target_application(query)
 
     _test()
 
@@ -510,4 +515,4 @@ def test_deepest_unique_path(target_application, query, expected_path):
 @validate_transaction_count(0)
 def test_ignored_introspection_transactions(target_application):
     framework, version, target_application = target_application
-    response = target_application("{ __schema { types { name } } }")
+    target_application("{ __schema { types { name } } }")

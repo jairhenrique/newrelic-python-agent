@@ -44,7 +44,12 @@ def test_celery_task_as_function_trace():
     assert result == 7
 
 
-@validate_transaction_metrics(name="_target_application.add", group="Celery", scoped_metrics=[], background_task=True)
+@validate_transaction_metrics(
+    name="_target_application.add",
+    group="Celery",
+    scoped_metrics=[],
+    background_task=True,
+)
 @validate_code_level_metrics("_target_application", "add")
 def test_celery_task_as_background_task():
     """
@@ -59,7 +64,10 @@ def test_celery_task_as_background_task():
 
 @validate_transaction_metrics(
     name="test_application:test_celery_tasks_multiple_function_traces",
-    scoped_metrics=[("Function/_target_application.add", 1), ("Function/_target_application.tsum", 1)],
+    scoped_metrics=[
+        ("Function/_target_application.add", 1),
+        ("Function/_target_application.tsum", 1),
+    ],
     background_task=True,
 )
 @validate_code_level_metrics("_target_application", "tsum")
@@ -129,7 +137,10 @@ def test_celery_nested_tasks():
 
 
 @validate_transaction_metrics(
-    name="_target_application.shared_task_add", group="Celery", scoped_metrics=[], background_task=True
+    name="_target_application.shared_task_add",
+    group="Celery",
+    scoped_metrics=[],
+    background_task=True,
 )
 @validate_code_level_metrics("_target_application", "shared_task_add")
 def test_celery_shared_task_as_background_task():

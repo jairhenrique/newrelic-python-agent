@@ -70,7 +70,11 @@ def test_logging_inside_transaction(exercise_logging_multiple_lines):
         [
             {"message": "Cat", "level": "INFO", **_common_attributes_trace_linking},
             {"message": "Dog", "level": "ERROR", **_common_attributes_trace_linking},
-            {"message": "Elephant", "level": "CRITICAL", **_common_attributes_trace_linking},
+            {
+                "message": "Elephant",
+                "level": "CRITICAL",
+                **_common_attributes_trace_linking,
+            },
         ]
     )
     @validate_log_event_count(3)
@@ -83,11 +87,17 @@ def test_logging_inside_transaction(exercise_logging_multiple_lines):
 
 @reset_core_stats_engine()
 @override_application_settings({"application_logging.local_decorating.enabled": False})
-def test_logging_filtering_inside_transaction(exercise_filtering_logging_multiple_lines):
+def test_logging_filtering_inside_transaction(
+    exercise_filtering_logging_multiple_lines,
+):
     @validate_log_events(
         [
             {"message": "Dog", "level": "ERROR", **_common_attributes_trace_linking},
-            {"message": "Elephant", "level": "CRITICAL", **_common_attributes_trace_linking},
+            {
+                "message": "Elephant",
+                "level": "CRITICAL",
+                **_common_attributes_trace_linking,
+            },
         ]
     )
     @validate_log_event_count(2)
@@ -105,7 +115,11 @@ def test_logging_outside_transaction(exercise_logging_multiple_lines):
         [
             {"message": "Cat", "level": "INFO", **_common_attributes_service_linking},
             {"message": "Dog", "level": "ERROR", **_common_attributes_service_linking},
-            {"message": "Elephant", "level": "CRITICAL", **_common_attributes_service_linking},
+            {
+                "message": "Elephant",
+                "level": "CRITICAL",
+                **_common_attributes_service_linking,
+            },
         ]
     )
     @validate_log_event_count_outside_transaction(3)
@@ -117,11 +131,17 @@ def test_logging_outside_transaction(exercise_logging_multiple_lines):
 
 @reset_core_stats_engine()
 @override_application_settings({"application_logging.local_decorating.enabled": False})
-def test_logging_filtering_outside_transaction(exercise_filtering_logging_multiple_lines):
+def test_logging_filtering_outside_transaction(
+    exercise_filtering_logging_multiple_lines,
+):
     @validate_log_events_outside_transaction(
         [
             {"message": "Dog", "level": "ERROR", **_common_attributes_service_linking},
-            {"message": "Elephant", "level": "CRITICAL", **_common_attributes_service_linking},
+            {
+                "message": "Elephant",
+                "level": "CRITICAL",
+                **_common_attributes_service_linking,
+            },
         ]
     )
     @validate_log_event_count_outside_transaction(2)

@@ -144,8 +144,12 @@ def test_await_request_async_await(event_loop, local_server_info, method, exc_ex
         future = asyncio.gather(*coros, return_exceptions=True)
         text_list = event_loop.run_until_complete(future)
         if exc_expected:
-            assert isinstance(text_list[0], _expected_error_class), text_list[0].__class__
-            assert isinstance(text_list[1], _expected_error_class), text_list[1].__class__
+            assert isinstance(text_list[0], _expected_error_class), text_list[
+                0
+            ].__class__
+            assert isinstance(text_list[1], _expected_error_class), text_list[
+                1
+            ].__class__
         else:
             assert text_list[0] == text_list[1], text_list
 
@@ -218,7 +222,9 @@ def test_create_task_async_await(event_loop, local_server_info, method, exc_expe
 
 @pytest.mark.parametrize("method,exc_expected", test_matrix)
 @cat_enabled
-def test_terminal_parent_async_await(event_loop, local_server_info, method, exc_expected):
+def test_terminal_parent_async_await(
+    event_loop, local_server_info, method, exc_expected
+):
     """
     This test injects a terminal node into a simple background task workflow.
     It was added to validate a bug where our coro.send() wrapper would fail

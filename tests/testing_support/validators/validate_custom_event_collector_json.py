@@ -21,7 +21,9 @@ from newrelic.common.object_wrapper import transient_function_wrapper
 def validate_custom_event_collector_json(num_events=1):
     """Validate the format, types and number of custom events."""
 
-    @transient_function_wrapper("newrelic.core.application", "Application.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.application", "Application.record_transaction"
+    )
     def _validate_custom_event_collector_json(wrapped, instance, args, kwargs):
         try:
             result = wrapped(*args, **kwargs)
@@ -55,7 +57,7 @@ def validate_custom_event_collector_json(num_events=1):
         assert decoded_sampling_info["events_seen"] == num_events
         assert len(decoded_events) == num_events
 
-        for (intrinsics, attributes) in decoded_events:
+        for intrinsics, attributes in decoded_events:
             assert isinstance(intrinsics, dict)
             assert isinstance(attributes, dict)
 

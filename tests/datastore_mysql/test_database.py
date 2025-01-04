@@ -69,7 +69,10 @@ _test_execute_via_cursor_rollup_metrics = [
     ("Datastore/operation/MySQL/create", 2),
     ("Datastore/operation/MySQL/commit", 2),
     ("Datastore/operation/MySQL/rollback", 1),
-    (f"Datastore/instance/MySQL/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}", 12),
+    (
+        f"Datastore/instance/MySQL/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}",
+        12,
+    ),
 ]
 
 
@@ -105,7 +108,11 @@ def test_execute_via_cursor(table_name):
 
     cursor.executemany(
         f"insert into `{table_name}` values (%(a)s, %(b)s, %(c)s)",
-        [{"a": 1, "b": 1.0, "c": "1.0"}, {"a": 2, "b": 2.2, "c": "2.2"}, {"a": 3, "b": 3.3, "c": "3.3"}],
+        [
+            {"a": 1, "b": 1.0, "c": "1.0"},
+            {"a": 2, "b": 2.2, "c": "2.2"},
+            {"a": 3, "b": 3.3, "c": "3.3"},
+        ],
     )
 
     cursor.execute(f"""select * from {table_name}""")
@@ -167,7 +174,10 @@ _test_connect_using_alias_rollup_metrics = [
     ("Datastore/operation/MySQL/create", 2),
     ("Datastore/operation/MySQL/commit", 2),
     ("Datastore/operation/MySQL/rollback", 1),
-    (f"Datastore/instance/MySQL/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}", 12),
+    (
+        f"Datastore/instance/MySQL/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}",
+        12,
+    ),
 ]
 
 
@@ -197,7 +207,11 @@ def test_connect_using_alias(table_name):
 
     cursor.executemany(
         f"insert into `{table_name}` values (%(a)s, %(b)s, %(c)s)",
-        [{"a": 1, "b": 1.0, "c": "1.0"}, {"a": 2, "b": 2.2, "c": "2.2"}, {"a": 3, "b": 3.3, "c": "3.3"}],
+        [
+            {"a": 1, "b": 1.0, "c": "1.0"},
+            {"a": 2, "b": 2.2, "c": "2.2"},
+            {"a": 3, "b": 3.3, "c": "3.3"},
+        ],
     )
 
     cursor.execute(f"""select * from {table_name}""")

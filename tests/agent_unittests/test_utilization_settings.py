@@ -72,7 +72,7 @@ INITIAL_ENV = os.environ
 # Tests for loading settings and testing for values precedence
 
 
-class Environ():
+class Environ:
     def __init__(self, env_dict):
         self.env_dict = {}
         for key in env_dict.keys():
@@ -114,7 +114,9 @@ def reset_agent_config(ini_contents, env_dict):
     return reset
 
 
-@reset_agent_config(INI_FILE_WITHOUT_UTIL_CONF, {"NEW_RELIC_HOST": "collector.newrelic.com"})
+@reset_agent_config(
+    INI_FILE_WITHOUT_UTIL_CONF, {"NEW_RELIC_HOST": "collector.newrelic.com"}
+)
 def test_otlp_host_port_default():
     settings = global_settings()
     assert settings.otlp_host == "otlp.nr-data.net"
@@ -122,7 +124,8 @@ def test_otlp_host_port_default():
 
 
 @reset_agent_config(
-    INI_FILE_WITHOUT_UTIL_CONF, {"NEW_RELIC_OTLP_HOST": "custom-otlp.nr-data.net", "NEW_RELIC_OTLP_PORT": 443}
+    INI_FILE_WITHOUT_UTIL_CONF,
+    {"NEW_RELIC_OTLP_HOST": "custom-otlp.nr-data.net", "NEW_RELIC_OTLP_PORT": 443},
 )
 def test_otlp_port_override():
     settings = global_settings()
@@ -134,14 +137,20 @@ def test_otlp_port_override():
 def test_heroku_default():
     settings = global_settings()
     assert settings.heroku.use_dyno_names is True
-    assert settings.heroku.dyno_name_prefixes_to_shorten in (["scheduler", "run"], ["run", "scheduler"])
+    assert settings.heroku.dyno_name_prefixes_to_shorten in (
+        ["scheduler", "run"],
+        ["run", "scheduler"],
+    )
 
 
 @reset_agent_config(INI_FILE_WITHOUT_UTIL_CONF, ENV_WITH_HEROKU)
 def test_heroku_override():
     settings = global_settings()
     assert settings.heroku.use_dyno_names is False
-    assert settings.heroku.dyno_name_prefixes_to_shorten in (["meow", "wruff"], ["wruff", "meow"])
+    assert settings.heroku.dyno_name_prefixes_to_shorten in (
+        ["meow", "wruff"],
+        ["wruff", "meow"],
+    )
 
 
 @reset_agent_config(INI_FILE_WITHOUT_UTIL_CONF, ENV_WITH_UTIL_CONF)

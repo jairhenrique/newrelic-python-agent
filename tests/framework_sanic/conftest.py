@@ -92,7 +92,9 @@ def create_request_class(app, method, url, headers=None, loop=None):
 def create_request_coroutine(app, method, url, headers=None, loop=None):
     headers = headers or {}
     try:
-        coro = app.handle_request(create_request_class(app, method, url, headers, loop=loop))
+        coro = app.handle_request(
+            create_request_class(app, method, url, headers, loop=loop)
+        )
     except TypeError:
 
         def write_callback(response):
@@ -142,7 +144,7 @@ def request(app, method, url, headers=None):
     return RESPONSES.pop()
 
 
-class TestApplication():
+class TestApplication:
     def __init__(self, app):
         self.app = app
 

@@ -49,11 +49,15 @@ def validate_span_events(
         record_transaction_called = []
         recorded_span_events = []
 
-        @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+        @transient_function_wrapper(
+            "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+        )
         def capture_span_events(wrapped, instance, args, kwargs):
             events = []
 
-            @transient_function_wrapper("newrelic.common.streaming_utils", "StreamBuffer.put")
+            @transient_function_wrapper(
+                "newrelic.common.streaming_utils", "StreamBuffer.put"
+            )
             def stream_capture(wrapped, instance, args, kwargs):
                 event = args[0]
                 events.append(event)
@@ -66,7 +70,9 @@ def validate_span_events(
                 raise
             else:
                 if not instance.settings.infinite_tracing.enabled:
-                    events = [event for priority, seen_at, event in instance.span_events.pq]
+                    events = [
+                        event for priority, seen_at, event in instance.span_events.pq
+                    ]
 
                 recorded_span_events.append(events)
 
@@ -90,12 +96,22 @@ def validate_span_events(
             _check_span_intrinsics(intrinsics)
 
             intrinsics_ok = _check_span_attributes(
-                intrinsics, exact_intrinsics, expected_intrinsics, unexpected_intrinsics, mismatches
+                intrinsics,
+                exact_intrinsics,
+                expected_intrinsics,
+                unexpected_intrinsics,
+                mismatches,
             )
             agent_attr_ok = _check_span_attributes(
-                agent_attrs, exact_agents, expected_agents, unexpected_agents, mismatches
+                agent_attrs,
+                exact_agents,
+                expected_agents,
+                unexpected_agents,
+                mismatches,
             )
-            user_attr_ok = _check_span_attributes(user_attrs, exact_users, expected_users, unexpected_users, mismatches)
+            user_attr_ok = _check_span_attributes(
+                user_attrs, exact_users, expected_users, unexpected_users, mismatches
+            )
 
             if intrinsics_ok and agent_attr_ok and user_attr_ok:
                 matching_span_events += 1

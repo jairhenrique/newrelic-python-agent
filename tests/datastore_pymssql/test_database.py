@@ -14,8 +14,12 @@
 
 import pymssql
 
-from testing_support.validators.validate_transaction_metrics import validate_transaction_metrics
-from testing_support.validators.validate_database_trace_inputs import validate_database_trace_inputs
+from testing_support.validators.validate_transaction_metrics import (
+    validate_transaction_metrics,
+)
+from testing_support.validators.validate_database_trace_inputs import (
+    validate_database_trace_inputs,
+)
 
 from testing_support.db_settings import mssql_settings
 
@@ -41,7 +45,9 @@ def execute_db_calls_with_cursor(cursor):
     for row in cursor:
         pass
 
-    cursor.execute(f"update {TABLE_NAME} set a=%s, b=%s, c=%s where a=%s", (4, 4.0, "4.0", 1))
+    cursor.execute(
+        f"update {TABLE_NAME} set a=%s, b=%s, c=%s where a=%s", (4, 4.0, "4.0", 1)
+    )
 
     cursor.execute(f"""delete from {TABLE_NAME} where a=2""")
     cursor.execute(f"""drop procedure if exists {PROCEDURE_NAME}""")
@@ -100,7 +106,10 @@ _test_rollup_metrics = [
 @background_task()
 def test_execute_via_cursor_context_manager():
     connection = pymssql.connect(
-        user=DB_SETTINGS["user"], password=DB_SETTINGS["password"], host=DB_SETTINGS["host"], port=DB_SETTINGS["port"]
+        user=DB_SETTINGS["user"],
+        password=DB_SETTINGS["password"],
+        host=DB_SETTINGS["host"],
+        port=DB_SETTINGS["port"],
     )
 
     with connection:

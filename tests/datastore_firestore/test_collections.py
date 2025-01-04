@@ -30,8 +30,13 @@ from newrelic.api.background_task import background_task
 def exercise_collections(collection):
     def _exercise_collections():
         collection.document("DoesNotExist")
-        collection.add({"capital": "Rome", "currency": "Euro", "language": "Italian"}, "Italy")
-        collection.add({"capital": "Mexico City", "currency": "Peso", "language": "Spanish"}, "Mexico")
+        collection.add(
+            {"capital": "Rome", "currency": "Euro", "language": "Italian"}, "Italy"
+        )
+        collection.add(
+            {"capital": "Mexico City", "currency": "Peso", "language": "Spanish"},
+            "Mexico",
+        )
 
         documents_get = collection.get()
         assert len(documents_get) == 2
@@ -58,7 +63,10 @@ def test_firestore_collections(exercise_collections, collection, instance_info):
         ("Datastore/operation/Firestore/list_documents", 1),
         ("Datastore/all", 5),
         ("Datastore/allOther", 5),
-        (f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}", 5),
+        (
+            f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}",
+            5,
+        ),
     ]
 
     @validate_database_duration()
@@ -85,7 +93,9 @@ def test_firestore_collections_generators(collection, assert_trace_for_generator
     assert_trace_for_generator(collection.list_documents)
 
 
-def test_firestore_collections_trace_node_datastore_params(exercise_collections, instance_info):
+def test_firestore_collections_trace_node_datastore_params(
+    exercise_collections, instance_info
+):
     @validate_tt_collector_json(datastore_params=instance_info)
     @background_task()
     def _test():

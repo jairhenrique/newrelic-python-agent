@@ -56,7 +56,9 @@ def model_id(request):
     return model
 
 
-@pytest.fixture(scope="session", params=[False, True], ids=["ResponseStandard", "ResponseStreaming"])
+@pytest.fixture(
+    scope="session", params=[False, True], ids=["ResponseStandard", "ResponseStreaming"]
+)
 def response_streaming(request):
     return request.param
 

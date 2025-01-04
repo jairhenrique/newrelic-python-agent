@@ -77,7 +77,9 @@ def test_close_before_connect(mock_grpc_server, batching):
     endpoint = f"localhost:{mock_grpc_server}"
     stream_buffer = StreamBuffer(0, batching=batching)
 
-    rpc = StreamingRpc(endpoint, stream_buffer, DEFAULT_METADATA, record_metric, ssl=False)
+    rpc = StreamingRpc(
+        endpoint, stream_buffer, DEFAULT_METADATA, record_metric, ssl=False
+    )
 
     # Calling close will close the grpc channel
     rpc.close()
@@ -92,7 +94,9 @@ def test_close_while_connected(mock_grpc_server, buffer_empty_event, batching):
     endpoint = f"localhost:{mock_grpc_server}"
     stream_buffer = StreamBuffer(1, batching=batching)
 
-    rpc = StreamingRpc(endpoint, stream_buffer, DEFAULT_METADATA, record_metric, ssl=False)
+    rpc = StreamingRpc(
+        endpoint, stream_buffer, DEFAULT_METADATA, record_metric, ssl=False
+    )
 
     rpc.connect()
     # Check the processing thread is alive and spans are being sent
@@ -133,7 +137,9 @@ def test_close_while_awaiting_reconnect(mock_grpc_server, monkeypatch, batching)
     endpoint = f"localhost:{mock_grpc_server}"
     stream_buffer = StreamBuffer(1, batching=batching)
 
-    rpc = StreamingRpc(endpoint, stream_buffer, DEFAULT_METADATA, record_metric, ssl=False)
+    rpc = StreamingRpc(
+        endpoint, stream_buffer, DEFAULT_METADATA, record_metric, ssl=False
+    )
 
     rpc.connect()
     # Send a span to trigger reconnect
@@ -167,7 +173,14 @@ def test_rpc_serialization_and_deserialization(
         user_attributes={},
     )
 
-    rpc = StreamingRpc(endpoint, stream_buffer, DEFAULT_METADATA, record_metric, compression=compression, ssl=False)
+    rpc = StreamingRpc(
+        endpoint,
+        stream_buffer,
+        DEFAULT_METADATA,
+        record_metric,
+        compression=compression,
+        ssl=False,
+    )
 
     rpc.connect()
 

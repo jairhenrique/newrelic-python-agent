@@ -27,7 +27,9 @@ from newrelic.api.background_task import background_task
         "PLSSVD",
     ],
 )
-def test_model_methods_wrapped_in_function_trace(cross_decomposition_model_name, run_cross_decomposition_model):
+def test_model_methods_wrapped_in_function_trace(
+    cross_decomposition_model_name, run_cross_decomposition_model
+):
     expected_scoped_metrics = {
         "PLSRegression": [
             ("Function/MLModel/Sklearn/Named/PLSRegression.fit", 1),
@@ -64,7 +66,9 @@ def run_cross_decomposition_model():
         kwargs = {}
         if cross_decomposition_model_name == "PLSSVD":
             kwargs = {"n_components": 1}
-        clf = getattr(sklearn.cross_decomposition, cross_decomposition_model_name)(**kwargs)
+        clf = getattr(sklearn.cross_decomposition, cross_decomposition_model_name)(
+            **kwargs
+        )
 
         model = clf.fit(x_train, y_train)
         if hasattr(model, "transform"):

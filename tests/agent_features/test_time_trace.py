@@ -44,7 +44,9 @@ def test_trace_after_end_of_transaction(caplog):
     with FunctionTrace("foobar"):
         pass
 
-    error_messages = [record for record in caplog.records if record.levelno >= logging.ERROR]
+    error_messages = [
+        record for record in caplog.records if record.levelno >= logging.ERROR
+    ]
     assert not error_messages
 
 
@@ -63,7 +65,9 @@ def test_trace_after_end_of_transaction(caplog):
     ),
 )
 @background_task()
-def test_trace_finalizes_with_transaction_missing_settings(monkeypatch, trace_type, args):
+def test_trace_finalizes_with_transaction_missing_settings(
+    monkeypatch, trace_type, args
+):
     txn = current_transaction()
     try:
         with trace_type(*args):
@@ -97,7 +101,7 @@ def test_trace_finalizes_with_transaction_missing_settings(monkeypatch, trace_ty
 )
 @background_task()
 def test_trace_filters_out_invalid_attributes(trace_type, args):
-    txn = current_transaction()
+    current_transaction()
     with trace_type(*args) as trace:
         trace.add_custom_attribute("drop-me", None)
         trace.add_custom_attribute("foo", "bar")

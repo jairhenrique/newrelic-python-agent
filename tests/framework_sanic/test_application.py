@@ -48,12 +48,19 @@ sanic_v19_to_v22_12 = SANIC_VERSION >= (19,) and SANIC_VERSION < (22, 12)
 
 BASE_METRICS = [
     ("Function/_target_application:index", 1),
-    ("Function/_target_application:request_middleware", 1 if sanic_v19_to_v22_12 else 2),
+    (
+        "Function/_target_application:request_middleware",
+        1 if sanic_v19_to_v22_12 else 2,
+    ),
 ]
 FRAMEWORK_METRICS = [
     (f"Python/Framework/Sanic/{sanic.__version__}", 1),
 ]
-BASE_ATTRS = ["response.status", "response.headers.contentType", "response.headers.contentLength"]
+BASE_ATTRS = [
+    "response.status",
+    "response.headers.contentType",
+    "response.headers.contentLength",
+]
 
 validate_base_transaction_event_attr = validate_transaction_event_attributes(
     required_params={"agent": BASE_ATTRS, "user": [], "intrinsic": []},
@@ -186,7 +193,9 @@ DOUBLE_ERROR_METRICS = [
     scoped_metrics=DOUBLE_ERROR_METRICS,
     rollup_metrics=DOUBLE_ERROR_METRICS,
 )
-@validate_transaction_errors(errors=["builtins:ValueError", "builtins:ZeroDivisionError"])
+@validate_transaction_errors(
+    errors=["builtins:ValueError", "builtins:ZeroDivisionError"]
+)
 def test_error_raised_in_error_handler(app):
     # Because of a bug in Sanic versions <0.8.0, the response.status value is
     # inconsistent. Rather than assert the status value, we rely on the
@@ -253,9 +262,13 @@ def test_errors_in_error_handlers(nr_enabled, app, url, metric_name, metrics, er
 
     if nr_enabled:
         _test = validate_transaction_errors(errors=errors)(_test)
-        _test = validate_transaction_metrics(metric_name, scoped_metrics=metrics, rollup_metrics=metrics)(_test)
+        _test = validate_transaction_metrics(
+            metric_name, scoped_metrics=metrics, rollup_metrics=metrics
+        )(_test)
     else:
-        _test = function_not_called("newrelic.core.stats_engine", "StatsEngine.record_transaction")(_test)
+        _test = function_not_called(
+            "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+        )(_test)
 
     _test()
 
@@ -324,8 +337,9 @@ def sync_failing_middleware(*args, **kwargs):
         ),
     ],
 )
-def test_returning_middleware(app, middleware, attach_to, metric_name, transaction_name):
-
+def test_returning_middleware(
+    app, middleware, attach_to, metric_name, transaction_name
+):
     metrics = [
         (f"Function/{metric_name}", 1),
     ]
@@ -402,7 +416,9 @@ def test_blueprint_middleware(app):
 
 def test_unknown_route(app, sanic_version):
     _tx_name = (
-        "_target_application:CustomRouter.get" if sanic_version[0] < 21 else "_target_application:request_middleware"
+        "_target_application:CustomRouter.get"
+        if sanic_version[0] < 21
+        else "_target_application:request_middleware"
     )
 
     @validate_transaction_metrics(_tx_name)
@@ -415,7 +431,9 @@ def test_unknown_route(app, sanic_version):
 
 def test_bad_method(app, sanic_version):
     _tx_name = (
-        "_target_application:CustomRouter.get" if sanic_version[0] < 21 else "_target_application:request_middleware"
+        "_target_application:CustomRouter.get"
+        if sanic_version[0] < 21
+        else "_target_application:request_middleware"
     )
 
     @validate_transaction_metrics(_tx_name)

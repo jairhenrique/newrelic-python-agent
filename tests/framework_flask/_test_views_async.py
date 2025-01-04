@@ -21,6 +21,7 @@ from conftest import async_handler_support
 
 # Async view support added in flask v2
 if async_handler_support:
+
     class TestAsyncView(flask.views.View):
         async def dispatch_request(self):
             return "ASYNC VIEW RESPONSE"

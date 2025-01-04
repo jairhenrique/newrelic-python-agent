@@ -94,9 +94,13 @@ def client():
     # doing two db calls will mean elastic search is talking to two different
     # dbs.
     if ES_VERSION >= (8,):
-        client = Elasticsearch(urls, node_selector_class=RoundRobinSelector, randomize_hosts=False)
+        client = Elasticsearch(
+            urls, node_selector_class=RoundRobinSelector, randomize_hosts=False
+        )
     else:
-        client = Elasticsearch(urls, selector_class=RoundRobinSelector, randomize_hosts=False)
+        client = Elasticsearch(
+            urls, selector_class=RoundRobinSelector, randomize_hosts=False
+        )
     return client
 
 
@@ -106,12 +110,23 @@ def client():
 def _exercise_es_multi(es):
     # set on db 1
     if ES_VERSION >= (8,):
-        es.index(index="contacts", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1)
+        es.index(
+            index="contacts",
+            body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+            id=1,
+        )
         # set on db 2
-        es.index(index="contacts", body={"name": "Jane Tester", "age": 22, "title": "Senior QA Engineer"}, id=2)
+        es.index(
+            index="contacts",
+            body={"name": "Jane Tester", "age": 22, "title": "Senior QA Engineer"},
+            id=2,
+        )
     else:
         es.index(
-            index="contacts", doc_type="person", body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"}, id=1
+            index="contacts",
+            doc_type="person",
+            body={"name": "Joe Tester", "age": 25, "title": "QA Engineer"},
+            id=1,
         )
         # set on db 2
         es.index(
@@ -136,7 +151,10 @@ def _exercise_es_multi(es):
 # Test
 
 
-@pytest.mark.skipif(len(ES_MULTIPLE_SETTINGS) < 2, reason="Test environment not configured with multiple databases.")
+@pytest.mark.skipif(
+    len(ES_MULTIPLE_SETTINGS) < 2,
+    reason="Test environment not configured with multiple databases.",
+)
 @override_application_settings(_enable_instance_settings)
 @validate_transaction_metrics(
     "test_mget:test_multi_get_enabled",
@@ -149,7 +167,10 @@ def test_multi_get_enabled(client):
     _exercise_es_multi(client)
 
 
-@pytest.mark.skipif(len(ES_MULTIPLE_SETTINGS) < 2, reason="Test environment not configured with multiple databases.")
+@pytest.mark.skipif(
+    len(ES_MULTIPLE_SETTINGS) < 2,
+    reason="Test environment not configured with multiple databases.",
+)
 @override_application_settings(_disable_instance_settings)
 @validate_transaction_metrics(
     "test_mget:test_multi_get_disabled",

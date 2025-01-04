@@ -24,7 +24,14 @@ from newrelic.api.background_task import background_task
 from newrelic.api.transaction import record_custom_metric, record_dimensional_metric
 from newrelic.core.rules_engine import NormalizationRule, RulesEngine
 
-RULES = [{"match_expression": "(replace)", "replacement": "expected", "ignore": False, "eval_order": 0}]
+RULES = [
+    {
+        "match_expression": "(replace)",
+        "replacement": "expected",
+        "ignore": False,
+        "eval_order": 0,
+    }
+]
 EXPECTED_TAGS = frozenset({"tag": 1}.items())
 
 
@@ -52,7 +59,9 @@ def rules_engine_fixture(core_app):
     rules_engine["metric"] = previous_rules  # Restore after test run
 
 
-@validate_dimensional_metric_payload(summary_metrics=[("Metric/expected", EXPECTED_TAGS, 1)])
+@validate_dimensional_metric_payload(
+    summary_metrics=[("Metric/expected", EXPECTED_TAGS, 1)]
+)
 @validate_metric_payload([("Metric/expected", 1)])
 @reset_core_stats_engine()
 def test_metric_normalization_inside_transaction(core_app, rules_engine_fixture):
@@ -65,7 +74,9 @@ def test_metric_normalization_inside_transaction(core_app, rules_engine_fixture)
     core_app.harvest()
 
 
-@validate_dimensional_metric_payload(summary_metrics=[("Metric/expected", EXPECTED_TAGS, 1)])
+@validate_dimensional_metric_payload(
+    summary_metrics=[("Metric/expected", EXPECTED_TAGS, 1)]
+)
 @validate_metric_payload([("Metric/expected", 1)])
 @reset_core_stats_engine()
 def test_metric_normalization_outside_transaction(core_app, rules_engine_fixture):

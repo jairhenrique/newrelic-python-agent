@@ -25,7 +25,6 @@ from testing_support.validators.validate_transaction_metrics import (
 )
 
 
-
 def target_application(with_tweens=False, tweens_explicit=False):
     # We need to delay Pyramid application creation because of ordering
     # issues whereby the agent needs to be initialised before Pyramid is
@@ -38,6 +37,7 @@ def target_application(with_tweens=False, tweens_explicit=False):
     from _test_application import target_application as _app
 
     return _app(with_tweens, tweens_explicit)
+
 
 _test_application_index_scoped_metrics = [
     ("Python/WSGI/Application", 1),
@@ -61,7 +61,13 @@ def test_application_index(with_tweens, tweens_explicit):
 
     metrics = list(_test_application_index_scoped_metrics)
     if with_tweens:
-        metrics.append(("Function/_test_application:" "simple_tween_factory.<locals>.simple_tween", 1))
+        metrics.append(
+            (
+                "Function/_test_application:"
+                "simple_tween_factory.<locals>.simple_tween",
+                1,
+            )
+        )
 
     @validate_code_level_metrics("_test_application", "home_view")
     @validate_transaction_errors(errors=[])
@@ -105,7 +111,8 @@ _test_not_found_raises_NotFound_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_application:raise_not_found", scoped_metrics=_test_not_found_raises_NotFound_scoped_metrics
+    "_test_application:raise_not_found",
+    scoped_metrics=_test_not_found_raises_NotFound_scoped_metrics,
 )
 def test_application_not_found_raises_NotFound():
     application = target_application()
@@ -123,7 +130,8 @@ _test_not_found_returns_NotFound_scoped_metrics = [
 
 @validate_transaction_errors(errors=[])
 @validate_transaction_metrics(
-    "_test_application:return_not_found", scoped_metrics=_test_not_found_returns_NotFound_scoped_metrics
+    "_test_application:return_not_found",
+    scoped_metrics=_test_not_found_returns_NotFound_scoped_metrics,
 )
 def test_application_not_found_returns_NotFound():
     application = target_application()
@@ -138,7 +146,9 @@ _test_unexpected_exception_scoped_metrics = [
 
 
 @validate_transaction_errors(errors=["builtins:RuntimeError"])
-@validate_transaction_metrics("_test_application:error", scoped_metrics=_test_unexpected_exception_scoped_metrics)
+@validate_transaction_metrics(
+    "_test_application:error", scoped_metrics=_test_unexpected_exception_scoped_metrics
+)
 def test_application_unexpected_exception():
     application = target_application()
     with pytest.raises(RuntimeError):
@@ -157,7 +167,9 @@ _test_redirect_scoped_metrics = [
 
 @validate_code_level_metrics("_test_application", "redirect")
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("_test_application:redirect", scoped_metrics=_test_redirect_scoped_metrics)
+@validate_transaction_metrics(
+    "_test_application:redirect", scoped_metrics=_test_redirect_scoped_metrics
+)
 def test_application_redirect():
     application = target_application()
     application.get("/redirect", status=302)
@@ -175,7 +187,9 @@ _test_resource_get_scoped_metrics = [
 
 @validate_code_level_metrics("_test_application.RestView", "get")
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("_test_application:RestView.get", scoped_metrics=_test_resource_get_scoped_metrics)
+@validate_transaction_metrics(
+    "_test_application:RestView.get", scoped_metrics=_test_resource_get_scoped_metrics
+)
 def test_application_rest_get():
     application = target_application()
     response = application.get("/rest")
@@ -194,7 +208,9 @@ _test_resource_post_scoped_metrics = [
 
 @validate_code_level_metrics("_test_application.RestView", "post")
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("_test_application:RestView.post", scoped_metrics=_test_resource_post_scoped_metrics)
+@validate_transaction_metrics(
+    "_test_application:RestView.post", scoped_metrics=_test_resource_post_scoped_metrics
+)
 def test_application_rest_post():
     application = target_application()
     response = application.post("/rest")  # Raises PredicateMismatch

@@ -34,4 +34,11 @@ def target_application(request):
     schema_type = param[1]
     extra_spans = 4 if param[0] == "wsgi" else 0
     assert GRAPHENE_VERSION is not None
-    return "Graphene", GRAPHENE_VERSION, target_application, is_background, schema_type, extra_spans
+    return (
+        "Graphene",
+        GRAPHENE_VERSION,
+        target_application,
+        is_background,
+        schema_type,
+        extra_spans,
+    )

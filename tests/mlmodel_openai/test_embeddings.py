@@ -84,7 +84,9 @@ def test_openai_embedding_sync(set_trace_info):
     add_custom_attribute("llm.foo", "bar")
     add_custom_attribute("non_llm_attr", "python-agent")
 
-    openai.Embedding.create(input="This is an embedding test.", model="text-embedding-ada-002")
+    openai.Embedding.create(
+        input="This is an embedding test.", model="text-embedding-ada-002"
+    )
 
 
 @reset_core_stats_engine()
@@ -108,7 +110,9 @@ def test_openai_embedding_sync_no_content(set_trace_info):
     add_custom_attribute("llm.foo", "bar")
     add_custom_attribute("non_llm_attr", "python-agent")
 
-    openai.Embedding.create(input="This is an embedding test.", model="text-embedding-ada-002")
+    openai.Embedding.create(
+        input="This is an embedding test.", model="text-embedding-ada-002"
+    )
 
 
 @reset_core_stats_engine()
@@ -132,13 +136,17 @@ def test_openai_embedding_sync_with_token_count(set_trace_info):
     add_custom_attribute("llm.foo", "bar")
     add_custom_attribute("non_llm_attr", "python-agent")
 
-    openai.Embedding.create(input="This is an embedding test.", model="text-embedding-ada-002")
+    openai.Embedding.create(
+        input="This is an embedding test.", model="text-embedding-ada-002"
+    )
 
 
 @reset_core_stats_engine()
 @validate_custom_event_count(count=0)
 def test_openai_embedding_sync_outside_txn():
-    openai.Embedding.create(input="This is an embedding test.", model="text-embedding-ada-002")
+    openai.Embedding.create(
+        input="This is an embedding test.", model="text-embedding-ada-002"
+    )
 
 
 @disabled_ai_monitoring_settings
@@ -147,7 +155,9 @@ def test_openai_embedding_sync_outside_txn():
 @background_task()
 def test_openai_embedding_sync_disabled_ai_monitoring_events(set_trace_info):
     set_trace_info()
-    openai.Embedding.create(input="This is an embedding test.", model="text-embedding-ada-002")
+    openai.Embedding.create(
+        input="This is an embedding test.", model="text-embedding-ada-002"
+    )
 
 
 @reset_core_stats_engine()
@@ -171,7 +181,9 @@ def test_openai_embedding_async(loop, set_trace_info):
     add_custom_attribute("non_llm_attr", "python-agent")
 
     loop.run_until_complete(
-        openai.Embedding.acreate(input="This is an embedding test.", model="text-embedding-ada-002")
+        openai.Embedding.acreate(
+            input="This is an embedding test.", model="text-embedding-ada-002"
+        )
     )
 
 
@@ -197,7 +209,9 @@ def test_openai_embedding_async_no_content(loop, set_trace_info):
     add_custom_attribute("non_llm_attr", "python-agent")
 
     loop.run_until_complete(
-        openai.Embedding.acreate(input="This is an embedding test.", model="text-embedding-ada-002")
+        openai.Embedding.acreate(
+            input="This is an embedding test.", model="text-embedding-ada-002"
+        )
     )
 
 
@@ -223,7 +237,9 @@ def test_openai_embedding_async_with_token_count(loop, set_trace_info):
     add_custom_attribute("non_llm_attr", "python-agent")
 
     loop.run_until_complete(
-        openai.Embedding.acreate(input="This is an embedding test.", model="text-embedding-ada-002")
+        openai.Embedding.acreate(
+            input="This is an embedding test.", model="text-embedding-ada-002"
+        )
     )
 
 
@@ -231,7 +247,9 @@ def test_openai_embedding_async_with_token_count(loop, set_trace_info):
 @validate_custom_event_count(count=0)
 def test_openai_embedding_async_outside_transaction(loop):
     loop.run_until_complete(
-        openai.Embedding.acreate(input="This is an embedding test.", model="text-embedding-ada-002")
+        openai.Embedding.acreate(
+            input="This is an embedding test.", model="text-embedding-ada-002"
+        )
     )
 
 
@@ -241,7 +259,9 @@ def test_openai_embedding_async_outside_transaction(loop):
 @background_task()
 def test_openai_embedding_async_disabled_ai_monitoring_events(loop):
     loop.run_until_complete(
-        openai.Embedding.acreate(input="This is an embedding test.", model="text-embedding-ada-002")
+        openai.Embedding.acreate(
+            input="This is an embedding test.", model="text-embedding-ada-002"
+        )
     )
 
 

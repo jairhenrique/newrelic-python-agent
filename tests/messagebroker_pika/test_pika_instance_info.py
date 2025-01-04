@@ -80,7 +80,9 @@ def test_instance_info_tornado_connection(params):
         connection.ioloop.stop()
 
     parameters = pika.ConnectionParameters(DB_SETTINGS["host"])
-    connection = pika.adapters.tornado_connection.TornadoConnection(parameters=parameters, on_open_callback=on_open)
+    connection = pika.adapters.tornado_connection.TornadoConnection(
+        parameters=parameters, on_open_callback=on_open
+    )
 
     try:
         connection.ioloop.start()

@@ -48,7 +48,9 @@ async def target_asgi_application_manual_rum(scope, receive, send):
         (b"content-length", str(len(output)).encode("utf-8")),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
@@ -192,11 +194,15 @@ async def target_asgi_application_yield_single_no_head(scope, receive, send):
         (b"content-length", str(len(output)).encode("utf-8")),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_yield_single_no_head = AsgiTest(target_asgi_application_yield_single_no_head)
+target_application_yield_single_no_head = AsgiTest(
+    target_asgi_application_yield_single_no_head
+)
 
 _test_html_insertion_yield_single_no_head_settings = {
     "browser_monitoring.enabled": True,
@@ -229,14 +235,18 @@ async def target_asgi_application_yield_multi_no_head(scope, receive, send):
         (b"content-type", b"text/html; charset=utf-8"),
         (b"content-length", str(len(b"".join(output))).encode("utf-8")),
     ]
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
 
     for data in output:
         more_body = data is not output[-1]
         await send({"type": "http.response.body", "body": data, "more_body": more_body})
 
 
-target_application_yield_multi_no_head = AsgiTest(target_asgi_application_yield_multi_no_head)
+target_application_yield_multi_no_head = AsgiTest(
+    target_asgi_application_yield_multi_no_head
+)
 
 _test_html_insertion_yield_multi_no_head_settings = {
     "browser_monitoring.enabled": True,
@@ -271,11 +281,15 @@ async def target_asgi_application_unnamed_attachment_header(scope, receive, send
         (b"content-disposition", b"attachment"),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_unnamed_attachment_header = AsgiTest(target_asgi_application_unnamed_attachment_header)
+target_application_unnamed_attachment_header = AsgiTest(
+    target_asgi_application_unnamed_attachment_header
+)
 
 _test_html_insertion_unnamed_attachment_header_settings = {
     "browser_monitoring.enabled": True,
@@ -311,11 +325,15 @@ async def target_asgi_application_named_attachment_header(scope, receive, send):
         (b"content-disposition", b'Attachment; filename="X"'),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_named_attachment_header = AsgiTest(target_asgi_application_named_attachment_header)
+target_application_named_attachment_header = AsgiTest(
+    target_asgi_application_named_attachment_header
+)
 
 _test_html_insertion_named_attachment_header_settings = {
     "browser_monitoring.enabled": True,
@@ -351,11 +369,15 @@ async def target_asgi_application_inline_attachment_header(scope, receive, send)
         (b"content-disposition", b'inline; filename="attachment"'),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_inline_attachment_header = AsgiTest(target_asgi_application_inline_attachment_header)
+target_application_inline_attachment_header = AsgiTest(
+    target_asgi_application_inline_attachment_header
+)
 
 _test_html_insertion_inline_attachment_header_settings = {
     "browser_monitoring.enabled": True,
@@ -383,11 +405,14 @@ def test_html_insertion_inline_attachment_header():
 
 @asgi_application()
 async def target_asgi_application_empty(scope, receive, send):
-    status = "200 OK"
+    response_headers = [
+        (b"content-type", b"text/html; charset=utf-8"),
+        (b"content-length", b"0"),
+    ]
 
-    response_headers = [(b"content-type", b"text/html; charset=utf-8"), (b"content-length", b"0")]
-
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body"})
 
 
@@ -420,13 +445,20 @@ def test_html_insertion_empty():
 
 @asgi_application()
 async def target_asgi_application_single_empty_string(scope, receive, send):
-    response_headers = [(b"content-type", b"text/html; charset=utf-8"), (b"content-length", b"0")]
+    response_headers = [
+        (b"content-type", b"text/html; charset=utf-8"),
+        (b"content-length", b"0"),
+    ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": b""})
 
 
-target_application_single_empty_string = AsgiTest(target_asgi_application_single_empty_string)
+target_application_single_empty_string = AsgiTest(
+    target_asgi_application_single_empty_string
+)
 
 _test_html_insertion_single_empty_string_settings = {
     "browser_monitoring.enabled": True,
@@ -455,14 +487,21 @@ def test_html_insertion_single_empty_string():
 
 @asgi_application()
 async def target_asgi_application_multiple_empty_string(scope, receive, send):
-    response_headers = [(b"content-type", b"text/html; charset=utf-8"), (b"content-length", b"0")]
+    response_headers = [
+        (b"content-type", b"text/html; charset=utf-8"),
+        (b"content-length", b"0"),
+    ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": b"", "more_body": True})
     await send({"type": "http.response.body", "body": b""})
 
 
-target_application_multiple_empty_string = AsgiTest(target_asgi_application_multiple_empty_string)
+target_application_multiple_empty_string = AsgiTest(
+    target_asgi_application_multiple_empty_string
+)
 
 _test_html_insertion_multiple_empty_string_settings = {
     "browser_monitoring.enabled": True,
@@ -498,11 +537,15 @@ async def target_asgi_application_single_large_prelude(scope, receive, send):
         (b"content-length", str(len(output)).encode("utf-8")),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_single_large_prelude = AsgiTest(target_asgi_application_single_large_prelude)
+target_application_single_large_prelude = AsgiTest(
+    target_asgi_application_single_large_prelude
+)
 
 _test_html_insertion_single_large_prelude_settings = {
     "browser_monitoring.enabled": True,
@@ -540,13 +583,17 @@ async def target_asgi_application_multi_large_prelude(scope, receive, send):
         (b"content-length", str(len(b"".join(output))).encode("utf-8")),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     for data in output:
         more_body = data is not output[-1]
         await send({"type": "http.response.body", "body": data, "more_body": more_body})
 
 
-target_application_multi_large_prelude = AsgiTest(target_asgi_application_multi_large_prelude)
+target_application_multi_large_prelude = AsgiTest(
+    target_asgi_application_multi_large_prelude
+)
 
 _test_html_insertion_multi_large_prelude_settings = {
     "browser_monitoring.enabled": True,
@@ -587,11 +634,15 @@ async def target_asgi_application_yield_before_start(scope, receive, send):
         (b"content-length", str(len(output)).encode("utf-8")),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_yield_before_start = AsgiTest(target_asgi_application_yield_before_start)
+target_application_yield_before_start = AsgiTest(
+    target_asgi_application_yield_before_start
+)
 
 _test_html_insertion_yield_before_start_settings = {
     "browser_monitoring.enabled": True,
@@ -617,12 +668,18 @@ async def target_asgi_application_start_yield_start(scope, receive, send):
         (b"content-length", str(len(output)).encode("utf-8")),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": b""})
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
 
 
-target_application_start_yield_start = AsgiTest(target_asgi_application_start_yield_start)
+target_application_start_yield_start = AsgiTest(
+    target_asgi_application_start_yield_start
+)
 
 _test_html_insertion_start_yield_start_settings = {
     "browser_monitoring.enabled": True,
@@ -643,13 +700,20 @@ def test_html_insertion_start_yield_start():
 async def target_asgi_application_invalid_content_length(scope, receive, send):
     output = b"<html><body><p>RESPONSE</p></body></html>"
 
-    response_headers = [(b"content-type", b"text/html; charset=utf-8"), (b"content-length", b"XXX")]
+    response_headers = [
+        (b"content-type", b"text/html; charset=utf-8"),
+        (b"content-length", b"XXX"),
+    ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_invalid_content_length = AsgiTest(target_asgi_application_invalid_content_length)
+target_application_invalid_content_length = AsgiTest(
+    target_asgi_application_invalid_content_length
+)
 
 
 @asgi_application()
@@ -658,11 +722,15 @@ async def target_asgi_application_no_content_length(scope, receive, send):
 
     response_headers = [(b"content-type", b"text/html; charset=utf-8")]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_no_content_length = AsgiTest(target_asgi_application_no_content_length)
+target_application_no_content_length = AsgiTest(
+    target_asgi_application_no_content_length
+)
 
 _test_html_insertion_invalid_content_length_settings = {
     "browser_monitoring.enabled": True,
@@ -706,7 +774,9 @@ async def target_asgi_application_content_encoding(scope, receive, send):
         (b"content-encoding", b"identity"),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
@@ -744,7 +814,9 @@ async def target_asgi_application_no_content_type(scope, receive, send):
 
     response_headers = [(b"content-length", str(len(output)).encode("utf-8"))]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
@@ -773,9 +845,14 @@ def test_html_insertion_no_content_type():
 async def target_asgi_application_plain_text(scope, receive, send):
     output = b"RESPONSE"
 
-    response_headers = [(b"content-type", b"text/plain"), (b"content-length", str(len(output)).encode("utf-8"))]
+    response_headers = [
+        (b"content-type", b"text/plain"),
+        (b"content-length", str(len(output)).encode("utf-8")),
+    ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
@@ -810,7 +887,9 @@ async def target_asgi_application_param(scope, receive, send):
     ]
 
     add_custom_attribute("key", "value")
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
@@ -843,7 +922,9 @@ async def target_asgi_application_param_on_error(scope, receive, send):
         (b"content-length", str(len(output)).encode("utf-8")),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
 
     try:
         raise RuntimeError("ERROR")
@@ -881,11 +962,15 @@ async def target_asgi_application_disable_autorum_via_api(scope, receive, send):
         (b"content-length", str(len(output)).encode("utf-8")),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_disable_autorum_via_api = AsgiTest(target_asgi_application_disable_autorum_via_api)
+target_application_disable_autorum_via_api = AsgiTest(
+    target_asgi_application_disable_autorum_via_api
+)
 
 _test_html_insertion_disable_autorum_via_api_settings = {
     "browser_monitoring.enabled": True,
@@ -924,11 +1009,15 @@ async def target_asgi_application_manual_rum_insertion(scope, receive, send):
         (b"content-length", str(len(output)).encode("utf-8")),
     ]
 
-    await send({"type": "http.response.start", "status": 200, "headers": response_headers})
+    await send(
+        {"type": "http.response.start", "status": 200, "headers": response_headers}
+    )
     await send({"type": "http.response.body", "body": output})
 
 
-target_application_manual_rum_insertion = AsgiTest(target_asgi_application_manual_rum_insertion)
+target_application_manual_rum_insertion = AsgiTest(
+    target_asgi_application_manual_rum_insertion
+)
 
 _test_html_insertion_manual_rum_insertion_settings = {
     "browser_monitoring.enabled": True,

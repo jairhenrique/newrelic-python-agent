@@ -65,7 +65,10 @@ _ec2_rollup_metrics = [
 def test_ec2():
     session = botocore.session.get_session()
     client = session.create_client(
-        "ec2", region_name=AWS_REGION, aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+        "ec2",
+        region_name=AWS_REGION,
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
     )
 
     # Create instance

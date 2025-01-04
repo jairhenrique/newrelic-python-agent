@@ -36,7 +36,10 @@ def test_model_methods_wrapped_in_function_trace(dummy_model_name, run_dummy_mod
             ("Function/MLModel/Sklearn/Named/DummyClassifier.fit", 1),
             ("Function/MLModel/Sklearn/Named/DummyClassifier.predict", 2),
             ("Function/MLModel/Sklearn/Named/DummyClassifier.predict_log_proba", 1),
-            ("Function/MLModel/Sklearn/Named/DummyClassifier.predict_proba", 2 if SKLEARN_VERSION > (1, 0, 0) else 4),
+            (
+                "Function/MLModel/Sklearn/Named/DummyClassifier.predict_proba",
+                2 if SKLEARN_VERSION > (1, 0, 0) else 4,
+            ),
             ("Function/MLModel/Sklearn/Named/DummyClassifier.score", 1),
         ],
         "DummyRegressor": [
@@ -67,7 +70,9 @@ def run_dummy_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         clf = getattr(sklearn.dummy, dummy_model_name)()
 

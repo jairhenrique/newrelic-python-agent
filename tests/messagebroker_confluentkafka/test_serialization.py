@@ -69,7 +69,9 @@ def test_deserialization_metrics(skip_if_not_serializing, topic, get_consumer_re
         ("A", object(), "ValueSerializationError"),
     ),
 )
-def test_serialization_errors(skip_if_not_serializing, topic, producer, key, value, error):
+def test_serialization_errors(
+    skip_if_not_serializing, topic, producer, key, value, error
+):
     import confluent_kafka.error
 
     error_cls = getattr(confluent_kafka.error, error)
@@ -90,7 +92,9 @@ def test_serialization_errors(skip_if_not_serializing, topic, producer, key, val
         ("{}", "%", "ValueDeserializationError"),
     ),
 )
-def test_deserialization_errors(skip_if_not_serializing, monkeypatch, topic, producer, consumer, key, value, error):
+def test_deserialization_errors(
+    skip_if_not_serializing, monkeypatch, topic, producer, consumer, key, value, error
+):
     import confluent_kafka.error
 
     error_cls = getattr(confluent_kafka.error, error)
@@ -146,6 +150,8 @@ def get_consumer_record(topic, send_producer_message, consumer):
             record_count += 1
         consumer.poll(0.5)  # Exit the transaction.
 
-        assert record_count == 1, f"Incorrect count of records consumed: {record_count}. Expected 1."
+        assert (
+            record_count == 1
+        ), f"Incorrect count of records consumed: {record_count}. Expected 1."
 
     return _test

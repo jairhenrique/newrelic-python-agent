@@ -37,13 +37,31 @@ from newrelic.api.message_trace import message_trace
     "trace,metric",
     [
         (functools.partial(function_trace, name="simple_gen"), "Function/simple_gen"),
-        (functools.partial(external_trace, library="lib", url="http://foo.com"), "External/foo.com/lib/"),
-        (functools.partial(database_trace, "select * from foo"), "Datastore/statement/None/foo/select"),
-        (functools.partial(datastore_trace, "lib", "foo", "bar"), "Datastore/statement/lib/foo/bar"),
-        (functools.partial(message_trace, "lib", "op", "typ", "name"), "MessageBroker/lib/typ/op/Named/name"),
+        (
+            functools.partial(external_trace, library="lib", url="http://foo.com"),
+            "External/foo.com/lib/",
+        ),
+        (
+            functools.partial(database_trace, "select * from foo"),
+            "Datastore/statement/None/foo/select",
+        ),
+        (
+            functools.partial(datastore_trace, "lib", "foo", "bar"),
+            "Datastore/statement/lib/foo/bar",
+        ),
+        (
+            functools.partial(message_trace, "lib", "op", "typ", "name"),
+            "MessageBroker/lib/typ/op/Named/name",
+        ),
         (functools.partial(memcache_trace, "cmd"), "Memcache/cmd"),
-        (functools.partial(graphql_operation_trace), "GraphQL/operation/GraphQL/<unknown>/<anonymous>/<unknown>"),
-        (functools.partial(graphql_resolver_trace), "GraphQL/resolve/GraphQL/<unknown>"),
+        (
+            functools.partial(graphql_operation_trace),
+            "GraphQL/operation/GraphQL/<unknown>/<anonymous>/<unknown>",
+        ),
+        (
+            functools.partial(graphql_resolver_trace),
+            "GraphQL/resolve/GraphQL/<unknown>",
+        ),
     ],
 )
 def test_awaitable_timing(event_loop, trace, metric):
@@ -60,7 +78,10 @@ def test_awaitable_timing(event_loop, trace, metric):
 
     @capture_transaction_metrics(metrics, full_metrics)
     @validate_transaction_metrics(
-        "test_awaitable", background_task=True, scoped_metrics=[(metric, 1)], rollup_metrics=[(metric, 1)]
+        "test_awaitable",
+        background_task=True,
+        scoped_metrics=[(metric, 1)],
+        rollup_metrics=[(metric, 1)],
     )
     def _test():
         event_loop.run_until_complete(parent())
@@ -72,25 +93,46 @@ def test_awaitable_timing(event_loop, trace, metric):
     assert full_metrics[metric_key].total_call_time >= 0.1
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 11), reason="Asyncio decorator was removed in Python 3.11+.")
+@pytest.mark.skipif(
+    sys.version_info >= (3, 11), reason="Asyncio decorator was removed in Python 3.11+."
+)
 @pytest.mark.parametrize(
     "trace,metric",
     [
         (functools.partial(function_trace, name="simple_gen"), "Function/simple_gen"),
-        (functools.partial(external_trace, library="lib", url="http://foo.com"), "External/foo.com/lib/"),
-        (functools.partial(database_trace, "select * from foo"), "Datastore/statement/None/foo/select"),
-        (functools.partial(datastore_trace, "lib", "foo", "bar"), "Datastore/statement/lib/foo/bar"),
-        (functools.partial(message_trace, "lib", "op", "typ", "name"), "MessageBroker/lib/typ/op/Named/name"),
+        (
+            functools.partial(external_trace, library="lib", url="http://foo.com"),
+            "External/foo.com/lib/",
+        ),
+        (
+            functools.partial(database_trace, "select * from foo"),
+            "Datastore/statement/None/foo/select",
+        ),
+        (
+            functools.partial(datastore_trace, "lib", "foo", "bar"),
+            "Datastore/statement/lib/foo/bar",
+        ),
+        (
+            functools.partial(message_trace, "lib", "op", "typ", "name"),
+            "MessageBroker/lib/typ/op/Named/name",
+        ),
         (functools.partial(memcache_trace, "cmd"), "Memcache/cmd"),
-        (functools.partial(graphql_operation_trace), "GraphQL/operation/GraphQL/<unknown>/<anonymous>/<unknown>"),
-        (functools.partial(graphql_resolver_trace), "GraphQL/resolve/GraphQL/<unknown>"),
+        (
+            functools.partial(graphql_operation_trace),
+            "GraphQL/operation/GraphQL/<unknown>/<anonymous>/<unknown>",
+        ),
+        (
+            functools.partial(graphql_resolver_trace),
+            "GraphQL/resolve/GraphQL/<unknown>",
+        ),
     ],
 )
 @pytest.mark.parametrize("yield_from", [True, False])
 @pytest.mark.parametrize("use_await", [True, False])
 @pytest.mark.parametrize("coro_decorator_first", [True, False])
-def test_asyncio_decorator_timing(event_loop, trace, metric, yield_from, use_await, coro_decorator_first):
-
+def test_asyncio_decorator_timing(
+    event_loop, trace, metric, yield_from, use_await, coro_decorator_first
+):
     if yield_from:
 
         def coro():
@@ -124,7 +166,10 @@ def test_asyncio_decorator_timing(event_loop, trace, metric, yield_from, use_awa
 
     @capture_transaction_metrics(metrics, full_metrics)
     @validate_transaction_metrics(
-        "test_awaitable", background_task=True, scoped_metrics=[(metric, 1)], rollup_metrics=[(metric, 1)]
+        "test_awaitable",
+        background_task=True,
+        scoped_metrics=[(metric, 1)],
+        rollup_metrics=[(metric, 1)],
     )
     def _test():
         event_loop.run_until_complete(parent())

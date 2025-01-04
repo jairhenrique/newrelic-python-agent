@@ -50,7 +50,9 @@ _test_blocking_connection_consume_metrics = [
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 @background_task()
 def test_blocking_connection_consume_break(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
         for method_frame, properties, body in channel.consume(QUEUE):
             assert hasattr(method_frame, "_nr_start_time")
@@ -91,7 +93,9 @@ def test_blocking_connection_consume_connection_close(producer):
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 @background_task()
 def test_blocking_connection_consume_timeout(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         for result in channel.consume(QUEUE, inactivity_timeout=0.01):
@@ -115,7 +119,9 @@ def test_blocking_connection_consume_timeout(producer):
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 @background_task()
 def test_blocking_connection_consume_exception_in_for_loop(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         try:
@@ -148,7 +154,9 @@ _test_blocking_connection_consume_empty_metrics = [
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 @background_task()
 def test_blocking_connection_consume_exception_in_generator():
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         try:
@@ -180,7 +188,9 @@ _test_blocking_connection_consume_many_metrics = [
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 @background_task()
 def test_blocking_connection_consume_many(produce_five):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         consumed = 0
@@ -201,7 +211,9 @@ def test_blocking_connection_consume_many(produce_five):
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 @background_task()
 def test_blocking_connection_consume_using_methods(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         consumer = channel.consume(QUEUE, inactivity_timeout=0.01)
@@ -235,7 +247,9 @@ def test_blocking_connection_consume_using_methods(producer):
 )
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 def test_blocking_connection_consume_outside_txn(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
         consumer = channel.consume(QUEUE)
 
@@ -267,7 +281,9 @@ def test_blocking_connection_consume_many_outside_txn(produce_five):
         assert body == BODY
         return next(consumer)
 
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
         consumer = channel.consume(QUEUE)
 
@@ -290,7 +306,9 @@ def test_blocking_connection_consume_many_outside_txn(produce_five):
 )
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 def test_blocking_connection_consume_using_methods_outside_txn(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         consumer = channel.consume(QUEUE, inactivity_timeout=0.01)
@@ -323,7 +341,9 @@ def test_blocking_connection_consume_using_methods_outside_txn(producer):
 )
 @background_task()
 def test_blocking_connection_consume_exception_on_creation():
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         try:

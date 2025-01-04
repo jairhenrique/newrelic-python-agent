@@ -43,10 +43,16 @@ MONGODB_HOST = DB_SETTINGS["host"]
 MONGODB_PORT = DB_SETTINGS["port"]
 MONGODB_COLLECTION = DB_SETTINGS["collection"]
 
-INSTANCE_METRIC_HOST = system_info.gethostname() if MONGODB_HOST == "127.0.0.1" else MONGODB_HOST
-INSTANCE_METRIC_NAME = f"Datastore/instance/MongoDB/{INSTANCE_METRIC_HOST}/{MONGODB_PORT}"
+INSTANCE_METRIC_HOST = (
+    system_info.gethostname() if MONGODB_HOST == "127.0.0.1" else MONGODB_HOST
+)
+INSTANCE_METRIC_NAME = (
+    f"Datastore/instance/MongoDB/{INSTANCE_METRIC_HOST}/{MONGODB_PORT}"
+)
 
-INIT_FUNCTION_METRIC = "Function/pymongo.asynchronous.mongo_client:AsyncMongoClient.__init__"
+INIT_FUNCTION_METRIC = (
+    "Function/pymongo.asynchronous.mongo_client:AsyncMongoClient.__init__"
+)
 
 
 async def _exercise_mongo(db):
@@ -104,7 +110,9 @@ async def _exercise_mongo(db):
         "peer.hostname": INSTANCE_METRIC_HOST,
         "peer.address": f"{INSTANCE_METRIC_HOST}:{MONGODB_PORT}",
     },
-    exact_intrinsics={"name": f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/insert_one"},
+    exact_intrinsics={
+        "name": f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/insert_one"
+    },
 )
 @validate_transaction_metrics(
     "test_motor_instance_info",
@@ -224,7 +232,6 @@ def test_async_collection_mongodb_database_duration(loop):
 @validate_database_duration()
 @background_task()
 def test_async_collection_mongodb_and_sqlite_database_duration(loop):
-
     # Make mongodb queries
 
     client = AsyncMongoClient(MONGODB_HOST, MONGODB_PORT)

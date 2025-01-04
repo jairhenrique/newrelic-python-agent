@@ -83,7 +83,9 @@ _test_blocking_connection_metrics = [
 @validate_messagebroker_headers
 @cache_pika_headers
 def test_blocking_connection(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         channel.basic_publish(
@@ -103,7 +105,9 @@ def test_blocking_connection(producer):
         )
 
 
-_message_broker_tt_included_test_correlation_id = _message_broker_tt_included_params.copy()
+_message_broker_tt_included_test_correlation_id = (
+    _message_broker_tt_included_params.copy()
+)
 _message_broker_tt_included_test_correlation_id.update(
     {
         "correlation_id": CORRELATION_ID,
@@ -127,7 +131,9 @@ _message_broker_tt_forgone_test_correlation_id = ["queue_name", "reply_to", "hea
 @validate_messagebroker_headers
 @cache_pika_headers
 def test_blocking_connection_correlation_id(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         channel.basic_publish(
@@ -173,7 +179,9 @@ _message_broker_tt_forgone_test_reply_to = ["queue_name", "correlation_id", "hea
 @validate_messagebroker_headers
 @cache_pika_headers
 def test_blocking_connection_reply_to(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         channel.basic_publish(
@@ -207,7 +215,6 @@ _message_broker_tt_forgone_test_headers = ["queue_name", "correlation_id", "repl
 
 @pytest.mark.parametrize("enable_distributed_tracing", [True, False])
 def test_blocking_connection_headers(enable_distributed_tracing):
-
     override_settings = {
         "distributed_tracing.enabled": enable_distributed_tracing,
         "cross_application_tracer.enabled": not enable_distributed_tracing,
@@ -234,7 +241,9 @@ def test_blocking_connection_headers(enable_distributed_tracing):
     @validate_messagebroker_headers
     @cache_pika_headers
     def _test():
-        with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+        with pika.BlockingConnection(
+            pika.ConnectionParameters(DB_SETTINGS["host"])
+        ) as connection:
             channel = connection.channel()
 
             channel.basic_publish(
@@ -272,7 +281,9 @@ def test_blocking_connection_headers(enable_distributed_tracing):
 @validate_messagebroker_headers
 @cache_pika_headers
 def test_blocking_connection_headers_reuse_properties(producer):
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
         properties = pika.spec.BasicProperties(headers=HEADERS)
 
@@ -317,7 +328,9 @@ _test_blocking_connection_two_exchanges_metrics = [
 @validate_messagebroker_headers
 @cache_pika_headers
 def test_blocking_connection_two_exchanges():
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
         channel.queue_declare(queue=QUEUE)
         channel.exchange_declare(exchange="exchange-1", durable=False, auto_delete=True)
@@ -427,7 +440,9 @@ def test_tornado_connection():
         connection.ioloop.stop()
 
     parameters = pika.ConnectionParameters(DB_SETTINGS["host"])
-    connection = tornado_connection.TornadoConnection(parameters=parameters, on_open_callback=on_open)
+    connection = tornado_connection.TornadoConnection(
+        parameters=parameters, on_open_callback=on_open
+    )
 
     try:
         connection.ioloop.start()

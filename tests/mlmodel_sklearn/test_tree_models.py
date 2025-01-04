@@ -34,7 +34,10 @@ def test_model_methods_wrapped_in_function_trace(tree_model_name, run_tree_model
             ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.fit", 1),
             ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.predict", 2),
             ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.score", 1),
-            ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.predict_log_proba", 1),
+            (
+                "Function/MLModel/Sklearn/Named/DecisionTreeClassifier.predict_log_proba",
+                1,
+            ),
             ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.predict_proba", 2),
         ],
         "ExtraTreeClassifier": [
@@ -78,7 +81,10 @@ def test_multiple_calls_to_model_methods(tree_model_name, run_tree_model):
             ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.fit", 1),
             ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.predict", 4),
             ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.score", 2),
-            ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.predict_log_proba", 2),
+            (
+                "Function/MLModel/Sklearn/Named/DecisionTreeClassifier.predict_log_proba",
+                2,
+            ),
             ("Function/MLModel/Sklearn/Named/DecisionTreeClassifier.predict_proba", 4),
         ],
         "ExtraTreeClassifier": [
@@ -119,7 +125,14 @@ def test_multiple_calls_to_model_methods(tree_model_name, run_tree_model):
     _test()
 
 
-@pytest.fixture(params=["ExtraTreeRegressor", "DecisionTreeClassifier", "ExtraTreeClassifier", "DecisionTreeRegressor"])
+@pytest.fixture(
+    params=[
+        "ExtraTreeRegressor",
+        "DecisionTreeClassifier",
+        "ExtraTreeClassifier",
+        "DecisionTreeRegressor",
+    ]
+)
 def tree_model_name(request):
     return request.param
 
@@ -137,7 +150,7 @@ def run_tree_model(tree_model_name):
         clf = getattr(sklearn.tree, tree_model_name)(random_state=0)
         model = clf.fit(x_train, y_train)
 
-        labels = model.predict(x_test)
+        model.predict(x_test)
         model.score(x_test, y_test)
         # Some models don't have these methods.
         if hasattr(model, "predict_log_proba"):

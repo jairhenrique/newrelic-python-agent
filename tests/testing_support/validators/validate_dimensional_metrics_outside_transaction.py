@@ -23,13 +23,16 @@ def validate_dimensional_metrics_outside_transaction(dimensional_metrics=None):
 
     @function_wrapper
     def _validate_wrapper(wrapped, instance, args, kwargs):
-
         record_dimensional_metric_called = []
         recorded_metrics = [None]
 
-        @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_dimensional_metric")
+        @transient_function_wrapper(
+            "newrelic.core.stats_engine", "StatsEngine.record_dimensional_metric"
+        )
         @catch_background_exceptions
-        def _validate_dimensional_metrics_outside_transaction(wrapped, instance, args, kwargs):
+        def _validate_dimensional_metrics_outside_transaction(
+            wrapped, instance, args, kwargs
+        ):
             record_dimensional_metric_called.append(True)
             try:
                 result = wrapped(*args, **kwargs)

@@ -62,13 +62,17 @@ def test_register_range(loop, connection):
         await maybe_await(cursor.execute(f"DROP TYPE if exists {type_name}"))
         await maybe_await(cursor.execute(create_sql))
 
-        range_type_info = await maybe_await(psycopg.types.range.RangeInfo.fetch(connection, type_name))
+        range_type_info = await maybe_await(
+            psycopg.types.range.RangeInfo.fetch(connection, type_name)
+        )
         range_type_info.register(connection)
 
         await maybe_await(cursor.execute(f"DROP TYPE if exists {type_name}"))
         await maybe_await(cursor.execute(create_sql))
 
-        range_type_info = await maybe_await(psycopg.types.range.RangeInfo.fetch(connection, type_name))
+        range_type_info = await maybe_await(
+            psycopg.types.range.RangeInfo.fetch(connection, type_name)
+        )
         range_type_info.register(cursor)
 
         await maybe_await(cursor.execute(f"DROP TYPE if exists {type_name}"))

@@ -33,7 +33,9 @@ from newrelic.hooks.mlmodel_sklearn import PredictReturnTypeProxy
     ),
 )
 def test_metric_scorer_attributes(metric_scorer_name, run_metric_scorer):
-    @validate_attributes("agent", [f"DecisionTreeClassifier/TrainingStep/0/{metric_scorer_name}"])
+    @validate_attributes(
+        "agent", [f"DecisionTreeClassifier/TrainingStep/0/{metric_scorer_name}"]
+    )
     @background_task()
     def _test():
         run_metric_scorer(metric_scorer_name)
@@ -76,7 +78,9 @@ def test_metric_scorer_training_steps_attributes(metric_scorer_name, run_metric_
         ("recall_score", {"average": None}),
     ],
 )
-def test_metric_scorer_iterable_score_attributes(metric_scorer_name, kwargs, run_metric_scorer):
+def test_metric_scorer_iterable_score_attributes(
+    metric_scorer_name, kwargs, run_metric_scorer
+):
     @validate_attributes(
         "agent",
         [
@@ -104,7 +108,9 @@ def test_metric_scorer_iterable_score_attributes(metric_scorer_name, kwargs, run
     ],
 )
 def test_metric_scorer_attributes_unknown_model(metric_scorer_name):
-    @validate_attributes("agent", [f"Unknown/TrainingStep/Unknown/{metric_scorer_name}"])
+    @validate_attributes(
+        "agent", [f"Unknown/TrainingStep/Unknown/{metric_scorer_name}"]
+    )
     @background_task()
     def _test():
         from sklearn import metrics
@@ -117,7 +123,20 @@ def test_metric_scorer_attributes_unknown_model(metric_scorer_name):
     _test()
 
 
-@pytest.mark.parametrize("data", (np.array([0, 1]), "foo", 1, 1.0, True, [0, 1], {"foo": "bar"}, (0, 1), np.str_("F")))
+@pytest.mark.parametrize(
+    "data",
+    (
+        np.array([0, 1]),
+        "foo",
+        1,
+        1.0,
+        True,
+        [0, 1],
+        {"foo": "bar"},
+        (0, 1),
+        np.str_("F"),
+    ),
+)
 def test_PredictReturnTypeProxy(data):
     wrapped_data = PredictReturnTypeProxy(data, "ModelName", 0)
 

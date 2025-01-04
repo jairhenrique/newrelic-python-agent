@@ -74,7 +74,7 @@ def retry(attempts=5, wait=5):
             while retry_count < attempts:
                 try:
                     return test_func(*args, **kwargs)
-                except AssertionError as assert_error:
+                except AssertionError:
                     time.sleep(wait)
                     retry_count += 1
             # Preserve original traceback in case assertion fails.

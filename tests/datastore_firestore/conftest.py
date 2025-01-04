@@ -65,7 +65,9 @@ def client():
     os.environ["FIRESTORE_EMULATOR_HOST"] = f"{FIRESTORE_HOST}:{FIRESTORE_PORT}"
     client = Client()
     # Ensure connection is available
-    client.collection("healthcheck").document("healthcheck").set({}, retry=None, timeout=5)
+    client.collection("healthcheck").document("healthcheck").set(
+        {}, retry=None, timeout=5
+    )
     return client
 
 
@@ -81,7 +83,9 @@ def async_client(loop):
     os.environ["FIRESTORE_EMULATOR_HOST"] = f"{FIRESTORE_HOST}:{FIRESTORE_PORT}"
     client = AsyncClient()
     loop.run_until_complete(
-        client.collection("healthcheck").document("healthcheck").set({}, retry=None, timeout=5)
+        client.collection("healthcheck")
+        .document("healthcheck")
+        .set({}, retry=None, timeout=5)
     )  # Ensure connection is available
     return client
 
@@ -102,7 +106,9 @@ def assert_trace_for_generator():
         _trace_check = []
         for _ in generator_func(*args, **kwargs):
             _trace_check.append(isinstance(current_trace(), DatastoreTrace))
-        assert _trace_check and all(_trace_check)  # All checks are True, and at least 1 is present.
+        assert _trace_check and all(
+            _trace_check
+        )  # All checks are True, and at least 1 is present.
         assert current_trace() is txn  # Generator trace has exited.
 
     return _assert_trace_for_generator
@@ -122,7 +128,9 @@ def assert_trace_for_async_generator(loop):
 
         loop.run_until_complete(coro())
 
-        assert _trace_check and all(_trace_check)  # All checks are True, and at least 1 is present.
+        assert _trace_check and all(
+            _trace_check
+        )  # All checks are True, and at least 1 is present.
         assert current_trace() is txn  # Generator trace has exited.
 
     return _assert_trace_for_async_generator

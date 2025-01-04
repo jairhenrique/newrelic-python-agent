@@ -43,7 +43,9 @@ def otlp_content_encoding(request):
     prev = _settings.debug.otlp_content_encoding
     _settings.debug.otlp_content_encoding = request.param
     reload(newrelic.core.otlp_utils)
-    assert newrelic.core.otlp_utils.otlp_content_setting == request.param, "Content encoding mismatch."
+    assert (
+        newrelic.core.otlp_utils.otlp_content_setting == request.param
+    ), "Content encoding mismatch."
 
     yield
 
@@ -119,10 +121,14 @@ def test_record_dimensional_metrics_inside_transaction(tags, expected):
 @pytest.mark.parametrize("tags,expected", _test_tags_examples)
 @reset_core_stats_engine()
 def test_record_dimensional_metrics_outside_transaction(tags, expected):
-    @validate_dimensional_metrics_outside_transaction([("Metric.1", expected, 1), ("Metric.2", expected, 1)])
+    @validate_dimensional_metrics_outside_transaction(
+        [("Metric.1", expected, 1), ("Metric.2", expected, 1)]
+    )
     def _test():
         app = application_instance()
-        record_dimensional_metrics([("Metric.1", 1, tags), ("Metric.2", 1, tags)], application=app)
+        record_dimensional_metrics(
+            [("Metric.1", 1, tags), ("Metric.2", 1, tags)], application=app
+        )
 
     _test()
 

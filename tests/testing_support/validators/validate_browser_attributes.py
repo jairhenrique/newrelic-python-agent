@@ -22,7 +22,9 @@ def validate_browser_attributes(required_params=None, forgone_params=None):
     required_params = required_params or {}
     forgone_params = forgone_params or {}
 
-    @transient_function_wrapper("newrelic.api.web_transaction", "WSGIWebTransaction.browser_timing_header")
+    @transient_function_wrapper(
+        "newrelic.api.web_transaction", "WSGIWebTransaction.browser_timing_header"
+    )
     def _validate_browser_attributes(wrapped, instance, args, kwargs):
         try:
             result = wrapped(*args, **kwargs)

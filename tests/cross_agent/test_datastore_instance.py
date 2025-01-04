@@ -24,7 +24,9 @@ from newrelic.core.database_node import DatabaseNode
 from newrelic.core.stats_engine import StatsEngine
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-FIXTURE = os.path.join(CURRENT_DIR, "fixtures", "datastores", "datastore_instances.json")
+FIXTURE = os.path.join(
+    CURRENT_DIR, "fixtures", "datastores", "datastore_instances.json"
+)
 
 _parameters_list = [
     "name",
@@ -47,7 +49,12 @@ def _load_tests():
 
 
 def _parametrize_test(test):
-    return tuple([test.get(f, None if f != "db_hostname" else "localhost") for f in _parameters_list])
+    return tuple(
+        [
+            test.get(f, None if f != "db_hostname" else "localhost")
+            for f in _parameters_list
+        ]
+    )
 
 
 _datastore_tests = [_parametrize_test(t) for t in _load_tests()]
@@ -56,10 +63,19 @@ _datastore_tests = [_parametrize_test(t) for t in _load_tests()]
 @pytest.mark.parametrize(_parameters, _datastore_tests)
 @background_task()
 def test_datastore_instance(
-    name, system_hostname, db_hostname, product, port, unix_socket, database_path, expected_instance_metric, monkeypatch
+    name,
+    system_hostname,
+    db_hostname,
+    product,
+    port,
+    unix_socket,
+    database_path,
+    expected_instance_metric,
+    monkeypatch,
 ):
-
-    monkeypatch.setattr("newrelic.common.system_info.gethostname", lambda: system_hostname)
+    monkeypatch.setattr(
+        "newrelic.common.system_info.gethostname", lambda: system_hostname
+    )
 
     class FakeModule:
         pass

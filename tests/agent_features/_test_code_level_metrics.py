@@ -18,7 +18,7 @@ def exercise_function():
     return
 
 
-class ExerciseClass():
+class ExerciseClass:
     def exercise_method(self):
         return
 
@@ -31,7 +31,7 @@ class ExerciseClass():
         return
 
 
-class ExerciseClassCallable():
+class ExerciseClassCallable:
     def __call__(self):
         return
 
@@ -64,7 +64,9 @@ callable_type_dict = type_dict.copy()
 callable_type_dict["__call__"] = __call__
 
 ExerciseTypeConstructor = type("ExerciseTypeConstructor", (object,), type_dict)
-ExerciseTypeConstructorCallable = type("ExerciseTypeConstructorCallable", (object,), callable_type_dict)
+ExerciseTypeConstructorCallable = type(
+    "ExerciseTypeConstructorCallable", (object,), callable_type_dict
+)
 
 
 CLASS_INSTANCE = ExerciseClass()

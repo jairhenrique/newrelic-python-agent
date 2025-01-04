@@ -83,7 +83,10 @@ def buffer_empty_event(monkeypatch):
     return event
 
 
-@pytest.fixture(scope="session", params=[pytest.param(True, id="batching"), pytest.param(False, id="nonbatching")])
+@pytest.fixture(
+    scope="session",
+    params=[pytest.param(True, id="batching"), pytest.param(False, id="nonbatching")],
+)
 def batching(request):
     return request.param
 

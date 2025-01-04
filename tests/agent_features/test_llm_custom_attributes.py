@@ -23,7 +23,10 @@ from newrelic.api.transaction import current_transaction
 def test_llm_custom_attributes():
     transaction = current_transaction()
     with WithLlmCustomAttributes({"test": "attr", "test1": "attr1"}):
-        assert transaction._llm_context_attrs == {"llm.test": "attr", "llm.test1": "attr1"}
+        assert transaction._llm_context_attrs == {
+            "llm.test": "attr",
+            "llm.test1": "attr1",
+        }
 
     assert not hasattr(transaction, "_llm_context_attrs")
 
@@ -45,6 +48,9 @@ def test_llm_custom_attributes_prefixed_attrs():
     transaction = current_transaction()
     with WithLlmCustomAttributes({"llm.test": "attr", "test1": "attr1"}):
         # Validate API does not prefix attributes that already begin with "llm."
-        assert transaction._llm_context_attrs == {"llm.test": "attr", "llm.test1": "attr1"}
+        assert transaction._llm_context_attrs == {
+            "llm.test": "attr",
+            "llm.test1": "attr1",
+        }
 
     assert not hasattr(transaction, "_llm_context_attrs")

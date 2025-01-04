@@ -26,7 +26,8 @@ from newrelic.api.function_trace import function_trace
 
 version_info = tuple(int(_) for _ in aiohttp.__version__.split(".")[:2])
 skipif_aiohttp3 = pytest.mark.skipif(
-    version_info >= (3, 0), reason="This version of aiohttp does not support yield from syntax"
+    version_info >= (3, 0),
+    reason="This version of aiohttp does not support yield from syntax",
 )
 
 
@@ -147,7 +148,6 @@ def test_client_throw_yield_from(event_loop, local_server_info, method, exc_expe
         ],
     )
     def task_test():
-
         with pytest.raises(ThrowerException):
             event_loop.run_until_complete(self_driving_thrower())
 
@@ -213,7 +213,6 @@ def test_ws_connect_yield_from(event_loop, local_server_info, method, exc_expect
 @skipif_aiohttp3
 @pytest.mark.parametrize("method,exc_expected", test_matrix)
 def test_create_task_yield_from(event_loop, local_server_info, method, exc_expected):
-
     # `loop.create_task` returns a Task object which uses the coroutine's
     # `send` method, not `__next__`
 

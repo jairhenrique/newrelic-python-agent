@@ -122,13 +122,18 @@ expected_events_on_no_model_error = [
 @validate_custom_events(events_with_context_attrs(expected_events_on_no_model_error))
 @validate_custom_event_count(count=3)
 @background_task()
-def test_chat_completion_invalid_request_error_no_model(set_trace_info, sync_openai_client):
+def test_chat_completion_invalid_request_error_no_model(
+    set_trace_info, sync_openai_client
+):
     with pytest.raises(TypeError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
         with WithLlmCustomAttributes({"context": "attr"}):
             generator = sync_openai_client.chat.completions.create(
-                messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100, stream=True
+                messages=_test_openai_chat_completion_messages,
+                temperature=0.7,
+                max_tokens=100,
+                stream=True,
             )
             for resp in generator:
                 assert resp
@@ -159,12 +164,17 @@ def test_chat_completion_invalid_request_error_no_model(set_trace_info, sync_ope
 @validate_custom_events(events_sans_content(expected_events_on_no_model_error))
 @validate_custom_event_count(count=3)
 @background_task()
-def test_chat_completion_invalid_request_error_no_model_no_content(set_trace_info, sync_openai_client):
+def test_chat_completion_invalid_request_error_no_model_no_content(
+    set_trace_info, sync_openai_client
+):
     with pytest.raises(TypeError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
         generator = sync_openai_client.chat.completions.create(
-            messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100, stream=True
+            messages=_test_openai_chat_completion_messages,
+            temperature=0.7,
+            max_tokens=100,
+            stream=True,
         )
         for resp in generator:
             assert resp
@@ -194,7 +204,9 @@ def test_chat_completion_invalid_request_error_no_model_no_content(set_trace_inf
 @validate_custom_events(events_with_context_attrs(expected_events_on_no_model_error))
 @validate_custom_event_count(count=3)
 @background_task()
-def test_chat_completion_invalid_request_error_no_model_async(loop, set_trace_info, async_openai_client):
+def test_chat_completion_invalid_request_error_no_model_async(
+    loop, set_trace_info, async_openai_client
+):
     with pytest.raises(TypeError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -202,7 +214,10 @@ def test_chat_completion_invalid_request_error_no_model_async(loop, set_trace_in
 
             async def consumer():
                 generator = await async_openai_client.chat.completions.create(
-                    messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100, stream=True
+                    messages=_test_openai_chat_completion_messages,
+                    temperature=0.7,
+                    max_tokens=100,
+                    stream=True,
                 )
                 async for resp in generator:
                     assert resp
@@ -235,14 +250,19 @@ def test_chat_completion_invalid_request_error_no_model_async(loop, set_trace_in
 @validate_custom_events(events_sans_content(expected_events_on_no_model_error))
 @validate_custom_event_count(count=3)
 @background_task()
-def test_chat_completion_invalid_request_error_no_model_async_no_content(loop, set_trace_info, async_openai_client):
+def test_chat_completion_invalid_request_error_no_model_async_no_content(
+    loop, set_trace_info, async_openai_client
+):
     with pytest.raises(TypeError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
 
         async def consumer():
             generator = await async_openai_client.chat.completions.create(
-                messages=_test_openai_chat_completion_messages, temperature=0.7, max_tokens=100, stream=True
+                messages=_test_openai_chat_completion_messages,
+                temperature=0.7,
+                max_tokens=100,
+                stream=True,
             )
             async for resp in generator:
                 assert resp
@@ -313,7 +333,9 @@ expected_events_on_invalid_model_error = [
 @validate_custom_events(expected_events_on_invalid_model_error)
 @validate_custom_event_count(count=2)
 @background_task()
-def test_chat_completion_invalid_request_error_invalid_model(set_trace_info, sync_openai_client):
+def test_chat_completion_invalid_request_error_invalid_model(
+    set_trace_info, sync_openai_client
+):
     with pytest.raises(openai.NotFoundError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -353,10 +375,14 @@ def test_chat_completion_invalid_request_error_invalid_model(set_trace_info, syn
     rollup_metrics=[("Llm/completion/OpenAI/create", 1)],
     background_task=True,
 )
-@validate_custom_events(add_token_count_to_events(expected_events_on_invalid_model_error))
+@validate_custom_events(
+    add_token_count_to_events(expected_events_on_invalid_model_error)
+)
 @validate_custom_event_count(count=2)
 @background_task()
-def test_chat_completion_invalid_request_error_invalid_model_with_token_count(set_trace_info, sync_openai_client):
+def test_chat_completion_invalid_request_error_invalid_model_with_token_count(
+    set_trace_info, sync_openai_client
+):
     with pytest.raises(openai.NotFoundError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -397,7 +423,9 @@ def test_chat_completion_invalid_request_error_invalid_model_with_token_count(se
     rollup_metrics=[("Llm/completion/OpenAI/create", 1)],
     background_task=True,
 )
-@validate_custom_events(add_token_count_to_events(expected_events_on_invalid_model_error))
+@validate_custom_events(
+    add_token_count_to_events(expected_events_on_invalid_model_error)
+)
 @validate_custom_event_count(count=2)
 @background_task()
 def test_chat_completion_invalid_request_error_invalid_model_async_with_token_count(
@@ -448,7 +476,9 @@ def test_chat_completion_invalid_request_error_invalid_model_async_with_token_co
 @validate_custom_events(expected_events_on_invalid_model_error)
 @validate_custom_event_count(count=2)
 @background_task()
-def test_chat_completion_invalid_request_error_invalid_model_async(loop, set_trace_info, async_openai_client):
+def test_chat_completion_invalid_request_error_invalid_model_async(
+    loop, set_trace_info, async_openai_client
+):
     with pytest.raises(openai.NotFoundError):
         set_trace_info()
         add_custom_attribute("llm.conversation_id", "my-awesome-id")
@@ -528,7 +558,9 @@ expected_events_on_wrong_api_key_error = [
 @validate_custom_events(expected_events_on_wrong_api_key_error)
 @validate_custom_event_count(count=2)
 @background_task()
-def test_chat_completion_wrong_api_key_error(monkeypatch, set_trace_info, sync_openai_client):
+def test_chat_completion_wrong_api_key_error(
+    monkeypatch, set_trace_info, sync_openai_client
+):
     with pytest.raises(openai.AuthenticationError):
         set_trace_info()
         monkeypatch.setattr(sync_openai_client, "api_key", "DEADBEEF")
@@ -570,7 +602,9 @@ def test_chat_completion_wrong_api_key_error(monkeypatch, set_trace_info, sync_o
 @validate_custom_events(expected_events_on_wrong_api_key_error)
 @validate_custom_event_count(count=2)
 @background_task()
-def test_chat_completion_wrong_api_key_error_async(loop, monkeypatch, set_trace_info, async_openai_client):
+def test_chat_completion_wrong_api_key_error_async(
+    loop, monkeypatch, set_trace_info, async_openai_client
+):
     with pytest.raises(openai.AuthenticationError):
         set_trace_info()
         monkeypatch.setattr(async_openai_client, "api_key", "DEADBEEF")

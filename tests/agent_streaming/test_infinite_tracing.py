@@ -66,7 +66,9 @@ def app():
         ),
     ),
 )
-def test_infinite_tracing_span_streaming(mock_grpc_server, status_code, metrics, monkeypatch, app, batching):
+def test_infinite_tracing_span_streaming(
+    mock_grpc_server, status_code, metrics, monkeypatch, app, batching
+):
     event = threading.Event()
 
     class TerminateOnWait(CONDITION_CLS):
@@ -85,7 +87,9 @@ def test_infinite_tracing_span_streaming(mock_grpc_server, status_code, metrics,
     monkeypatch.setattr(StreamingRpc, "condition", condition)
 
     span = Span(
-        intrinsics={"status_code": AttributeValue(string_value=status_code)}, agent_attributes={}, user_attributes={}
+        intrinsics={"status_code": AttributeValue(string_value=status_code)},
+        agent_attributes={},
+        user_attributes={},
     )
 
     @override_generic_settings(
@@ -112,7 +116,9 @@ def test_infinite_tracing_span_streaming(mock_grpc_server, status_code, metrics,
     _test()
 
 
-def test_reconnect_on_failure(monkeypatch, mock_grpc_server, buffer_empty_event, app, batching):
+def test_reconnect_on_failure(
+    monkeypatch, mock_grpc_server, buffer_empty_event, app, batching
+):
     status_code = "INTERNAL"
     wait_event = threading.Event()
     continue_event = threading.Event()
@@ -130,7 +136,9 @@ def test_reconnect_on_failure(monkeypatch, mock_grpc_server, buffer_empty_event,
     monkeypatch.setattr(StreamingRpc, "condition", condition)
 
     terminating_span = Span(
-        intrinsics={"status_code": AttributeValue(string_value=status_code)}, agent_attributes={}, user_attributes={}
+        intrinsics={"status_code": AttributeValue(string_value=status_code)},
+        agent_attributes={},
+        user_attributes={},
     )
 
     span = Span(intrinsics={}, agent_attributes={}, user_attributes={})
@@ -328,7 +336,9 @@ def test_no_delay_on_ok(mock_grpc_server, monkeypatch, app, batching):
     _test()
 
 
-def test_no_data_loss_on_reconnect(mock_grpc_server, app, buffer_empty_event, batching, spans_processed_event):
+def test_no_data_loss_on_reconnect(
+    mock_grpc_server, app, buffer_empty_event, batching, spans_processed_event
+):
     """
     Test for data loss when channel is closed by the server while waiting for more data in a request iterator.
 
@@ -346,7 +356,9 @@ def test_no_data_loss_on_reconnect(mock_grpc_server, app, buffer_empty_event, ba
     """
 
     terminating_span = Span(
-        intrinsics={"wait_then_ok": AttributeValue(string_value="OK")}, agent_attributes={}, user_attributes={}
+        intrinsics={"wait_then_ok": AttributeValue(string_value="OK")},
+        agent_attributes={},
+        user_attributes={},
     )
 
     span = Span(intrinsics={}, agent_attributes={}, user_attributes={})
@@ -385,18 +397,24 @@ def test_no_data_loss_on_reconnect(mock_grpc_server, app, buffer_empty_event, ba
         # Wait for OK status code to close the channel
         start_time = time.time()
         while not (request_iterator._stream and request_iterator._stream.done()):
-            assert time.time() - start_time < 15, "Timed out waiting for OK status code."
+            assert (
+                time.time() - start_time < 15
+            ), "Timed out waiting for OK status code."
             time.sleep(0.5)
 
         # Put new span and wait until buffer has been emptied and either sent or lost
         stream_buffer.put(span)
-        assert spans_processed_event.wait(timeout=15), "Data lost in stream buffer iterator."
+        assert spans_processed_event.wait(
+            timeout=15
+        ), "Data lost in stream buffer iterator."
 
     _test()
 
 
 @pytest.mark.parametrize("dropped_spans", [0, 1])
-def test_span_supportability_metrics(mock_grpc_server, monkeypatch, app, dropped_spans, batching):
+def test_span_supportability_metrics(
+    mock_grpc_server, monkeypatch, app, dropped_spans, batching
+):
     wait_event = threading.Event()
     continue_event = threading.Event()
 
@@ -466,16 +484,30 @@ def test_span_supportability_metrics(mock_grpc_server, monkeypatch, app, dropped
 @pytest.mark.parametrize("trace_observer_host", ["localhost", None])
 @pytest.mark.parametrize("batching", [True, False])
 @pytest.mark.parametrize("compression", [True, False])
-def test_settings_supportability_metrics(mock_grpc_server, app, trace_observer_host, batching, compression):
+def test_settings_supportability_metrics(
+    mock_grpc_server, app, trace_observer_host, batching, compression
+):
     connect_event = threading.Event()
 
     enabled = bool(trace_observer_host)
 
     metrics = [
-        ("Supportability/InfiniteTracing/gRPC/Batching/enabled", 1 if enabled and batching else None),
-        ("Supportability/InfiniteTracing/gRPC/Batching/disabled", 1 if enabled and not batching else None),
-        ("Supportability/InfiniteTracing/gRPC/Compression/enabled", 1 if enabled and compression else None),
-        ("Supportability/InfiniteTracing/gRPC/Compression/disabled", 1 if enabled and not compression else None),
+        (
+            "Supportability/InfiniteTracing/gRPC/Batching/enabled",
+            1 if enabled and batching else None,
+        ),
+        (
+            "Supportability/InfiniteTracing/gRPC/Batching/disabled",
+            1 if enabled and not batching else None,
+        ),
+        (
+            "Supportability/InfiniteTracing/gRPC/Compression/enabled",
+            1 if enabled and compression else None,
+        ),
+        (
+            "Supportability/InfiniteTracing/gRPC/Compression/disabled",
+            1 if enabled and not compression else None,
+        ),
     ]
 
     @override_generic_settings(

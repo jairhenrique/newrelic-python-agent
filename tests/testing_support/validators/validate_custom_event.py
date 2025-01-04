@@ -36,7 +36,9 @@ def _validate_custom_event(recorded_event, required_event):
 
 def validate_custom_event_in_application_stats_engine(required_event):
     @function_wrapper
-    def _validate_custom_event_in_application_stats_engine(wrapped, instance, args, kwargs):
+    def _validate_custom_event_in_application_stats_engine(
+        wrapped, instance, args, kwargs
+    ):
         try:
             result = wrapped(*args, **kwargs)
         except:

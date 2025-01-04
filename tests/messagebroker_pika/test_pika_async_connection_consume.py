@@ -80,7 +80,10 @@ parametrized_connection = pytest.mark.parametrize("ConnectionClass", connection_
 _test_select_conn_basic_get_inside_txn_metrics = [
     (f"MessageBroker/RabbitMQ/Exchange/Produce/Named/{EXCHANGE}", None),
     (f"MessageBroker/RabbitMQ/Exchange/Consume/Named/{EXCHANGE}", 1),
-    ("Function/test_pika_async_connection_consume:test_async_connection_basic_get_inside_txn.<locals>.on_message", 1),
+    (
+        "Function/test_pika_async_connection_consume:test_async_connection_basic_get_inside_txn.<locals>.on_message",
+        1,
+    ),
 ]
 
 
@@ -93,7 +96,9 @@ _test_select_conn_basic_get_inside_txn_metrics = [
 )
 @validate_span_events(
     count=1,
-    exact_intrinsics={"name": f"MessageBroker/RabbitMQ/Exchange/Consume/Named/{EXCHANGE}"},
+    exact_intrinsics={
+        "name": f"MessageBroker/RabbitMQ/Exchange/Consume/Named/{EXCHANGE}"
+    },
     exact_agents={"server.address": DB_SETTINGS["host"]},
 )
 @validate_transaction_metrics(
@@ -104,7 +109,9 @@ _test_select_conn_basic_get_inside_txn_metrics = [
 )
 @validate_tt_collector_json(message_broker_params=_message_broker_tt_params)
 @background_task()
-def test_async_connection_basic_get_inside_txn(producer, ConnectionClass, callback_as_partial):
+def test_async_connection_basic_get_inside_txn(
+    producer, ConnectionClass, callback_as_partial
+):
     def on_message(channel, method_frame, header_frame, body):
         assert method_frame
         assert body == BODY
@@ -122,7 +129,10 @@ def test_async_connection_basic_get_inside_txn(producer, ConnectionClass, callba
     def on_open_connection(connection):
         connection.channel(on_open_callback=on_open_channel)
 
-    connection = ConnectionClass(pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection)
+    connection = ConnectionClass(
+        pika.ConnectionParameters(DB_SETTINGS["host"]),
+        on_open_callback=on_open_connection,
+    )
 
     try:
         connection.ioloop.start()
@@ -134,7 +144,9 @@ def test_async_connection_basic_get_inside_txn(producer, ConnectionClass, callba
 
 @parametrized_connection
 @pytest.mark.parametrize("callback_as_partial", [True, False])
-def test_select_connection_basic_get_outside_txn(producer, ConnectionClass, callback_as_partial):
+def test_select_connection_basic_get_outside_txn(
+    producer, ConnectionClass, callback_as_partial
+):
     metrics_list = []
 
     @capture_transaction_metrics(metrics_list)
@@ -157,7 +169,8 @@ def test_select_connection_basic_get_outside_txn(producer, ConnectionClass, call
             connection.channel(on_open_callback=on_open_channel)
 
         connection = ConnectionClass(
-            pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection
+            pika.ConnectionParameters(DB_SETTINGS["host"]),
+            on_open_callback=on_open_connection,
         )
 
         try:
@@ -181,7 +194,8 @@ _test_select_conn_basic_get_inside_txn_no_callback_metrics = [
 
 
 @pytest.mark.skipif(
-    condition=PIKA_VERSION_INFO[0] > 0, reason="pika 1.0 removed the ability to use basic_get with callback=None"
+    condition=PIKA_VERSION_INFO[0] > 0,
+    reason="pika 1.0 removed the ability to use basic_get with callback=None",
 )
 @parametrized_connection
 @validate_transaction_metrics(
@@ -202,7 +216,10 @@ def test_async_connection_basic_get_inside_txn_no_callback(producer, ConnectionC
     def on_open_connection(connection):
         connection.channel(on_open_callback=on_open_channel)
 
-    connection = ConnectionClass(pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection)
+    connection = ConnectionClass(
+        pika.ConnectionParameters(DB_SETTINGS["host"]),
+        on_open_callback=on_open_connection,
+    )
 
     try:
         connection.ioloop.start()
@@ -246,7 +263,10 @@ def test_async_connection_basic_get_empty(ConnectionClass, callback_as_partial):
     def on_open_connection(connection):
         connection.channel(on_open_callback=on_open_channel)
 
-    connection = ConnectionClass(pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection)
+    connection = ConnectionClass(
+        pika.ConnectionParameters(DB_SETTINGS["host"]),
+        on_open_callback=on_open_connection,
+    )
 
     try:
         connection.ioloop.start()
@@ -294,7 +314,10 @@ def test_async_connection_basic_consume_inside_txn(producer, ConnectionClass):
     def on_open_connection(connection):
         connection.channel(on_open_callback=on_open_channel)
 
-    connection = ConnectionClass(pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection)
+    connection = ConnectionClass(
+        pika.ConnectionParameters(DB_SETTINGS["host"]),
+        on_open_callback=on_open_connection,
+    )
 
     try:
         connection.ioloop.start()
@@ -336,7 +359,9 @@ _test_select_conn_basic_consume_two_exchanges = [
     "on_message_2",
 )
 @background_task()
-def test_async_connection_basic_consume_two_exchanges(producer, producer_2, ConnectionClass):
+def test_async_connection_basic_consume_two_exchanges(
+    producer, producer_2, ConnectionClass
+):
     global events_received
     events_received = 0
 
@@ -373,7 +398,10 @@ def test_async_connection_basic_consume_two_exchanges(producer, producer_2, Conn
     def on_open_connection(connection):
         connection.channel(on_open_callback=on_open_channel)
 
-    connection = ConnectionClass(pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection)
+    connection = ConnectionClass(
+        pika.ConnectionParameters(DB_SETTINGS["host"]),
+        on_open_callback=on_open_connection,
+    )
 
     try:
         connection.ioloop.start()
@@ -401,7 +429,10 @@ def test_tornado_connection_basic_consume_outside_transaction(producer):
     def on_open_connection(connection):
         connection.channel(on_open_callback=on_open_channel)
 
-    connection = TornadoConnection(pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection)
+    connection = TornadoConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"]),
+        on_open_callback=on_open_connection,
+    )
 
     try:
         connection.ioloop.start()
@@ -447,7 +478,8 @@ def test_select_connection_basic_consume_outside_transaction(producer):
         connection.channel(on_open_callback=on_open_channel)
 
     connection = pika.SelectConnection(
-        pika.ConnectionParameters(DB_SETTINGS["host"]), on_open_callback=on_open_connection
+        pika.ConnectionParameters(DB_SETTINGS["host"]),
+        on_open_callback=on_open_connection,
     )
 
     try:

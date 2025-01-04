@@ -16,7 +16,9 @@ import aredis
 import pytest
 from testing_support.db_settings import redis_settings
 from testing_support.fixtures import override_application_settings
-from testing_support.validators.validate_transaction_metrics import validate_transaction_metrics
+from testing_support.validators.validate_transaction_metrics import (
+    validate_transaction_metrics,
+)
 from testing_support.util import instance_hostname
 
 from newrelic.api.background_task import background_task
@@ -112,7 +114,10 @@ async def exercise_redis(client_1, client_2):
     await client_2.execute_command("CLIENT", "LIST", parse="LIST")
 
 
-@pytest.mark.skipif(len(DB_MULTIPLE_SETTINGS) < 2, reason="Test environment not configured with multiple databases.")
+@pytest.mark.skipif(
+    len(DB_MULTIPLE_SETTINGS) < 2,
+    reason="Test environment not configured with multiple databases.",
+)
 @override_application_settings(_enable_instance_settings)
 @validate_transaction_metrics(
     "test_multiple_dbs:test_multiple_datastores_enabled",
@@ -130,7 +135,10 @@ def test_multiple_datastores_enabled(loop):
     loop.run_until_complete(exercise_redis(client_1, client_2))
 
 
-@pytest.mark.skipif(len(DB_MULTIPLE_SETTINGS) < 2, reason="Test environment not configured with multiple databases.")
+@pytest.mark.skipif(
+    len(DB_MULTIPLE_SETTINGS) < 2,
+    reason="Test environment not configured with multiple databases.",
+)
 @override_application_settings(_disable_instance_settings)
 @validate_transaction_metrics(
     "test_multiple_dbs:test_multiple_datastores_disabled",
@@ -148,7 +156,10 @@ def test_multiple_datastores_disabled(loop):
     loop.run_until_complete(exercise_redis(client_1, client_2))
 
 
-@pytest.mark.skipif(len(DB_MULTIPLE_SETTINGS) < 2, reason="Test environment not configured with multiple databases.")
+@pytest.mark.skipif(
+    len(DB_MULTIPLE_SETTINGS) < 2,
+    reason="Test environment not configured with multiple databases.",
+)
 @validate_transaction_metrics(
     "test_multiple_dbs:test_concurrent_calls",
     scoped_metrics=_concurrent_scoped_metrics,
@@ -172,7 +183,11 @@ def test_concurrent_calls(loop):
     clients = (client_1, client_2)
 
     async def exercise_concurrent():
-        await asyncio.gather(*(client.set(f"key-{i}", i) for i, client in enumerate(clients)))
-        await asyncio.gather(*(client.get(f"key-{i}") for i, client in enumerate(clients)))
+        await asyncio.gather(
+            *(client.set(f"key-{i}", i) for i, client in enumerate(clients))
+        )
+        await asyncio.gather(
+            *(client.get(f"key-{i}") for i, client in enumerate(clients))
+        )
 
     loop.run_until_complete(exercise_concurrent())

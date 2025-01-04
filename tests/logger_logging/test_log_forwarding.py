@@ -61,7 +61,10 @@ _common_attributes_service_linking = {
     "entity.name": "Python Agent Test (logger_logging)",
     "entity.guid": None,
 }
-_common_attributes_trace_linking = {"span.id": "abcdefgh", "trace.id": "abcdefgh12345678"}
+_common_attributes_trace_linking = {
+    "span.id": "abcdefgh",
+    "trace.id": "abcdefgh12345678",
+}
 _common_attributes_trace_linking.update(_common_attributes_service_linking)
 
 _test_logging_inside_transaction_events = [

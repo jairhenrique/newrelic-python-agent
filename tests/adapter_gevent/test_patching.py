@@ -29,5 +29,5 @@ def test_patch_ssl_recursion():
 
     import newrelic.packages.urllib3.util.ssl_
 
-    context1 = urllib3.util.ssl_.create_urllib3_context()
-    context2 = newrelic.packages.urllib3.util.ssl_.create_urllib3_context()
+    urllib3.util.ssl_.create_urllib3_context()
+    newrelic.packages.urllib3.util.ssl_.create_urllib3_context()

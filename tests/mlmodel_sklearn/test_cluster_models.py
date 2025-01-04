@@ -39,7 +39,9 @@ SKLEARN_VERSION = get_package_version_tuple("sklearn")
         "SpectralClustering",
     ],
 )
-def test_below_v1_1_model_methods_wrapped_in_function_trace(cluster_model_name, run_cluster_model):
+def test_below_v1_1_model_methods_wrapped_in_function_trace(
+    cluster_model_name, run_cluster_model
+):
     expected_scoped_metrics = {
         "AffinityPropagation": [
             ("Function/MLModel/Sklearn/Named/AffinityPropagation.fit", 2),
@@ -116,7 +118,9 @@ def test_below_v1_1_model_methods_wrapped_in_function_trace(cluster_model_name, 
         "OPTICS",
     ],
 )
-def test_above_v1_1_model_methods_wrapped_in_function_trace(cluster_model_name, run_cluster_model):
+def test_above_v1_1_model_methods_wrapped_in_function_trace(
+    cluster_model_name, run_cluster_model
+):
     expected_scoped_metrics = {
         "BisectingKMeans": [
             ("Function/MLModel/Sklearn/Named/BisectingKMeans.fit", 2),
@@ -150,7 +154,9 @@ def run_cluster_model():
         from sklearn.model_selection import train_test_split
 
         X, y = load_iris(return_X_y=True)
-        x_train, x_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(
+            X, y, stratify=y, random_state=0
+        )
 
         clf = getattr(sklearn.cluster, cluster_model_name)()
 

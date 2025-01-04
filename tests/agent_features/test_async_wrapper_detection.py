@@ -35,12 +35,27 @@ from testing_support.validators.validate_transaction_metrics import (
 
 trace_metric_cases = [
     (functools.partial(function_trace, name="simple_gen"), "Function/simple_gen"),
-    (functools.partial(external_trace, library="lib", url="http://foo.com"), "External/foo.com/lib/"),
-    (functools.partial(database_trace, "select * from foo"), "Datastore/statement/None/foo/select"),
-    (functools.partial(datastore_trace, "lib", "foo", "bar"), "Datastore/statement/lib/foo/bar"),
-    (functools.partial(message_trace, "lib", "op", "typ", "name"), "MessageBroker/lib/typ/op/Named/name"),
+    (
+        functools.partial(external_trace, library="lib", url="http://foo.com"),
+        "External/foo.com/lib/",
+    ),
+    (
+        functools.partial(database_trace, "select * from foo"),
+        "Datastore/statement/None/foo/select",
+    ),
+    (
+        functools.partial(datastore_trace, "lib", "foo", "bar"),
+        "Datastore/statement/lib/foo/bar",
+    ),
+    (
+        functools.partial(message_trace, "lib", "op", "typ", "name"),
+        "MessageBroker/lib/typ/op/Named/name",
+    ),
     (functools.partial(memcache_trace, "cmd"), "Memcache/cmd"),
-    (functools.partial(graphql_operation_trace), "GraphQL/operation/GraphQL/<unknown>/<anonymous>/<unknown>"),
+    (
+        functools.partial(graphql_operation_trace),
+        "GraphQL/operation/GraphQL/<unknown>/<anonymous>/<unknown>",
+    ),
     (functools.partial(graphql_resolver_trace), "GraphQL/resolve/GraphQL/<unknown>"),
 ]
 
@@ -52,7 +67,10 @@ def test_automatic_generator_trace_wrapper(trace, metric):
 
     @capture_transaction_metrics(metrics, full_metrics)
     @validate_transaction_metrics(
-        "test_automatic_generator_trace_wrapper", background_task=True, scoped_metrics=[(metric, 1)], rollup_metrics=[(metric, 1)]
+        "test_automatic_generator_trace_wrapper",
+        background_task=True,
+        scoped_metrics=[(metric, 1)],
+        rollup_metrics=[(metric, 1)],
     )
     @background_task(name="test_automatic_generator_trace_wrapper")
     def _test():
@@ -79,17 +97,22 @@ def test_manual_generator_trace_wrapper(trace, metric):
 
     @capture_transaction_metrics(metrics, full_metrics)
     @validate_transaction_metrics(
-        "test_automatic_generator_trace_wrapper", background_task=True, scoped_metrics=[(metric, 1)], rollup_metrics=[(metric, 1)]
+        "test_automatic_generator_trace_wrapper",
+        background_task=True,
+        scoped_metrics=[(metric, 1)],
+        rollup_metrics=[(metric, 1)],
     )
     @background_task(name="test_automatic_generator_trace_wrapper")
     def _test():
         @trace(async_wrapper=generator_wrapper)
         def wrapper_func():
             """Function that returns a generator object, obscuring the automatic introspection of async_wrapper()"""
+
             def gen():
                 time.sleep(0.1)
                 yield
                 time.sleep(0.1)
+
             return gen()
 
         for _ in wrapper_func():

@@ -89,7 +89,9 @@ _instance_metric_name = f"Datastore/instance/Valkey/{_host}/{_port}"
 
 instance_metric_count = 5
 
-_enable_rollup_metrics = _base_rollup_metrics.append((_instance_metric_name, instance_metric_count))
+_enable_rollup_metrics = _base_rollup_metrics.append(
+    (_instance_metric_name, instance_metric_count)
+)
 
 _disable_rollup_metrics = _base_rollup_metrics.append((_instance_metric_name, None))
 
@@ -112,7 +114,9 @@ def exercise_valkey(client):
 )
 @background_task()
 def test_fake_conn_pool_enable_instance():
-    client = valkey.StrictValkey(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
+    client = valkey.StrictValkey(
+        host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0
+    )
 
     # Get a real connection
 
@@ -137,7 +141,9 @@ def test_fake_conn_pool_enable_instance():
 )
 @background_task()
 def test_fake_conn_pool_disable_instance():
-    client = valkey.StrictValkey(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
+    client = valkey.StrictValkey(
+        host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0
+    )
 
     # Get a real connection
 

@@ -46,7 +46,9 @@ def exercise_transaction_commit(client, collection):
             assert len([_ for _ in transaction.get(query)]) == 1
 
             # get_all on a list of DocumentReferences
-            all_docs = transaction.get_all([collection.document(f"doc{x}") for x in range(1, 4)])
+            all_docs = transaction.get_all(
+                [collection.document(f"doc{x}") for x in range(1, 4)]
+            )
             assert len([_ for _ in all_docs]) == 3
 
             # set and delete methods
@@ -78,7 +80,9 @@ def exercise_transaction_rollback(client, collection):
     return _exercise_transaction_rollback
 
 
-def test_firestore_transaction_commit(exercise_transaction_commit, collection, instance_info):
+def test_firestore_transaction_commit(
+    exercise_transaction_commit, collection, instance_info
+):
     _test_scoped_metrics = [
         ("Datastore/operation/Firestore/commit", 1),
         ("Datastore/operation/Firestore/get_all", 2),
@@ -91,7 +95,10 @@ def test_firestore_transaction_commit(exercise_transaction_commit, collection, i
         ("Datastore/operation/Firestore/list_documents", 1),
         ("Datastore/all", 5),
         ("Datastore/allOther", 5),
-        (f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}", 5),
+        (
+            f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}",
+            5,
+        ),
     ]
 
     @validate_database_duration()
@@ -108,7 +115,9 @@ def test_firestore_transaction_commit(exercise_transaction_commit, collection, i
     _test()
 
 
-def test_firestore_transaction_rollback(exercise_transaction_rollback, collection, instance_info):
+def test_firestore_transaction_rollback(
+    exercise_transaction_rollback, collection, instance_info
+):
     _test_scoped_metrics = [
         ("Datastore/operation/Firestore/rollback", 1),
         (f"Datastore/statement/Firestore/{collection.id}/list_documents", 1),
@@ -118,7 +127,10 @@ def test_firestore_transaction_rollback(exercise_transaction_rollback, collectio
         ("Datastore/operation/Firestore/list_documents", 1),
         ("Datastore/all", 2),
         ("Datastore/allOther", 2),
-        (f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}", 2),
+        (
+            f"Datastore/instance/Firestore/{instance_info['host']}/{instance_info['port_path_or_id']}",
+            2,
+        ),
     ]
 
     @validate_database_duration()
@@ -135,7 +147,9 @@ def test_firestore_transaction_rollback(exercise_transaction_rollback, collectio
     _test()
 
 
-def test_firestore_transaction_commit_trace_node_datastore_params(exercise_transaction_commit, instance_info):
+def test_firestore_transaction_commit_trace_node_datastore_params(
+    exercise_transaction_commit, instance_info
+):
     @validate_tt_collector_json(datastore_params=instance_info)
     @background_task()
     def _test():
@@ -144,7 +158,9 @@ def test_firestore_transaction_commit_trace_node_datastore_params(exercise_trans
     _test()
 
 
-def test_firestore_transaction_rollback_trace_node_datastore_params(exercise_transaction_rollback, instance_info):
+def test_firestore_transaction_rollback_trace_node_datastore_params(
+    exercise_transaction_rollback, instance_info
+):
     @validate_tt_collector_json(datastore_params=instance_info)
     @background_task()
     def _test():

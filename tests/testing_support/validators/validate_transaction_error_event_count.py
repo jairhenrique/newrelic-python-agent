@@ -20,7 +20,9 @@ def validate_transaction_error_event_count(num_errors=1):
     after a transaction
     """
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+    )
     def _validate_error_event_on_stats_engine(wrapped, instance, args, kwargs):
         try:
             result = wrapped(*args, **kwargs)

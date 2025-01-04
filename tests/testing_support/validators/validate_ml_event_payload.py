@@ -37,7 +37,9 @@ def attribute_to_value(attribute):
 
 def payload_to_ml_events(payload):
     if type(payload) is not dict:
-        message = MessageToDict(payload, use_integers_for_enums=True, preserving_proto_field_name=True)
+        message = MessageToDict(
+            payload, use_integers_for_enums=True, preserving_proto_field_name=True
+        )
     else:
         message = payload
 
@@ -64,7 +66,13 @@ def payload_to_ml_events(payload):
             inference_logs = logs
         else:
             # Make sure apm entity attrs are present on the resource.
-            expected_apm_keys = ("entity.type", "entity.name", "entity.guid", "hostname", "instrumentation.provider")
+            expected_apm_keys = (
+                "entity.type",
+                "entity.name",
+                "entity.guid",
+                "hostname",
+                "instrumentation.provider",
+            )
             assert all(attr["key"] in expected_apm_keys for attr in resource_attrs)
             assert all(attr["value"] not in ("", None) for attr in resource_attrs)
 
@@ -98,17 +106,23 @@ def validate_ml_event_payload(ml_events=None):
         val = wrapped(*args, **kwargs)
         assert recorded_ml_events
 
-        decoded_payloads = [payload_to_ml_events(payload) for payload in recorded_ml_events]
+        decoded_payloads = [
+            payload_to_ml_events(payload) for payload in recorded_ml_events
+        ]
         decoded_inference_payloads = [payload[0] for payload in decoded_payloads]
         decoded_apm_payloads = [payload[1] for payload in decoded_payloads]
         all_apm_logs = normalize_logs(decoded_apm_payloads)
         all_inference_logs = normalize_logs(decoded_inference_payloads)
 
         for expected_event in ml_events.get("inference", []):
-            assert expected_event in all_inference_logs, f"{expected_event} Not Found. Got: {all_inference_logs}"
+            assert (
+                expected_event in all_inference_logs
+            ), f"{expected_event} Not Found. Got: {all_inference_logs}"
 
         for expected_event in ml_events.get("apm", []):
-            assert expected_event in all_apm_logs, f"{expected_event} Not Found. Got: {all_apm_logs}"
+            assert (
+                expected_event in all_apm_logs
+            ), f"{expected_event} Not Found. Got: {all_apm_logs}"
         return val
 
     return _validate_wrapper
@@ -121,7 +135,10 @@ def normalize_logs(decoded_payloads):
             for key in ("time_unix_nano",):
                 assert key in data_point, f"Invalid log format. Missing key: {key}"
                 all_logs.append(
-                    {attr["key"]: attribute_to_value(attr["value"]) for attr in (data_point.get("attributes") or [])}
+                    {
+                        attr["key"]: attribute_to_value(attr["value"])
+                        for attr in (data_point.get("attributes") or [])
+                    }
                 )
     return all_logs
 

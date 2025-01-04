@@ -106,7 +106,9 @@ def port(loop, app):
         )
 
         try:
-            loop.run_until_complete(hypercorn.asyncio.serve(app, config, shutdown_trigger=shutdown_trigger))
+            loop.run_until_complete(
+                hypercorn.asyncio.serve(app, config, shutdown_trigger=shutdown_trigger)
+            )
         except Exception:
             pass
 
@@ -127,7 +129,9 @@ def wait_for_port(port, retries=10):
     status = None
     for _ in range(retries):
         try:
-            status = make_request(host="localhost", port=port, path="/ignored", timeout=1).status_code
+            status = make_request(
+                host="localhost", port=port, path="/ignored", timeout=1
+            ).status_code
             assert status == 200
             return
         except Exception as e:
@@ -153,7 +157,9 @@ def test_hypercorn_200(port, app, http_version):
     @raise_background_exceptions()
     @wait_for_background_threads()
     def response():
-        return make_request(host="localhost", port=port, path="/", http_version=http_version, timeout=10)
+        return make_request(
+            host="localhost", port=port, path="/", http_version=http_version, timeout=10
+        )
 
     response().raise_for_status()
 
@@ -167,6 +173,12 @@ def test_hypercorn_500(port, app, http_version):
     @wait_for_background_threads()
     def _test():
         with pytest.raises(niquests.exceptions.HTTPError):
-            make_request(host="localhost", port=port, path="/exc", http_version=http_version, timeout=10)
+            make_request(
+                host="localhost",
+                port=port,
+                path="/exc",
+                http_version=http_version,
+                timeout=10,
+            )
 
     _test()

@@ -35,15 +35,21 @@ MONGODB_HOST = DB_SETTINGS["host"]
 MONGODB_PORT = DB_SETTINGS["port"]
 MONGODB_COLLECTION = DB_SETTINGS["collection"]
 
-INSTANCE_METRIC_HOST = system_info.gethostname() if MONGODB_HOST == "127.0.0.1" else MONGODB_HOST
-INSTANCE_METRIC_NAME = f"Datastore/instance/MongoDB/{INSTANCE_METRIC_HOST}/{MONGODB_PORT}"
+INSTANCE_METRIC_HOST = (
+    system_info.gethostname() if MONGODB_HOST == "127.0.0.1" else MONGODB_HOST
+)
+INSTANCE_METRIC_NAME = (
+    f"Datastore/instance/MongoDB/{INSTANCE_METRIC_HOST}/{MONGODB_PORT}"
+)
 
 
 # Find correct metric name based on import availability.
 try:
     from pymongo.synchronous.mongo_client import MongoClient  # noqa
 
-    INIT_FUNCTION_METRIC = "Function/pymongo.synchronous.mongo_client:MongoClient.__init__"
+    INIT_FUNCTION_METRIC = (
+        "Function/pymongo.synchronous.mongo_client:MongoClient.__init__"
+    )
 except ImportError:
     from pymongo.mongo_client import MongoClient  # noqa
 
@@ -149,7 +155,9 @@ def _exercise_mongo(db):
         "peer.hostname": INSTANCE_METRIC_HOST,
         "peer.address": f"{INSTANCE_METRIC_HOST}:{MONGODB_PORT}",
     },
-    exact_intrinsics={"name": f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/insert_one"},
+    exact_intrinsics={
+        "name": f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/insert_one"
+    },
 )
 @validate_transaction_metrics(
     "test_motor_instance_info",
@@ -183,7 +191,10 @@ _test_pymongo_scoped_metrics_v3 = [
     (f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/find_raw_batches", 1),
     (f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/find", 3),
     (f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/initialize_ordered_bulk_op", 1),
-    (f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/initialize_unordered_bulk_op", 1),
+    (
+        f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/initialize_unordered_bulk_op",
+        1,
+    ),
     (f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/insert_many", 1),
     (f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/insert_one", 1),
     (f"Datastore/statement/MongoDB/{MONGODB_COLLECTION}/list_indexes", 1),
@@ -333,7 +344,6 @@ def test_collection_mongodb_database_duration():
 @validate_database_duration()
 @background_task()
 def test_collection_mongodb_and_sqlite_database_duration():
-
     # Make mongodb queries
 
     client = MongoClient(MONGODB_HOST, MONGODB_PORT)

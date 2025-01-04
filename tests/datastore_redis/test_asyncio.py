@@ -74,7 +74,10 @@ _base_pool_rollup_metrics = [
     ("Datastore/operation/Redis/get", 1),
     ("Datastore/operation/Redis/set", 1),
     ("Datastore/operation/Redis/client_list", 1),
-    (f"Datastore/instance/Redis/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}", 3),
+    (
+        f"Datastore/instance/Redis/{instance_hostname(DB_SETTINGS['host'])}/{DB_SETTINGS['port']}",
+        3,
+    ),
 ]
 
 
@@ -85,18 +88,24 @@ _base_pool_rollup_metrics = [
 def client(loop):  # noqa
     import redis.asyncio
 
-    return loop.run_until_complete(redis.asyncio.Redis(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0))
+    return loop.run_until_complete(
+        redis.asyncio.Redis(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
+    )
 
 
 @pytest.fixture()
 def client_pool(loop):  # noqa
     import redis.asyncio
 
-    connection_pool = redis.asyncio.ConnectionPool(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
+    connection_pool = redis.asyncio.ConnectionPool(
+        host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0
+    )
     return loop.run_until_complete(redis.asyncio.Redis(connection_pool=connection_pool))
 
 
-@pytest.mark.skipif(REDIS_PY_VERSION < (4, 2), reason="This functionality exists in Redis 4.2+")
+@pytest.mark.skipif(
+    REDIS_PY_VERSION < (4, 2), reason="This functionality exists in Redis 4.2+"
+)
 @validate_transaction_metrics(
     "test_asyncio:test_async_connection_pool",
     scoped_metrics=_base_pool_scoped_metrics,
@@ -113,7 +122,9 @@ def test_async_connection_pool(client_pool, loop):  # noqa
     loop.run_until_complete(_test_async_pool(client_pool))
 
 
-@pytest.mark.skipif(REDIS_PY_VERSION < (4, 2), reason="This functionality exists in Redis 4.2+")
+@pytest.mark.skipif(
+    REDIS_PY_VERSION < (4, 2), reason="This functionality exists in Redis 4.2+"
+)
 @validate_transaction_metrics("test_asyncio:test_async_pipeline", background_task=True)
 @background_task()
 def test_async_pipeline(client, loop):  # noqa
@@ -125,7 +136,9 @@ def test_async_pipeline(client, loop):  # noqa
     loop.run_until_complete(_test_pipeline(client))
 
 
-@pytest.mark.skipif(REDIS_PY_VERSION < (4, 2), reason="This functionality exists in Redis 4.2+")
+@pytest.mark.skipif(
+    REDIS_PY_VERSION < (4, 2), reason="This functionality exists in Redis 4.2+"
+)
 @validate_transaction_metrics(
     "test_asyncio:test_async_pubsub",
     scoped_metrics=_base_scoped_metrics,

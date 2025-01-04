@@ -33,7 +33,11 @@ def force_uuid(monkeypatch):
 
 
 _test_prediction_stats_tags = frozenset(
-    {("modelName", "DummyClassifier"), ("prediction_id", ML_METRIC_FORCED_UUID), ("model_version", "0.0.0")}
+    {
+        ("modelName", "DummyClassifier"),
+        ("prediction_id", ML_METRIC_FORCED_UUID),
+        ("model_version", "0.0.0"),
+    }
 )
 
 
@@ -45,7 +49,11 @@ _test_prediction_stats_tags = frozenset(
             [0, 1],
             [[2.0, 2.0], [0, 0.5]],
             [
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Mean", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Percentile25",
                     _test_prediction_stats_tags,
@@ -66,10 +74,26 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Count", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Mean", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Percentile25",
                     _test_prediction_stats_tags,
@@ -90,21 +114,61 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Count", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/StandardDeviation",
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
             ],
         ),
         (
@@ -112,7 +176,11 @@ _test_prediction_stats_tags = frozenset(
             [0, 1],
             np.array([[2.0, 2.0], [0, 0.5]]),
             [
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Mean", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Percentile25",
                     _test_prediction_stats_tags,
@@ -133,10 +201,26 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Count", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Mean", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Percentile25",
                     _test_prediction_stats_tags,
@@ -157,21 +241,61 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Count", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/StandardDeviation",
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
             ],
         ),
         (
@@ -179,7 +303,11 @@ _test_prediction_stats_tags = frozenset(
             [0, 1],
             np.array([["a", 2.0, 3], ["b", 0.5, 4]], dtype="<U4"),
             [
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Mean", _test_prediction_stats_tags, None),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Mean",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Percentile25",
                     _test_prediction_stats_tags,
@@ -200,10 +328,26 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     None,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Min", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Max", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Count", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Mean", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Min",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Max",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/0/Count",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Percentile25",
                     _test_prediction_stats_tags,
@@ -224,21 +368,61 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Count", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/1/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/StandardDeviation",
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
             ],
         ),
         (
@@ -246,7 +430,11 @@ _test_prediction_stats_tags = frozenset(
             [0, 1],
             pd.DataFrame({"col1": [2.0, 2.0], "col2": [0, 0.5]}),
             [
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Mean", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Percentile25",
                     _test_prediction_stats_tags,
@@ -267,10 +455,26 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Count", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Mean", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Percentile25",
                     _test_prediction_stats_tags,
@@ -291,21 +495,61 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Count", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/StandardDeviation",
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
             ],
         ),
         (
@@ -313,7 +557,11 @@ _test_prediction_stats_tags = frozenset(
             [0, 1],
             pd.DataFrame({"col1": ["a", "b"], "col2": [0, 0.5]}, dtype="<U4"),
             [
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Mean", _test_prediction_stats_tags, None),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Mean",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Percentile25",
                     _test_prediction_stats_tags,
@@ -334,10 +582,26 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     None,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Min", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Max", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Count", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Mean", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Min",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Max",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Count",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Percentile25",
                     _test_prediction_stats_tags,
@@ -358,21 +622,61 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Count", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/StandardDeviation",
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
             ],
         ),
         (
@@ -380,7 +684,11 @@ _test_prediction_stats_tags = frozenset(
             [0, 1],
             pd.DataFrame({"col1": ["a", "c"], "col2": [True, False]}, dtype="<U4"),
             [
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Mean", _test_prediction_stats_tags, None),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Mean",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Percentile25",
                     _test_prediction_stats_tags,
@@ -401,10 +709,26 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     None,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Min", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Max", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Count", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Mean", _test_prediction_stats_tags, None),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Min",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Max",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col1/Count",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Mean",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Percentile25",
                     _test_prediction_stats_tags,
@@ -425,27 +749,69 @@ _test_prediction_stats_tags = frozenset(
                     _test_prediction_stats_tags,
                     None,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Min", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Max", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Count", _test_prediction_stats_tags, None),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Min",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Max",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Feature/col2/Count",
+                    _test_prediction_stats_tags,
+                    None,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Mean",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile25",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile50",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Percentile75",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
                 (
                     "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/StandardDeviation",
                     _test_prediction_stats_tags,
                     1,
                 ),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max", _test_prediction_stats_tags, 1),
-                ("MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count", _test_prediction_stats_tags, 1),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Min",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Max",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
+                (
+                    "MLModel/Sklearn/Named/DummyClassifier/Predict/Label/0/Count",
+                    _test_prediction_stats_tags,
+                    1,
+                ),
             ],
         ),
     ],
 )
 def test_prediction_stats(run_model, x_train, y_train, x_test, metrics, force_uuid):
-    expected_transaction_name = "test_prediction_stats:test_prediction_stats.<locals>._test"
+    expected_transaction_name = (
+        "test_prediction_stats:test_prediction_stats.<locals>._test"
+    )
 
     @validate_transaction_metrics(
         expected_transaction_name,
@@ -460,13 +826,28 @@ def test_prediction_stats(run_model, x_train, y_train, x_test, metrics, force_uu
 
 
 _test_prediction_stats_multilabel_output_tags = frozenset(
-    {("modelName", "MultiOutputClassifier"), ("prediction_id", ML_METRIC_FORCED_UUID), ("model_version", "0.0.0")}
+    {
+        ("modelName", "MultiOutputClassifier"),
+        ("prediction_id", ML_METRIC_FORCED_UUID),
+        ("model_version", "0.0.0"),
+    }
 )
 
 
 def test_prediction_stats_multilabel_output(force_uuid):
-    expected_transaction_name = "test_prediction_stats:test_prediction_stats_multilabel_output.<locals>._test"
-    stats = ["Mean", "Percentile25", "Percentile50", "Percentile75", "StandardDeviation", "Min", "Max", "Count"]
+    expected_transaction_name = (
+        "test_prediction_stats:test_prediction_stats_multilabel_output.<locals>._test"
+    )
+    stats = [
+        "Mean",
+        "Percentile25",
+        "Percentile50",
+        "Percentile75",
+        "StandardDeviation",
+        "Min",
+        "Max",
+        "Count",
+    ]
     metrics = [
         (
             f"MLModel/Sklearn/Named/MultiOutputClassifier/Predict/Feature/{feature_col}/{stat_name}",
@@ -514,6 +895,6 @@ def run_model():
         clf = dummy.DummyClassifier(random_state=0)
         model = clf.fit(x_train, y_train)
 
-        labels = model.predict(x_test)
+        model.predict(x_test)
 
     return _run

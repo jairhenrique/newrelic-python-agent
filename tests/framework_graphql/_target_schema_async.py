@@ -110,7 +110,9 @@ library_field = GraphQLField(
     args={"index": GraphQLArgument(GraphQLNonNull(GraphQLInt))},
 )
 search_field = GraphQLField(
-    GraphQLList(GraphQLUnionType("Item", (Book, Magazine), resolve_type=resolve_search)),
+    GraphQLList(
+        GraphQLUnionType("Item", (Book, Magazine), resolve_type=resolve_search)
+    ),
     args={"contains": GraphQLArgument(GraphQLNonNull(GraphQLString))},
 )
 echo_field = GraphQLField(
@@ -128,7 +130,9 @@ storage_add_field = GraphQLField(
     args={"string": GraphQLArgument(GraphQLNonNull(GraphQLString))},
 )
 error_field = GraphQLField(GraphQLString, resolve=resolve_error)
-error_non_null_field = GraphQLField(GraphQLNonNull(GraphQLString), resolve=resolve_error)
+error_non_null_field = GraphQLField(
+    GraphQLNonNull(GraphQLString), resolve=resolve_error
+)
 error_middleware_field = GraphQLField(GraphQLString, resolve=resolve_hello)
 
 query = GraphQLObjectType(

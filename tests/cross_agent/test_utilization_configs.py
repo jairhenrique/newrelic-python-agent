@@ -35,7 +35,9 @@ from newrelic.core.agent_protocol import AgentProtocol
 INITIAL_ENV = os.environ
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-FIXTURE = os.path.normpath(os.path.join(CURRENT_DIR, "fixtures", "utilization", "utilization_json.json"))
+FIXTURE = os.path.normpath(
+    os.path.join(CURRENT_DIR, "fixtures", "utilization", "utilization_json.json")
+)
 
 
 def _load_tests():
@@ -72,7 +74,7 @@ def _mock_getips(ip_addresses):
     return getips
 
 
-class UpdatedSettings():
+class UpdatedSettings:
     def __init__(self):
         self.initial_settings = newrelic.core.config._settings
 
@@ -160,13 +162,21 @@ def patch_system_info(test, monkeypatch):
         sys_info = newrelic.common.system_info
 
         monkeypatch.setattr(
-            sys_info, "logical_processor_count", _mock_logical_processor_count(test.get("input_logical_processors"))
+            sys_info,
+            "logical_processor_count",
+            _mock_logical_processor_count(test.get("input_logical_processors")),
         )
         monkeypatch.setattr(
-            sys_info, "total_physical_memory", _mock_total_physical_memory(test.get("input_total_ram_mib"))
+            sys_info,
+            "total_physical_memory",
+            _mock_total_physical_memory(test.get("input_total_ram_mib")),
         )
-        monkeypatch.setattr(sys_info, "gethostname", _mock_gethostname(test.get("input_hostname")))
-        monkeypatch.setattr(sys_info, "getips", _mock_getips(test.get("input_ip_address")))
+        monkeypatch.setattr(
+            sys_info, "gethostname", _mock_gethostname(test.get("input_hostname"))
+        )
+        monkeypatch.setattr(
+            sys_info, "getips", _mock_getips(test.get("input_ip_address"))
+        )
 
         return wrapped(*args, **kwargs)
 
@@ -192,7 +202,6 @@ def test_utilization_settings(test, monkeypatch):
     @patch_boot_id_file(test)
     @patch_system_info(test, monkeypatch)
     def _test_utilization_data():
-
         data = _get_response_body_for_test(test)
         client_cls = create_client_cls(200, data)
         monkeypatch.setattr(CommonUtilization, "CLIENT_CLS", client_cls)

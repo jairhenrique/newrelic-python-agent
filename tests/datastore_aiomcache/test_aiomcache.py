@@ -16,7 +16,6 @@ import os
 
 import aiomcache
 from testing_support.db_settings import memcached_settings
-from testing_support.fixture.event_loop import event_loop as loop
 from testing_support.validators.validate_transaction_metrics import (
     validate_transaction_metrics,
 )
@@ -30,8 +29,12 @@ DB_SETTINGS = memcached_settings()[0]
 MEMCACHED_HOST = DB_SETTINGS["host"]
 MEMCACHED_PORT = DB_SETTINGS["port"]
 MEMCACHED_NAMESPACE = str(os.getpid())
-INSTANCE_METRIC_HOST = system_info.gethostname() if MEMCACHED_HOST == "127.0.0.1" else MEMCACHED_HOST
-INSTANCE_METRIC_NAME = f"Datastore/instance/Memcached/{INSTANCE_METRIC_HOST}/{MEMCACHED_PORT}"
+INSTANCE_METRIC_HOST = (
+    system_info.gethostname() if MEMCACHED_HOST == "127.0.0.1" else MEMCACHED_HOST
+)
+INSTANCE_METRIC_NAME = (
+    f"Datastore/instance/Memcached/{INSTANCE_METRIC_HOST}/{MEMCACHED_PORT}"
+)
 
 _test_bt_set_get_delete_scoped_metrics = [
     ("Datastore/operation/Memcached/set", 1),

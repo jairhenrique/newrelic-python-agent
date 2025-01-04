@@ -26,9 +26,17 @@ def cursor(loop, connection):
     try:
         cursor = connection.cursor()
 
-        loop.run_until_complete(maybe_await(cursor.execute(f"drop table if exists {DB_SETTINGS['table_name']}")))
         loop.run_until_complete(
-            maybe_await(cursor.execute(f"create table {DB_SETTINGS['table_name']} (b text, c text)"))
+            maybe_await(
+                cursor.execute(f"drop table if exists {DB_SETTINGS['table_name']}")
+            )
+        )
+        loop.run_until_complete(
+            maybe_await(
+                cursor.execute(
+                    f"create table {DB_SETTINGS['table_name']} (b text, c text)"
+                )
+            )
         )
 
         yield cursor
@@ -127,8 +135,14 @@ def test_obfuscation_explain_plans(loop, connection, sql, validator):
     async def test():
         try:
             cursor = connection.cursor()
-            await maybe_await(cursor.execute(f"drop table if exists {DB_SETTINGS['table_name']}"))
-            await maybe_await(cursor.execute(f"create table {DB_SETTINGS['table_name']} (b text, c text)"))
+            await maybe_await(
+                cursor.execute(f"drop table if exists {DB_SETTINGS['table_name']}")
+            )
+            await maybe_await(
+                cursor.execute(
+                    f"create table {DB_SETTINGS['table_name']} (b text, c text)"
+                )
+            )
 
             await maybe_await(cursor.execute(sql))
 

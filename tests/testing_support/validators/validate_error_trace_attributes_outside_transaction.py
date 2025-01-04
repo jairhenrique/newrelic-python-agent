@@ -27,8 +27,12 @@ def validate_error_trace_attributes_outside_transaction(
     forgone_params = forgone_params or {}
     exact_attrs = exact_attrs or {}
 
-    @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.notice_error")
-    def _validate_error_trace_attributes_outside_transaction(wrapped, instance, args, kwargs):
+    @transient_function_wrapper(
+        "newrelic.core.stats_engine", "StatsEngine.notice_error"
+    )
+    def _validate_error_trace_attributes_outside_transaction(
+        wrapped, instance, args, kwargs
+    ):
         try:
             result = wrapped(*args, **kwargs)
         except:
@@ -37,7 +41,11 @@ def validate_error_trace_attributes_outside_transaction(
         target_error = core_application_stats_engine_error(err_name)
 
         check_error_attributes(
-            target_error.parameters, required_params, forgone_params, exact_attrs, is_transaction=False
+            target_error.parameters,
+            required_params,
+            forgone_params,
+            exact_attrs,
+            is_transaction=False,
         )
 
         return result

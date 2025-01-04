@@ -60,7 +60,9 @@ collector_agent_registration = collector_agent_registration_fixture(
 @pytest.fixture()
 def producer():
     # put something into the queue so it can be consumed
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         channel.queue_declare(queue=QUEUE, durable=False)
@@ -71,7 +73,9 @@ def producer():
             exchange=EXCHANGE,
             routing_key=QUEUE,
             body=BODY,
-            properties=pika.spec.BasicProperties(correlation_id=CORRELATION_ID, reply_to=REPLY_TO, headers=HEADERS),
+            properties=pika.spec.BasicProperties(
+                correlation_id=CORRELATION_ID, reply_to=REPLY_TO, headers=HEADERS
+            ),
         )
         yield
         channel.queue_delete(queue=QUEUE)
@@ -81,7 +85,9 @@ def producer():
 @pytest.fixture()
 def producer_2():
     # put something into the queue so it can be consumed
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         channel.queue_declare(queue=QUEUE_2, durable=False)
@@ -92,7 +98,9 @@ def producer_2():
             exchange=EXCHANGE_2,
             routing_key=QUEUE_2,
             body=BODY,
-            properties=pika.spec.BasicProperties(correlation_id=CORRELATION_ID, reply_to=REPLY_TO, headers=HEADERS),
+            properties=pika.spec.BasicProperties(
+                correlation_id=CORRELATION_ID, reply_to=REPLY_TO, headers=HEADERS
+            ),
         )
         yield
         channel.queue_delete(queue=QUEUE_2)
@@ -102,7 +110,9 @@ def producer_2():
 @pytest.fixture()
 def produce_five():
     # put something into the queue so it can be consumed
-    with pika.BlockingConnection(pika.ConnectionParameters(DB_SETTINGS["host"])) as connection:
+    with pika.BlockingConnection(
+        pika.ConnectionParameters(DB_SETTINGS["host"])
+    ) as connection:
         channel = connection.channel()
 
         channel.queue_declare(queue=QUEUE, durable=False)
@@ -114,7 +124,9 @@ def produce_five():
                 exchange=EXCHANGE,
                 routing_key=QUEUE,
                 body=BODY,
-                properties=pika.spec.BasicProperties(correlation_id=CORRELATION_ID, reply_to=REPLY_TO, headers=HEADERS),
+                properties=pika.spec.BasicProperties(
+                    correlation_id=CORRELATION_ID, reply_to=REPLY_TO, headers=HEADERS
+                ),
             )
 
         yield

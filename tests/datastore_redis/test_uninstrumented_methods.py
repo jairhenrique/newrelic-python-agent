@@ -19,7 +19,9 @@ from testing_support.db_settings import redis_settings
 DB_SETTINGS = redis_settings()[0]
 
 redis_client = redis.Redis(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
-strict_redis_client = redis.StrictRedis(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
+strict_redis_client = redis.StrictRedis(
+    host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0
+)
 
 
 IGNORED_METHODS = {
@@ -108,14 +110,22 @@ IGNORED_METHODS |= REDIS_MODULES
 @pytest.mark.parametrize("client", (redis_client, strict_redis_client))
 def test_uninstrumented_methods(client):
     methods = {m for m in dir(client) if not m[0] == "_"}
-    is_wrapped = lambda m: hasattr(getattr(client, m), "__wrapped__")
+
+    def is_wrapped(m):
+        return hasattr(getattr(client, m), "__wrapped__")
+
     uninstrumented = {m for m in methods - IGNORED_METHODS if not is_wrapped(m)}
 
     for module in REDIS_MODULES:
         if hasattr(client, module):
             module_client = getattr(client, module)()
             module_methods = {m for m in dir(module_client) if not m[0] == "_"}
-            is_wrapped = lambda m: hasattr(getattr(module_client, m), "__wrapped__")
-            uninstrumented |= {m for m in module_methods - IGNORED_METHODS if not is_wrapped(m)}
+
+            def is_wrapped(m):
+                return hasattr(getattr(module_client, m), "__wrapped__")
+
+            uninstrumented |= {
+                m for m in module_methods - IGNORED_METHODS if not is_wrapped(m)
+            }
 
     assert not uninstrumented, f"Uninstrumented methods: {sorted(uninstrumented)}"

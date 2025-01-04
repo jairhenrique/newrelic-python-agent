@@ -67,7 +67,7 @@ def error_user_params_added():
 def fully_featured_app(environ, start_response):
     status = "200 OK"
 
-    path = environ.get("PATH_INFO")
+    environ.get("PATH_INFO")
     use_user_attrs = environ.get("record_attributes", "TRUE") == "TRUE"
 
     environ["wsgi.input"].read()
@@ -106,7 +106,10 @@ def fully_featured_app(environ, start_response):
 
     output = (text % get_browser_timing_header()).encode("UTF-8")
 
-    response_headers = [("Content-type", "text/html; charset=utf-8"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(output))),
+    ]
     write = start_response(status, response_headers)
 
     write(b"")
@@ -123,11 +126,11 @@ def simple_exceptional_app(environ, start_response):
 
 def simple_app_raw(environ, start_response):
     status = "200 OK"
-    
+
     logger = logging.getLogger("simple_app_raw")
     logger.setLevel(logging.INFO)
     logger.info("Starting response")
-    
+
     start_response(status, response_headers=[])
 
     return []
@@ -142,7 +145,10 @@ def raise_exception_application(environ, start_response):
     status = "200 OK"
     output = b"WSGI RESPONSE"
 
-    response_headers = [("Content-type", "text/plain"), ("Content-Length", str(len(output)))]
+    response_headers = [
+        ("Content-type", "text/plain"),
+        ("Content-Length", str(len(output))),
+    ]
     start_response(status, response_headers)
 
     return [output]

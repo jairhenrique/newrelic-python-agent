@@ -44,7 +44,12 @@ GRPC_VERSION = get_package_version("grpc")
 
 _test_matrix = [
     "method_name,streaming_request",
-    [("DoUnaryUnary", False), ("DoUnaryStream", False), ("DoStreamUnary", True), ("DoStreamStream", True)],
+    [
+        ("DoUnaryUnary", False),
+        ("DoUnaryStream", False),
+        ("DoStreamUnary", True),
+        ("DoStreamStream", True),
+    ],
 ]
 
 
@@ -55,12 +60,19 @@ def test_simple(method_name, streaming_request, mock_grpc_server, stub):
     _transaction_name = f"sample_application:SampleApplicationServicer.{method_name}"
     method = getattr(stub, method_name)
 
-    @validate_code_level_metrics("sample_application.SampleApplicationServicer", method_name)
+    @validate_code_level_metrics(
+        "sample_application.SampleApplicationServicer", method_name
+    )
     @validate_transaction_metrics(_transaction_name)
     @override_application_settings({"attributes.include": ["request.*"]})
     @validate_transaction_event_attributes(
         required_params={
-            "agent": ["request.uri", "request.headers.userAgent", "response.status", "response.headers.contentType"],
+            "agent": [
+                "request.uri",
+                "request.headers.userAgent",
+                "response.status",
+                "response.headers.contentType",
+            ],
             "user": [],
             "intrinsic": ["port"],
         },
@@ -90,10 +102,10 @@ def test_raises_response_status(method_name, streaming_request, mock_grpc_server
 
     status_code = str(grpc.StatusCode.UNKNOWN.value[0])
 
-    @validate_code_level_metrics("sample_application.SampleApplicationServicer", method_name)
-    @validate_transaction_errors(
-        errors=["builtins:AssertionError"]
+    @validate_code_level_metrics(
+        "sample_application.SampleApplicationServicer", method_name
     )
+    @validate_transaction_errors(errors=["builtins:AssertionError"])
     @validate_transaction_metrics(_transaction_name)
     @override_application_settings({"attributes.include": ["request.*"]})
     @validate_transaction_event_attributes(
@@ -102,7 +114,11 @@ def test_raises_response_status(method_name, streaming_request, mock_grpc_server
             "user": [],
             "intrinsic": ["port"],
         },
-        exact_attrs={"agent": {"response.status": status_code}, "user": {}, "intrinsic": {"port": port}},
+        exact_attrs={
+            "agent": {"response.status": status_code},
+            "user": {},
+            "intrinsic": {"port": port},
+        },
     )
     @wait_for_transaction_completion
     def _doit():
@@ -118,11 +134,12 @@ def test_raises_response_status(method_name, streaming_request, mock_grpc_server
 @pytest.mark.parametrize(*_test_matrix)
 def test_abort(method_name, streaming_request, mock_grpc_server, stub):
     method_name += "Abort"
-    port = mock_grpc_server
     request = create_request(streaming_request)
     method = getattr(stub, method_name)
 
-    @validate_code_level_metrics("sample_application.SampleApplicationServicer", method_name)
+    @validate_code_level_metrics(
+        "sample_application.SampleApplicationServicer", method_name
+    )
     @validate_transaction_errors(errors=["builtins:Exception"])
     @wait_for_transaction_completion
     def _doit():
@@ -139,11 +156,12 @@ def test_abort(method_name, streaming_request, mock_grpc_server, stub):
 @pytest.mark.parametrize(*_test_matrix)
 def test_abort_with_status(method_name, streaming_request, mock_grpc_server, stub):
     method_name += "AbortWithStatus"
-    port = mock_grpc_server
     request = create_request(streaming_request)
     method = getattr(stub, method_name)
 
-    @validate_code_level_metrics("sample_application.SampleApplicationServicer", method_name)
+    @validate_code_level_metrics(
+        "sample_application.SampleApplicationServicer", method_name
+    )
     @validate_transaction_errors(errors=["builtins:Exception"])
     @wait_for_transaction_completion
     def _doit():
@@ -183,7 +201,6 @@ def test_no_exception_client_close(mock_grpc_server):
 
 
 def test_newrelic_disabled_no_transaction(mock_grpc_server, stub):
-    port = mock_grpc_server
     request = create_request(False)
 
     method = getattr(stub, "DoUnaryUnary")

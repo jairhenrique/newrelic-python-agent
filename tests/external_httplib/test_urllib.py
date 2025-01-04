@@ -26,7 +26,9 @@ from testing_support.external_fixtures import (
     insert_incoming_headers,
 )
 from testing_support.fixtures import cat_enabled
-from testing_support.validators.validate_transaction_metrics import validate_transaction_metrics
+from testing_support.validators.validate_transaction_metrics import (
+    validate_transaction_metrics,
+)
 from testing_support.validators.validate_cross_process_headers import (
     validate_cross_process_headers,
 )
@@ -165,7 +167,9 @@ def test_urlopener_cross_process_response(server):
         background_task=True,
     )
     @insert_incoming_headers
-    @validate_external_node_params(params=_test_urlopener_cross_process_response_external_node_params)
+    @validate_external_node_params(
+        params=_test_urlopener_cross_process_response_external_node_params
+    )
     @background_task(name="test_urllib:test_urlopener_cross_process_response")
     def _test():
         opener = urllib.URLopener()
@@ -239,7 +243,9 @@ def test_urlretrieve_cross_process_response(server):
         background_task=True,
     )
     @insert_incoming_headers
-    @validate_external_node_params(params=_test_urlretrieve_cross_process_response_external_node_params)
+    @validate_external_node_params(
+        params=_test_urlretrieve_cross_process_response_external_node_params
+    )
     @background_task(name="test_urllib:test_urlretrieve_cross_process_response")
     def _test():
         urllib.urlretrieve(f"http://localhost:{server.port}/")

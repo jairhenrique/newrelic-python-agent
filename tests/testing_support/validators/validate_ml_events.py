@@ -26,7 +26,9 @@ def validate_ml_events(events):
         record_called = []
         recorded_events = []
 
-        @transient_function_wrapper("newrelic.core.stats_engine", "StatsEngine.record_transaction")
+        @transient_function_wrapper(
+            "newrelic.core.stats_engine", "StatsEngine.record_transaction"
+        )
         @catch_background_exceptions
         def _validate_ml_events(wrapped, instance, args, kwargs):
             record_called.append(True)
@@ -53,7 +55,9 @@ def validate_ml_events(events):
             for captured in found_events:
                 if _check_event_attributes(expected, captured, mismatches):
                     matching_ml_events += 1
-            assert matching_ml_events == 1, _event_details(matching_ml_events, found_events, mismatches)
+            assert matching_ml_events == 1, _event_details(
+                matching_ml_events, found_events, mismatches
+            )
 
         return val
 
@@ -66,12 +70,17 @@ def _check_event_attributes(expected, captured, mismatches):
     intrinsics = captured[0]
 
     if intrinsics["type"] != expected[0]["type"]:
-        mismatches.append(f"key: type, value:<{expected[0]['type']}><{captured[0].get('type', None)}>")
+        mismatches.append(
+            f"key: type, value:<{expected[0]['type']}><{captured[0].get('type', None)}>"
+        )
         return False
 
     now = time.time()
 
-    if not (isinstance(intrinsics["timestamp"], int) and intrinsics["timestamp"] <= 1000.0 * now):
+    if not (
+        isinstance(intrinsics["timestamp"], int)
+        and intrinsics["timestamp"] <= 1000.0 * now
+    ):
         mismatches.append(f"key: timestamp, value:<{intrinsics['timestamp']}>")
         return False
 
@@ -87,7 +96,9 @@ def _check_event_attributes(expected, captured, mismatches):
         if key in captured[1]:
             captured_value = captured[1].get(key, None)
         else:
-            mismatches.append(f"key: {key}, value:<{value}><{captured[1].get(key, None)}>")
+            mismatches.append(
+                f"key: {key}, value:<{value}><{captured[1].get(key, None)}>"
+            )
             return False
 
         if value is not None:

@@ -34,11 +34,15 @@ from newrelic.common.package_version_utils import (
 
 IS_PY38_PLUS = sys.version_info[:2] >= (3, 8)
 IS_PY310_PLUS = sys.version_info[:2] >= (3, 10)
-SKIP_IF_NOT_IMPORTLIB_METADATA = pytest.mark.skipif(not IS_PY38_PLUS, reason="importlib.metadata is not supported.")
+SKIP_IF_NOT_IMPORTLIB_METADATA = pytest.mark.skipif(
+    not IS_PY38_PLUS, reason="importlib.metadata is not supported."
+)
 SKIP_IF_IMPORTLIB_METADATA = pytest.mark.skipif(
     IS_PY38_PLUS, reason="importlib.metadata is preferred over pkg_resources."
 )
-SKIP_IF_NOT_PY310_PLUS = pytest.mark.skipif(not IS_PY310_PLUS, reason="These features were added in 3.10+")
+SKIP_IF_NOT_PY310_PLUS = pytest.mark.skipif(
+    not IS_PY310_PLUS, reason="These features were added in 3.10+"
+)
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -132,7 +136,9 @@ def _getattr_deprecation_warning(attr):
 
 def test_deprecation_warning_suppression(monkeypatch, recwarn):
     # Add fake module to be deleted later
-    monkeypatch.setattr(pytest, "__getattr__", _getattr_deprecation_warning, raising=False)
+    monkeypatch.setattr(
+        pytest, "__getattr__", _getattr_deprecation_warning, raising=False
+    )
 
     assert get_package_version("pytest") == "3.2.1"
 

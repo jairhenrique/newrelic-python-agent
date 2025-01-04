@@ -99,7 +99,9 @@ async def _execute(connection, cursor, row_type, wrapper):
     sql = f"create table {DB_SETTINGS['table_name']} (a integer, b real, c text)"
     await maybe_await(cursor.execute(wrapper(sql)))
 
-    sql = f"insert into {DB_SETTINGS['table_name']} values (%s, %s, %s) returning a, b, c"
+    sql = (
+        f"insert into {DB_SETTINGS['table_name']} values (%s, %s, %s) returning a, b, c"
+    )
     params = [(1, 1.0, "1.0"), (2, 2.2, "2.2"), (3, 3.3, "3.3")]
     await maybe_await(cursor.executemany(wrapper(sql), params, returning=True))
 
@@ -142,7 +144,9 @@ async def _execute(connection, cursor, row_type, wrapper):
     await maybe_await(connection.commit())
 
 
-async def _exercise_db(connection, row_factory=None, use_cur_context=False, row_type=tuple, wrapper=str):
+async def _exercise_db(
+    connection, row_factory=None, use_cur_context=False, row_type=tuple, wrapper=str
+):
     kwargs = {"row_factory": row_factory} if row_factory else {}
 
     try:
@@ -185,7 +189,11 @@ _test_matrix = [
 @validate_database_trace_inputs(sql_parameters_type=tuple)
 @background_task()
 def test_execute_via_cursor_enable_instance(loop, connection, wrapper, use_cur_context):
-    loop.run_until_complete(_exercise_db(connection, use_cur_context=use_cur_context, row_type=tuple, wrapper=wrapper))
+    loop.run_until_complete(
+        _exercise_db(
+            connection, use_cur_context=use_cur_context, row_type=tuple, wrapper=wrapper
+        )
+    )
 
 
 @pytest.mark.parametrize(*_test_matrix)
@@ -198,8 +206,14 @@ def test_execute_via_cursor_enable_instance(loop, connection, wrapper, use_cur_c
 )
 @validate_database_trace_inputs(sql_parameters_type=tuple)
 @background_task()
-def test_execute_via_cursor_disable_instance(loop, connection, wrapper, use_cur_context):
-    loop.run_until_complete(_exercise_db(connection, use_cur_context=use_cur_context, row_type=tuple, wrapper=wrapper))
+def test_execute_via_cursor_disable_instance(
+    loop, connection, wrapper, use_cur_context
+):
+    loop.run_until_complete(
+        _exercise_db(
+            connection, use_cur_context=use_cur_context, row_type=tuple, wrapper=wrapper
+        )
+    )
 
 
 @pytest.mark.parametrize(*_test_matrix)
@@ -212,11 +226,17 @@ def test_execute_via_cursor_disable_instance(loop, connection, wrapper, use_cur_
 )
 @validate_database_trace_inputs(sql_parameters_type=tuple)
 @background_task()
-def test_execute_via_cursor_dict_enable_instance(loop, connection, wrapper, use_cur_context):
+def test_execute_via_cursor_dict_enable_instance(
+    loop, connection, wrapper, use_cur_context
+):
     dict_factory = psycopg.rows.dict_row
     loop.run_until_complete(
         _exercise_db(
-            connection, row_factory=dict_factory, use_cur_context=use_cur_context, row_type=dict, wrapper=wrapper
+            connection,
+            row_factory=dict_factory,
+            use_cur_context=use_cur_context,
+            row_type=dict,
+            wrapper=wrapper,
         )
     )
 
@@ -231,10 +251,16 @@ def test_execute_via_cursor_dict_enable_instance(loop, connection, wrapper, use_
 )
 @validate_database_trace_inputs(sql_parameters_type=tuple)
 @background_task()
-def test_execute_via_cursor_dict_disable_instance(loop, connection, wrapper, use_cur_context):
+def test_execute_via_cursor_dict_disable_instance(
+    loop, connection, wrapper, use_cur_context
+):
     dict_factory = psycopg.rows.dict_row
     loop.run_until_complete(
         _exercise_db(
-            connection, row_factory=dict_factory, use_cur_context=use_cur_context, row_type=dict, wrapper=wrapper
+            connection,
+            row_factory=dict_factory,
+            use_cur_context=use_cur_context,
+            row_type=dict,
+            wrapper=wrapper,
         )
     )

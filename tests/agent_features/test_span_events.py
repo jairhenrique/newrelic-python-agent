@@ -70,7 +70,10 @@ def test_span_events(dt_enabled, span_events_enabled, txn_sampled):
         current_trace().guid = function_guid
         child()
 
-    _settings = {"distributed_tracing.enabled": dt_enabled, "span_events.enabled": span_events_enabled}
+    _settings = {
+        "distributed_tracing.enabled": dt_enabled,
+        "span_events.enabled": span_events_enabled,
+    }
 
     count = 0
     if dt_enabled and span_events_enabled and txn_sampled:
@@ -99,11 +102,21 @@ def test_span_events(dt_enabled, span_events_enabled, txn_sampled):
     exact_intrinsics_child["parentId"] = function_guid
 
     @validate_span_events(count=count, expected_intrinsics=["nr.entryPoint"])
-    @validate_span_events(count=count, exact_intrinsics=exact_intrinsics_root, expected_intrinsics=expected_intrinsics)
     @validate_span_events(
-        count=count, exact_intrinsics=exact_intrinsics_function, expected_intrinsics=expected_intrinsics
+        count=count,
+        exact_intrinsics=exact_intrinsics_root,
+        expected_intrinsics=expected_intrinsics,
     )
-    @validate_span_events(count=count, exact_intrinsics=exact_intrinsics_child, expected_intrinsics=expected_intrinsics)
+    @validate_span_events(
+        count=count,
+        exact_intrinsics=exact_intrinsics_function,
+        expected_intrinsics=expected_intrinsics,
+    )
+    @validate_span_events(
+        count=count,
+        exact_intrinsics=exact_intrinsics_child,
+        expected_intrinsics=expected_intrinsics,
+    )
     @override_application_settings(_settings)
     @background_task(name="transaction")
     def _test():
@@ -285,7 +298,9 @@ def test_external_spans(exclude_url):
         transaction = current_transaction()
         transaction._sampled = True
 
-        with ExternalTrace(library="library", url="http://example.com/foo?secret=123", method="get"):
+        with ExternalTrace(
+            library="library", url="http://example.com/foo?secret=123", method="get"
+        ):
             pass
 
     _test()
@@ -351,7 +366,10 @@ def test_external_span_limits(kwarg_override, attr_override):
     "kwarg_override,attribute_override",
     (
         ({"host": "a" * 256}, {"peer.hostname": "a" * 255, "peer.address": "a" * 255}),
-        ({"port_path_or_id": "a" * 256, "host": "a"}, {"peer.hostname": "a", "peer.address": f"a:{'a' * 253}"}),
+        (
+            {"port_path_or_id": "a" * 256, "host": "a"},
+            {"peer.hostname": "a", "peer.address": f"a:{'a' * 253}"},
+        ),
         ({"database_name": "a" * 256}, {"db.instance": "a" * 255}),
     ),
 )
@@ -434,7 +452,9 @@ def test_collect_span_events_override(collect_span_events, span_events_enabled):
             pass
 
     if not spans_expected:
-        _test = function_not_called("newrelic.core.attribute", "resolve_agent_attributes")(_test)
+        _test = function_not_called(
+            "newrelic.core.attribute", "resolve_agent_attributes"
+        )(_test)
 
     _test()
 
@@ -479,7 +499,7 @@ def test_span_event_agent_attributes(include_attribues):
     _test()
 
 
-class FakeTrace():
+class FakeTrace:
     def __enter__(self):
         pass
 
@@ -527,7 +547,9 @@ def test_span_event_user_attributes(trace_type, args, exclude_attributes):
         exact_users=expected_params,
         unexpected_users=forgone_params,
     )
-    @validate_tt_segment_params(exact_params=expected_trace_params, forgone_params=forgone_params)
+    @validate_tt_segment_params(
+        exact_params=expected_trace_params, forgone_params=forgone_params
+    )
     @background_task(name="test_span_event_user_attributes")
     def _test():
         transaction = current_transaction()
@@ -583,11 +605,21 @@ def test_span_custom_attribute_limit():
     unexpected_txn_attrs.extend(span_custom_attrs)
     span_custom_attrs.extend(txn_custom_attrs[:64])
     expected_txn_attrs = {"user": txn_custom_attrs, "agent": [], "intrinsic": []}
-    expected_absent_txn_attrs = {"agent": [], "user": unexpected_txn_attrs, "intrinsic": []}
+    expected_absent_txn_attrs = {
+        "agent": [],
+        "user": unexpected_txn_attrs,
+        "intrinsic": [],
+    }
 
     @override_application_settings({"attributes.include": "*"})
-    @validate_transaction_event_attributes(expected_txn_attrs, expected_absent_txn_attrs)
-    @validate_span_events(count=1, expected_users=span_custom_attrs, unexpected_users=txn_custom_attrs[64:])
+    @validate_transaction_event_attributes(
+        expected_txn_attrs, expected_absent_txn_attrs
+    )
+    @validate_span_events(
+        count=1,
+        expected_users=span_custom_attrs,
+        unexpected_users=txn_custom_attrs[64:],
+    )
     @dt_enabled
     @background_task(name="test_span_attribute_limit")
     def _test():
@@ -632,7 +664,9 @@ def test_span_event_error_attributes_notice_error(trace_type, args):
 
     @override_application_settings(_settings)
     @validate_transaction_metrics(
-        "test_span_event_error_attributes_notice_error", background_task=True, rollup_metrics=_span_event_metrics
+        "test_span_event_error_attributes_notice_error",
+        background_task=True,
+        rollup_metrics=_span_event_metrics,
     )
     @validate_span_events(
         count=1,
@@ -677,7 +711,9 @@ def test_span_event_error_attributes_observed(trace_type, args):
 
     @dt_enabled
     @validate_transaction_metrics(
-        "test_span_event_error_attributes_observed", background_task=True, rollup_metrics=rollups
+        "test_span_event_error_attributes_observed",
+        background_task=True,
+        rollup_metrics=rollups,
     )
     @validate_span_events(
         count=1,
@@ -708,7 +744,9 @@ def test_span_event_error_attributes_observed(trace_type, args):
     ),
 )
 @dt_enabled
-@validate_span_events(count=1, exact_agents={"error.class": ERROR_NAME, "error.message": "whoops"})
+@validate_span_events(
+    count=1, exact_agents={"error.class": ERROR_NAME, "error.message": "whoops"}
+)
 @background_task(name="test_span_event_notice_error_overrides_observed")
 def test_span_event_notice_error_overrides_observed(trace_type, args):
     try:
@@ -777,7 +815,9 @@ def test_span_event_multiple_errors(trace_type, args):
         count=1,
         exact_agents=exact_agents,
     )
-    @validate_transaction_metrics("test_span_event_multiple_errors", background_task=True, rollup_metrics=_metrics)
+    @validate_transaction_metrics(
+        "test_span_event_multiple_errors", background_task=True, rollup_metrics=_metrics
+    )
     @background_task(name="test_span_event_multiple_errors")
     def _test():
         transaction = current_transaction()

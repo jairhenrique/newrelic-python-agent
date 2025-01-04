@@ -22,7 +22,11 @@ def validate_code_level_metrics(namespace, function, builtin=False, count=1, ind
 
     if builtin:
         validator = validate_span_events(
-            exact_agents={"code.function": function, "code.namespace": namespace, "code.filepath": "<builtin>"},
+            exact_agents={
+                "code.function": function,
+                "code.namespace": namespace,
+                "code.filepath": "<builtin>",
+            },
             unexpected_agents=["code.lineno"],
             count=count,
             index=index,

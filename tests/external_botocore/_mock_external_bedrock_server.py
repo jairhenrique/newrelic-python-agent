@@ -581,7 +581,10 @@ STREAMED_RESPONSES = {
 
 RESPONSES = {
     "mistral.mistral-7b-instruct-v0%3A2::<s>[INST] What is 212 degrees Fahrenheit converted to Celsius? [/INST]": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "48c7ee13-7790-461f-959f-04b0a4cf91c8"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "48c7ee13-7790-461f-959f-04b0a4cf91c8",
+        },
         200,
         {
             "outputs": [
@@ -593,17 +596,27 @@ RESPONSES = {
         },
     ],
     "amazon.titan-text-express-v1::User: The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "884db5c9-18ab-4f27-8892-33656176a2e6"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "884db5c9-18ab-4f27-8892-33656176a2e6",
+        },
         200,
         {
             "inputTextTokenCount": 72,
             "results": [
-                {"tokenCount": 23, "outputText": " Hello, how can I help you today?", "completionReason": "FINISH"}
+                {
+                    "tokenCount": 23,
+                    "outputText": " Hello, how can I help you today?",
+                    "completionReason": "FINISH",
+                }
             ],
         },
     ],
     "anthropic.claude-instant-v1::The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "1a72a1f6-310f-469c-af1d-2c59eb600089"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "1a72a1f6-310f-469c-af1d-2c59eb600089",
+        },
         200,
         {
             "id": "compl_01EGAoDn3azRGBGFLADWEzn7",
@@ -617,7 +630,10 @@ RESPONSES = {
         },
     ],
     "meta.llama2-13b-chat-v1::[INST] The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "cce6b34c-812c-4f97-8885-515829aa9639"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "cce6b34c-812c-4f97-8885-515829aa9639",
+        },
         200,
         {
             "generation": "  Hello! It's great to talk to you! I'm an AI, and I'm here to help answer any questions you might have. What's on your mind? \ud83e\udd14 Do you have a specific topic you'd like to discuss, or is there something you'd like to know? \ud83e\udd13 I'm all ears! \ud83d\udc42",
@@ -627,7 +643,10 @@ RESPONSES = {
         },
     ],
     "ai21.j2-mid-v1::What is 212 degrees Fahrenheit converted to Celsius?": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "228ee63f-4eca-4b7d-b679-bc920de63525"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "228ee63f-4eca-4b7d-b679-bc920de63525",
+        },
         200,
         {
             "id": 1234,
@@ -802,7 +821,10 @@ RESPONSES = {
         },
     ],
     "amazon.titan-text-express-v1::What is 212 degrees Fahrenheit converted to Celsius?": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "81508a1c-33a8-4294-8743-f0c629af2f49"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "81508a1c-33a8-4294-8743-f0c629af2f49",
+        },
         200,
         {
             "inputTextTokenCount": 12,
@@ -816,7 +838,10 @@ RESPONSES = {
         },
     ],
     "anthropic.claude-instant-v1::Human: What is 212 degrees Fahrenheit converted to Celsius? Assistant:": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "6a886158-b39f-46ce-b214-97458ab76f2f"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "6a886158-b39f-46ce-b214-97458ab76f2f",
+        },
         200,
         {
             "completion": " Okay, here are the steps to convert 212 degrees Fahrenheit to Celsius:\n\n1) The formula to convert between Fahrenheit and Celsius is:\n   C = (F - 32) * 5/9\n\n2) Plug in 212 degrees Fahrenheit for F:\n   C = (212 - 32) * 5/9\n   C = 180 * 5/9\n   C = 100\n\n3) Therefore, 212 degrees Fahrenheit converted to Celsius is 100 degrees Celsius.",
@@ -825,7 +850,10 @@ RESPONSES = {
         },
     ],
     "cohere.command-text-v14::What is 212 degrees Fahrenheit converted to Celsius?": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "12912a17-aa13-45f3-914c-cc82166f3601"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "12912a17-aa13-45f3-914c-cc82166f3601",
+        },
         200,
         {
             "generations": [
@@ -840,7 +868,10 @@ RESPONSES = {
         },
     ],
     "meta.llama2-13b-chat-v1::What is 212 degrees Fahrenheit converted to Celsius?": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "a168214d-742d-4244-bd7f-62214ffa07df"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "a168214d-742d-4244-bd7f-62214ffa07df",
+        },
         200,
         {
             "generation": "\n\n212\u00b0F = ?\u00b0C\n\nPlease help! I'm stuck!\n\nThank you!\n\nI hope this is the correct place to ask this question. Please let me know if it isn't.\n\nI appreciate your help!\n\nBest regards,\n\n[Your Name]",
@@ -850,7 +881,10 @@ RESPONSES = {
         },
     ],
     "amazon.titan-embed-g1-text-02::This is an embedding test.": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "b10ac895-eae3-4f07-b926-10b2866c55ed"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "b10ac895-eae3-4f07-b926-10b2866c55ed",
+        },
         200,
         {
             "embedding": [
@@ -2395,7 +2429,10 @@ RESPONSES = {
         },
     ],
     "amazon.titan-embed-text-v1::This is an embedding test.": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "11233989-07e8-4ecb-9ba6-79601ba6d8cc"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "11233989-07e8-4ecb-9ba6-79601ba6d8cc",
+        },
         200,
         {
             "embedding": [
@@ -3940,7 +3977,10 @@ RESPONSES = {
         },
     ],
     "cohere.embed-english-v3::This is an embedding test.": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "11233989-07e8-4ecb-9ba6-79601ba6d8cc"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "11233989-07e8-4ecb-9ba6-79601ba6d8cc",
+        },
         200,
         {
             "embeddings": [
@@ -5067,7 +5107,10 @@ RESPONSES = {
         {"message": "The security token included in the request is invalid."},
     ],
     "amazon.titan-text-express-v1::Malformed Body": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "81508a1c-33a8-4294-8743-f0c629af2f49"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "81508a1c-33a8-4294-8743-f0c629af2f49",
+        },
         200,
         {
             "inputTextTokenCount": 12,
@@ -5081,7 +5124,10 @@ RESPONSES = {
         },
     ],
     "amazon.titan-embed-g1-text-02::Malformed Body": [
-        {"Content-Type": "application/json", "x-amzn-RequestId": "b10ac895-eae3-4f07-b926-10b2866c55ed"},
+        {
+            "Content-Type": "application/json",
+            "x-amzn-RequestId": "b10ac895-eae3-4f07-b926-10b2866c55ed",
+        },
         200,
         {
             "embedding": [
@@ -6632,7 +6678,9 @@ RESPONSES = {
             "x-amzn-ErrorType": "ValidationException:http://internal.amazon.com/coral/com.amazon.bedrock/",
         },
         400,
-        {"message": "Malformed input request, please reformat your input and try again."},
+        {
+            "message": "Malformed input request, please reformat your input and try again."
+        },
     ],
     "amazon.titan-embed-g1-text-02::{ Malformed Request Body": [
         {
@@ -6641,7 +6689,9 @@ RESPONSES = {
             "x-amzn-ErrorType": "ValidationException:http://internal.amazon.com/coral/com.amazon.bedrock/",
         },
         400,
-        {"message": "Malformed input request, please reformat your input and try again."},
+        {
+            "message": "Malformed input request, please reformat your input and try again."
+        },
     ],
 }
 
@@ -6730,10 +6780,16 @@ def extract_shortened_prompt(content, model):
     elif "messages" in content:
         prompt = content["messages"][0].get("content")
     else:
-        prompt = content.get("inputText", "") or content.get("prompt", "") or content.get("texts", [""])[0]
+        prompt = (
+            content.get("inputText", "")
+            or content.get("prompt", "")
+            or content.get("texts", [""])[0]
+        )
     # Sometimes there are leading whitespaces in the prompt.
     prompt = prompt.strip()
-    prompt = f"{model}::{prompt}"  # Prepend model name to prompt key to keep separate copies
+    prompt = (
+        f"{model}::{prompt}"  # Prepend model name to prompt key to keep separate copies
+    )
     return prompt.lstrip().split("\n")[0]
 
 
@@ -6743,12 +6799,16 @@ class MockExternalBedrockServer(MockExternalHTTPServer):
     # calls.
 
     def __init__(self, handler=simple_get, port=None, *args, **kwargs):
-        super(MockExternalBedrockServer, self).__init__(handler=handler, port=port, *args, **kwargs)
+        super(MockExternalBedrockServer, self).__init__(
+            handler=handler, port=port, *args, **kwargs
+        )
 
 
 if __name__ == "__main__":
     # Use this to sort dict for easier future incremental updates
-    print(f"RESPONSES = {dict(sorted(RESPONSES.items(), key=lambda i: (i[1][1], i[0])))}")
+    print(
+        f"RESPONSES = {dict(sorted(RESPONSES.items(), key=lambda i: (i[1][1], i[0])))}"
+    )
 
     with MockExternalBedrockServer() as server:
         print(f"MockExternalBedrockServer serving on port {str(server.port)}")

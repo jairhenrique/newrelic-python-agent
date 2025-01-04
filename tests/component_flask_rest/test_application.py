@@ -59,9 +59,13 @@ _test_application_index_scoped_metrics = [
 ]
 
 
-@validate_code_level_metrics("_test_application.create_app.<locals>.IndexResource", "get")
+@validate_code_level_metrics(
+    "_test_application.create_app.<locals>.IndexResource", "get"
+)
 @validate_transaction_errors(errors=[])
-@validate_transaction_metrics("_test_application:index", scoped_metrics=_test_application_index_scoped_metrics)
+@validate_transaction_metrics(
+    "_test_application:index", scoped_metrics=_test_application_index_scoped_metrics
+)
 def test_application_index(application):
     response = application.get("/index")
     response.mustcontain("hello")
@@ -84,12 +88,23 @@ _test_application_raises_scoped_metrics = [
         ("_test_application:CustomException", 500, False, True),
     ],
 )
-def test_application_raises(exception, status_code, ignore_status_code, propagate_exceptions, application):
-    @validate_code_level_metrics("_test_application.create_app.<locals>.ExceptionResource", "get")
-    @validate_transaction_metrics("_test_application:exception", scoped_metrics=_test_application_raises_scoped_metrics)
+def test_application_raises(
+    exception, status_code, ignore_status_code, propagate_exceptions, application
+):
+    @validate_code_level_metrics(
+        "_test_application.create_app.<locals>.ExceptionResource", "get"
+    )
+    @validate_transaction_metrics(
+        "_test_application:exception",
+        scoped_metrics=_test_application_raises_scoped_metrics,
+    )
     def _test():
         try:
-            application.get(f"/exception/{exception}/{status_code}", status=status_code, expect_errors=True)
+            application.get(
+                f"/exception/{exception}/{status_code}",
+                status=status_code,
+                expect_errors=True,
+            )
         except Exception as e:
             assert propagate_exceptions
 
@@ -108,7 +123,6 @@ def test_application_raises(exception, status_code, ignore_status_code, propagat
 
 
 def test_application_outside_transaction(application):
-
     _settings = global_settings()
 
     @override_generic_settings(_settings, {"enabled": False})

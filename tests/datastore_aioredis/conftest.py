@@ -37,8 +37,12 @@ except ImportError:
     AIOREDIS_VERSION = (2, 0, 2)
 
 
-SKIPIF_AIOREDIS_V1 = pytest.mark.skipif(AIOREDIS_VERSION < (2,), reason="Unsupported aioredis version.")
-SKIPIF_AIOREDIS_V2 = pytest.mark.skipif(AIOREDIS_VERSION >= (2,), reason="Unsupported aioredis version.")
+SKIPIF_AIOREDIS_V1 = pytest.mark.skipif(
+    AIOREDIS_VERSION < (2,), reason="Unsupported aioredis version."
+)
+SKIPIF_AIOREDIS_V2 = pytest.mark.skipif(
+    AIOREDIS_VERSION >= (2,), reason="Unsupported aioredis version."
+)
 DB_SETTINGS = redis_settings()[0]
 
 
@@ -62,15 +66,21 @@ collector_agent_registration = collector_agent_registration_fixture(
 def client(request, loop):
     if AIOREDIS_VERSION >= (2, 0):
         if request.param == "Redis":
-            return aioredis.Redis(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
+            return aioredis.Redis(
+                host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0
+            )
         elif request.param == "StrictRedis":
-            return aioredis.StrictRedis(host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0)
+            return aioredis.StrictRedis(
+                host=DB_SETTINGS["host"], port=DB_SETTINGS["port"], db=0
+            )
         else:
             raise NotImplementedError()
     else:
         if request.param == "Redis":
             return loop.run_until_complete(
-                aioredis.create_redis(f"redis://{DB_SETTINGS['host']}:{DB_SETTINGS['port']}", db=0)
+                aioredis.create_redis(
+                    f"redis://{DB_SETTINGS['host']}:{DB_SETTINGS['port']}", db=0
+                )
             )
         elif request.param == "StrictRedis":
             pytest.skip("StrictRedis not implemented.")
